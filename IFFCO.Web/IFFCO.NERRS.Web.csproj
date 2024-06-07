@@ -68,6 +68,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AspNetCore.Totp" Version="2.3.0" />
     <PackageReference Include="Devart.Data.Oracle.EFCore" Version="9.6.540" />
     <PackageReference Include="DotNetCore.NPOI" Version="1.2.1" />
     <PackageReference Include="IFFCO.HRMS.Service" Version="1.0.0" />
@@ -84,6 +85,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="CommonFunctions\" />
     <Folder Include="wwwroot\js\datatables\" />
     <Folder Include="wwwroot\pdf\" />
   </ItemGroup>

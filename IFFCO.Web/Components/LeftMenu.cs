@@ -2,14 +2,17 @@
 using IFFCO.HRMS.Service;
 using IFFCO.HRMS.Shared.CommonFunction;
 using IFFCO.HRMS.Shared.Entities;
+using IFFCO.NERRS.Web.CommonFunctions;
 using IFFCO.NERRS.Web.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
+using NPOI.SS.Formula.Functions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace IFFCO.NERRS.Web.Components
@@ -18,9 +21,11 @@ namespace IFFCO.NERRS.Web.Components
     {
         CommonService commonService = null;
         DropDownListBind dropDownListBind = null;
+        private readonly DropDownListBindWeb dropDownListBindWeb = null;
         public AccountService accountService = null;
         public LeftMenu()
         {
+            dropDownListBindWeb = new DropDownListBindWeb();
             commonService = new CommonService();
             dropDownListBind = new DropDownListBind();
             accountService = new AccountService();
@@ -35,8 +40,11 @@ namespace IFFCO.NERRS.Web.Components
             LeftMenuViewModel leftMenuViewModelobj = new LeftMenuViewModel();
 
             List<ModulesMenu> Menues = commonService.GetModulesMenus(EMP_ID).Where(x => x.Menulevel == 1).ToList();
-            List<SelectListItem> Units = dropDownListBind.GetUnitWithSecurity(Convert.ToString(EMP_ID), moduleid);
-            if(Menues.Count>0 && Units.Count > 0)
+            List<SelectListItem> Units = dropDownListBindWeb.GetUnitWithSecurity(Convert.ToString(EMP_ID), moduleid);
+            // List<SelectListItem> Units = dropDownListBind.GetUnitWithSecurity(Convert.ToString(EMP_ID), moduleid);
+
+
+            if (Menues.Count>0 && Units.Count > 0)
             {
                 HttpContext.Session.SetObject("GetModulesMenus", Menues);
                 HttpContext.Session.SetObject("GetUnitDropDown", Units);

@@ -42,7 +42,7 @@
     <meta http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @*<title>@ViewData["Title"] - IFFCODEMO</title>*@
-    <title>HRMS</title>
+    <title>IFFCO Global Plant Despatch System</title>
     <style>
         .DisplayBlock {
             display: inline-block !important;
@@ -71,10 +71,10 @@
     @*<link href="@Url.Content("~/css/PageHeader.css")" rel="stylesheet" />*@
     @*<link href="@Url.Content("~/css/icon.css")" rel="stylesheet" />*@
     @*<link href="@Url.Content("~/lib/bootstrap/dist/css/bootstrap.min.css")" rel="stylesheet" />
-        <link href="@Url.Content("~/css/font-awesome.min.css")" rel="stylesheet" />
-        <link href="@Url.Content("~/css/style.css")" rel="stylesheet" />
-        <link href="@Url.Content("~/css/responsive.css")" rel="stylesheet" />
-        <link href="@Url.Content("~/css/css.css")" rel="stylesheet" />*@
+    <link href="@Url.Content("~/css/font-awesome.min.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/css/style.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/css/responsive.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/css/css.css")" rel="stylesheet" />*@
     @*<link href="~/css/Select2.css" rel="stylesheet" />*@
     @*<link href="~/css/upadated_new.css" rel="stylesheet" />*@
     <link href="@Url.Content("~/font-awesome/css/all.css")" rel="stylesheet" />
@@ -83,6 +83,7 @@
     <link href="@Url.Content("~/css/datatables/jquery.dataTables.min.css")" rel="stylesheet" />
     <link href="@Url.Content("~/css/Select2.css")" rel="stylesheet" />
     <link href="@Url.Content("~/css/jquery-ui.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/css/despatch.css")" rel="stylesheet" />
     <link href="@Url.Content("~/bootstrap-3.3.7/css/bootstrap.min.css")" rel="stylesheet" />
     <link href="@Url.Content("~/css/master.css")" rel="stylesheet" />
 
@@ -97,6 +98,8 @@
     <script src="@Url.Content("~/js/custom-select.js")"></script>
     <script src="@Url.Content("~/js/jquery.stickytable.min.js")"></script>
     <script src="@Url.Content("~/js/Common.js")"></script>
+    <script src="@Url.Content("~/js/despatch.js")"></script>
+    <script src="@Url.Content("~/js/IFFCOToken.js")"></script>
     <script src="@Url.Content("~/js/jsapi.js")"></script>
     <script src="@Url.Content("~/js/HindiTranslate.js")"></script>
     <script src="@Url.Content("~/js/select2.min.js")"></script>
@@ -108,7 +111,9 @@
     <script src="@Url.Content("~/js/moment.js")"></script>
     <script src="~/js/bootstrap-datepicker.min.js"></script>
 
-
+    <!-- bootbox code -->
+    <script src="@Url.Content("~/js/bootbox.min.js")"></script>
+    <script src="@Url.Content("~/js/bootbox.locales.min.js")"></script>
 
     @*<script src="@Url.Content("~/js/Common.js")"></script>*@
     @*<script src="@Url.Content("~/js/jquery-3.3.1.min.js")"></script>*@
@@ -130,24 +135,24 @@
 
     @* content page style script *@
     @*chatbot script start*@
-    <script type="text/javascript">
-        !function (e, t, n, r) {
-            function s() {
-                try {
-                    var e; if ((e = "string" == typeof this.response ? JSON.parse(this.response) : this.response).url) {
-                        var n = t.getElementsByTagName("script")[0], r = t.createElement("script"); r.async = !0, r.src = e.url, n.parentNode.insertBefore(r, n)
-                    }
-                } catch (e) { }
-            } var o, p, a, i = [], c = []; e[n] = {
-                init: function () { o = arguments; var e = { then: function (t) { return c.push({ type: "t", next: t }), e }, catch: function (t) { return c.push({ type: "c", next: t }), e } }; return e },
-                on: function () { i.push(arguments) }, render: function () { p = arguments }, destroy: function () { a = arguments }
-            }, e.__onWebMessengerHostReady__ = function (t) { if (delete e.__onWebMessengerHostReady__, e[n] = t, o) for (var r = t.init.apply(t, o), s = 0; s < c.length; s++) { var u = c[s]; r = "t" === u.type ? r.then(u.next) : r.catch(u.next) } p && t.render.apply(t, p), a && t.destroy.apply(t, a); for (s = 0; s < i.length; s++)t.on.apply(t, i[s]) }; var u = new XMLHttpRequest; u.addEventListener("load", s), u.open("GET", r + "/loader.json", !0), u.responseType = "json", u.send()
-        }(window, document, "Bots", "https://www.iffcobot.in:8443/static");
-    </script>
+    @*<script type="text/javascript">
+    !function (e, t, n, r) {
+    function s() {
+    try {
+    var e; if ((e = "string" == typeof this.response ? JSON.parse(this.response) : this.response).url) {
+    var n = t.getElementsByTagName("script")[0], r = t.createElement("script"); r.async = !0, r.src = e.url, n.parentNode.insertBefore(r, n)
+    }
+    } catch (e) { }
+    } var o, p, a, i = [], c = []; e[n] = {
+    init: function () { o = arguments; var e = { then: function (t) { return c.push({ type: "t", next: t }), e }, catch: function (t) { return c.push({ type: "c", next: t }), e } }; return e },
+    on: function () { i.push(arguments) }, render: function () { p = arguments }, destroy: function () { a = arguments }
+    }, e.__onWebMessengerHostReady__ = function (t) { if (delete e.__onWebMessengerHostReady__, e[n] = t, o) for (var r = t.init.apply(t, o), s = 0; s < c.length; s++) { var u = c[s]; r = "t" === u.type ? r.then(u.next) : r.catch(u.next) } p && t.render.apply(t, p), a && t.destroy.apply(t, a); for (s = 0; s < i.length; s++)t.on.apply(t, i[s]) }; var u = new XMLHttpRequest; u.addEventListener("load", s), u.open("GET", r + "/loader.json", !0), u.responseType = "json", u.send()
+    }(window, document, "Bots", "https://www.iffcobot.in:8443/static");
+    </script>*@
     @*chatbot script end*@
 </head>
 <body class="loading ">
-    <span class="chat-btn">Hide</span>
+    @*<span class="chat-btn">Hide</span>*@
     <div class="main-con">
         <div class="menu-overlay"></div>
         <div>
@@ -185,128 +190,128 @@
     <script type="text/javascript">
         @*$(document).ready(function () {
             if ('@controllerName' != null) {
-                if ($('#@controllerName').parent().parent().parent().parent().parent().parent().parent().hasClass("inner")) {
-                    $('#@controllerName').parent().parent().parent().parent().parent().parent().parent().css("display", "block");
-                    $('#@controllerName').parent().parent().parent().css("display", "block");
-                } else {
-                    $('#@controllerName').parent().parent().parent().parent().parent().parent().parent().parent().parent().parent().parent().find(".inner").first().css("display", "block")
+            if ($('#@controllerName').parent().parent().parent().parent().parent().parent().parent().hasClass("inner")) {
+            $('#@controllerName').parent().parent().parent().parent().parent().parent().parent().css("display", "block");
+            $('#@controllerName').parent().parent().parent().css("display", "block");
+            } else {
+            $('#@controllerName').parent().parent().parent().parent().parent().parent().parent().parent().parent().parent().parent().find(".inner").first().css("display", "block")
 
 
-                    $('#@controllerName').parent().parent().parent().parent().parent().parent().parent().parent().parent().parent().parent().children().find(".inner").first().css("display", "block")
+            $('#@controllerName').parent().parent().parent().parent().parent().parent().parent().parent().parent().parent().parent().children().find(".inner").first().css("display", "block")
 
-                    $('#@controllerName').parent().parent().parent().css("display", "block")
-                }
-               $("#@controllerName").css("background", "#c9e8d7")
+            $('#@controllerName').parent().parent().parent().css("display", "block")
+            }
+            $("#@controllerName").css("background", "#c9e8d7")
             }
 
-        });*@
+            });*@
 
-        function PageNotLoad(url, thisval) {
-            var interval = null;
-           // $(".content").load(moduleId + "/" + MenuId + "/Index");
-            //e.preventDefault();
-            $(".modalLoader").show();
+            function PageNotLoad(url, thisval) {
+                var interval = null;
+                // $(".content").load(moduleId + "/" + MenuId + "/Index");
+                //e.preventDefault();
+                $(".modalLoader").show();
 
-            $.each($(thisval).parents("ul:first").find("li"), function (index, val) {
-                if ($(val).hasClass("active")) {
-                    $(val).removeClass("active");
-                }
-            });
+                $.each($(thisval).parents("ul:first").find("li"), function (index, val) {
+                    if ($(val).hasClass("active")) {
+                        $(val).removeClass("active");
+                    }
+                });
 
-            $(thisval).parents("li:first").addClass("active");
-            ;
-            var strHtm = $(thisval).text() + ' ' + '<span style="font-size:10px;">[' + url.split('/')[1]+']</span>';
-            localStorage.setItem("currentUrl", url);
-            document.getElementById("page-wrapper").innerHTML = "";
-            $('#page-wrapper').load(url);
-            $(".top-head").html(strHtm);
-            interval=  setInterval(function () {
-                //if ($("#HrmsGrid tr").length == 0) {
-                //    $(".modalLoader").hide();
-                //    clearInterval(interval);
-                //} else {
-                //    if ($("#HrmsGrid tr").length > 1) {
-                //        $(".modalLoader").hide();
-                //        clearInterval(interval);
-                //    } else {
-                //        if ("PSSC17" == url.split('/')[1] || "PSSC11" == url.split('/')[1]) {
-                //            $(".modalLoader").hide();
-                //            clearInterval(interval);
-                //        }
-                //    }
-                //}
-                if ($(".plcholder-cn").html() != undefined) {
-                    $(".modalLoader").hide();
-                    clearInterval(interval);
-                }
+                $(thisval).parents("li:first").addClass("active");
+                ;
+                var strHtm = $(thisval).text() + ' ' + '<span style="font-size:10px;">[' + url.split('/')[1] + ']</span>';
+                localStorage.setItem("currentUrl", url);
+                document.getElementById("page-wrapper").innerHTML = "";
+                $('#page-wrapper').load(url);
+                $(".top-head").html(strHtm);
+                interval = setInterval(function () {
+                    //if ($("#HrmsGrid tr").length == 0) {
+                    //    $(".modalLoader").hide();
+                    //    clearInterval(interval);
+                    //} else {
+                    //    if ($("#HrmsGrid tr").length > 1) {
+                    //        $(".modalLoader").hide();
+                    //        clearInterval(interval);
+                    //    } else {
+                    //        if ("PSSC17" == url.split('/')[1] || "PSSC11" == url.split('/')[1]) {
+                    //            $(".modalLoader").hide();
+                    //            clearInterval(interval);
+                    //        }
+                    //    }
+                    //}
+                    if ($(".plcholder-cn").html() != undefined) {
+                        $(".modalLoader").hide();
+                        clearInterval(interval);
+                    }
 
 
-            }, 1000);
+                }, 1000);
 
-        }
+            }
         function PageNoLoad(url) {
             $(".content").load(url);
         }
 
-        ////chat bot start
-        $(document).ready(function () {
-            debugger;
-            $.ajax({
-                url: '/chatbot/Index',
-                type: "GET",
-                async: true,
-                data: "application/json",
-                cache: false,
-                success: function (data) {
-                    Bots.destroy();
+        //////chat bot start
+        //$(document).ready(function () {
+        //    debugger;
+        //    $.ajax({
+        //        url: '/chatbot/Index',
+        //        type: "GET",
+        //        async: true,
+        //        data: "application/json",
+        //        cache: false,
+        //        success: function (data) {
+        //            Bots.destroy();
 
-                    Bots.init({
-                        appId: '5cf370ca4d50ea0010c0fb51', browserStorage: 'sessionStorage',
+        //            Bots.init({
+        //                appId: '5cf370ca4d50ea0010c0fb51', browserStorage: 'sessionStorage',
 
-                        locale: ' en-IN',
-                        menuItems: {
-                            imageUpload: false,
-                            fileUpload: false,
-                            shareLocation: false,
-                        },
-                        customText: {
-                            headerText: 'IFFCO Digital Assistant?',
-                            inputPlaceholder: 'Type a message...',
-                            sendButtonText: 'Send',
-                            font: 'italic',
-                            conversationTimestampHeaderFormat: 'Do MMMM YYYY, hh:mm'
-                        },
-                        customColors: {
-                            brandColor: '3CB371',
-                            conversationColor: '3CB371',
-                            actionColor: '006633',
-                            borderColor: '800000'
-                        },
+        //                locale: ' en-IN',
+        //                menuItems: {
+        //                    imageUpload: false,
+        //                    fileUpload: false,
+        //                    shareLocation: false,
+        //                },
+        //                customText: {
+        //                    headerText: 'IFFCO Digital Assistant?',
+        //                    inputPlaceholder: 'Type a message...',
+        //                    sendButtonText: 'Send',
+        //                    font: 'italic',
+        //                    conversationTimestampHeaderFormat: 'Do MMMM YYYY, hh:mm'
+        //                },
+        //                customColors: {
+        //                    brandColor: '3CB371',
+        //                    conversationColor: '3CB371',
+        //                    actionColor: '006633',
+        //                    borderColor: '800000'
+        //                },
 
-                        displayStyle: "button",
-                        buttonIconUrl: "https://hrms.iffco.coop/images/Girl-Avtar.jpg",
-                        buttonWidth: '80',
-                        buttonHeight: '80',
-                        //backgroundImageUrl: "https://www.wallpapermaiden.com/wallpaper/2397/download/480x800/msi-gaming-series-dragon-logo.png"
-                    })
+        //                displayStyle: "button",
+        //                buttonIconUrl: "https://hrms.iffco.coop/images/Girl-Avtar.jpg",
+        //                buttonWidth: '80',
+        //                buttonHeight: '80',
+        //                //backgroundImageUrl: "https://www.wallpapermaiden.com/wallpaper/2397/download/480x800/msi-gaming-series-dragon-logo.png"
+        //            })
 
-                        .then(function (res) {
+        //                .then(function (res) {
 
-                            Bots.updateUser(
-                                {
-                                    "firstName": data.personal_no,
-                                    "givenName": data.personal_no,
+        //                    Bots.updateUser(
+        //                        {
+        //                            "firstName": data.personal_no,
+        //                            "givenName": data.personal_no,
 
-                                }
-                            );
-                        })
-                        .catch(function (err) {
-                            console.error(err);
-                        });
-                }
-            })
-        });
-          // //chat bot end
+        //                        }
+        //                    );
+        //                })
+        //                .catch(function (err) {
+        //                    console.error(err);
+        //                });
+        //        }
+        //    })
+        //});
+        //  // //chat bot end
 
     </script>
 

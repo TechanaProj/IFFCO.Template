@@ -40,8 +40,8 @@ namespace IFFCO.NERRS.Web
             //});
             services.Configure<FormOptions>(x => x.ValueCountLimit = 204800);
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1).AddSessionStateTempDataProvider();
-            services.AddScoped<ModelContext>();            
-
+            services.AddScoped<ModelContext>();
+            services.AddScoped<IFFCO.NERRS.Web.Models.ModelContext>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 

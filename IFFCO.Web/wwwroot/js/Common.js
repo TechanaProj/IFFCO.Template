@@ -7,21 +7,21 @@
             data: content,
             contentType: ContentType,
             cache: Cache,
-            success: function (data) {                
+            success: function (data) {
                 CallBack(fn, data, Id);
             },
-            error: function (response) {                
+            error: function (response) {
                 CommonAlert("Error", response.statusText, null, null, "error");
                 //alert(response.responseText);
             },
-            failure: function (response) {                
+            failure: function (response) {
                 CommonAlert("Failure", response.statusText, null, null, "error");
                 //alert(response.responseText);
             }
         });
     }
 }
-function CommonAjax1(Url, Type, Async, ContentType, Cache, fn, Id, content, headersData) {    
+function CommonAjax1(Url, Type, Async, ContentType, Cache, fn, Id, content, headersData) {
     if (Url != "") {
         $.ajax({
             url: Url,
@@ -45,7 +45,7 @@ function CommonAjax1(Url, Type, Async, ContentType, Cache, fn, Id, content, head
     }
 }
 
-function CommonAjaxComboBox(Url, Type, Async, ContentType, Cache, fn, Id, content) {    
+function CommonAjaxComboBox(Url, Type, Async, ContentType, Cache, fn, Id, content) {
     if (Url != "") {
         $.ajax({
             url: Url,
@@ -73,7 +73,7 @@ function CommonAjaxComboBox(Url, Type, Async, ContentType, Cache, fn, Id, conten
 }
 
 
-function CallBack(fn, data, Id) {    
+function CallBack(fn, data, Id) {
     return fn(data, Id);
 }
 function BindEdit(Data, id) {
@@ -132,7 +132,7 @@ function CustomAutocomplete(txtId, hdnId, url, Type, DataType, ContentType) {
 //    });
 //});
 
-function BindDropDown(data, id) {    
+function BindDropDown(data, id) {
     var districtHtml = "<option>---Select---</option>";
 
     $.each(data, function (index, District) {
@@ -201,20 +201,20 @@ function accessrights(btnselect, btninsert, btnupdate, btndelete) {
         $('.delete').hide();
     }
 }
-function SHOW_TR_Function(e, e1, id) {   
+function SHOW_TR_Function(e, e1, id) {
     var TRID = document.getElementById(e);
     var TRID1 = document.getElementById(e1);
     TRID.style.display = '';
     TRID1.style.display = "none";
-    
+
 }
 function HIDE_TR_Function(e) {
     var TRID = document.getElementById(e);
     TRID.style.display = "none";
 }
 
-function BindGrid(ExcelColumns, PdfColumns) {    
-    if ($('#HrmsGrid').DataTable().context.length>0) {
+function BindGrid(ExcelColumns, PdfColumns) {
+    if ($('#HrmsGrid').DataTable().context.length > 0) {
         var table = $('#HrmsGrid').DataTable();
         var tableArray = [
             {
@@ -244,7 +244,8 @@ function BindGrid(ExcelColumns, PdfColumns) {
     }
 }
 
-function BindGridWithId(ExcelColumns, PdfColumns,Id) {    
+function BindGridWithId(ExcelColumns, PdfColumns, Id) {
+
     if ($(Id).DataTable().context.length > 0) {
         var table = $(Id).DataTable();
         var tableArray = [
@@ -279,7 +280,7 @@ function BindGridWithIdAll(ExcelColumns, PdfColumns, Id) {
     var table = $(Id).DataTable({
         lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]]
     });
-    
+
     var tableArray = [
         {
             extend: 'excel',
@@ -366,9 +367,16 @@ function GenrateInputType(Type, Name, Value, ClassName, Id, fnName, AttrVal) {
             strHtml = "<textarea class='" + ClassName + "' id='" + Id + "' rows='4' cols='50'></textarea>";
             break;
         case "button":
-            strHtml = "<input id='" + Id + "' class='" + ClassName + "' onclick='" + fnName + "' type='button' value='" + Value + "'>";
+            //strHtml = "<input id='" + Id + "' class='" + ClassName + "' onclick='" + fnName + "' type='button' value='" + Value + "'>";
+            if (AttrVal == undefined) {
+                strHtml = "<input id='" + Id + "' class='" + ClassName + "' onclick='" + fnName + "' type='button' value='" + Value + "'>";
+            }
+            else {
+                strHtml = "<input id='" + Id + "' " + AttrVal + " class='" + ClassName + "' onclick='" + fnName + "' type='button' value='" + Value + "'>";
+            }
             break;
         case "anchor":
+
             strHtml = "<a href='javascript:void(0)' class='" + ClassName + "' id='" + Id + "' onclick='" + fnName + "' >" + Value + "</a>";
             break;
         case "label":
@@ -457,13 +465,15 @@ function GetTableJsonList(table) {
 $(document).ready(function () {
     $(".edit").removeAttr("data-toggle");
     $(".Details").removeAttr("data-toggle");
+    $("#ddlReports").change();
 
-    $(".addnewitem").click(function (e) {        
+    $(".addnewitem").click(function (e) {
         e.preventDefault();
         localStorage.setItem("currentUrl", $(this).attr('href'));
         document.getElementById("page-wrapper").innerHTML = "";
         $('#page-wrapper').load($(this).attr('href'));
     });
+
     //BindGrid();
     //$(".selected-ar > a").click(function (e) {        
     //    e.preventDefault();           
@@ -474,8 +484,33 @@ $(document).ready(function () {
     //});    
 });
 
+$(document).keydown(function (event) {
+    if (event.keyCode == 123) { // Prevent F12
+        CommonAlert("Error", "Operation restricted", null, null, "error");
+        return false;
+    } else if (event.ctrlKey && event.shiftKey && event.keyCode == 73) { // Prevent Ctrl+Shift+I
+        CommonAlert("Error", "Operation restricted", null, null, "error");
+        return false;
+    }
+});
 
-function CommonAlert(Title, Message, fn, data, type, msgType) {    
+/* To Disable Inspect Element */
+$(document).bind("contextmenu", function (e) {
+    e.preventDefault();
+});
+
+$(document).keydown(function (e) {
+    if (e.which === 123) {
+        CommonAlert("Error", "Operation restricted", null, null, "error");
+        return false;
+    }
+});
+
+
+
+function CommonAlert(Title, Message, fn, data, type, msgType) {
+    ;
+    debugger;
     //var data = JSON.stringify(data);
     switch (type.toLowerCase()) {
         case 'alert':
@@ -493,23 +528,28 @@ function CommonAlert(Title, Message, fn, data, type, msgType) {
         case 'error':
             WarningAlert(Title, Message, fn, data)
             break;
+        case 'lov':
+            AlertLOV(Title, Message, fn, data)
+            break;
         default:
             break;
     }
 }
 function AlertMessage(Title, Message, fn, data, type) {
+
     Title = Title == "warning" ? "Warning" : Title;
     var strHtml = "";
     strHtml += "<div id='CreateModal' class='modal' style='display:block!important'>";
     strHtml += "<div class='modal-dialog'>";
-    strHtml += "<div class='modal-content' style='MARGIN-TOP: 71PX'>";
-    strHtml += "<div class='modal-header' style='background-color: #41ab34'>";
+    strHtml += "<div class='modal-content'>";
+
+    strHtml += "<div class='modal-header' style='background-color: #1fa70f'>";
     Title = Title == "warning" ? "Warning" : Title;
-    strHtml += "<h4 class='modal-title' style='font-weight:bold;color: white'>" + Title + "</h4>";
+    strHtml += "<h4 class='modal-title'>" + Title + "</h4>";
     strHtml += "<button type='button' class='close' data-dismiss='modal' aria-hidden='true' onclick='divhideSuccess();'>×</button>";
     strHtml += "</div>";
     strHtml += "<div class='modal-body'>";
-    
+
     if (type.toLowerCase() == "create") {
         strHtml += "<center><img style='    width: 60px;' src='images/Success-Round-Tick.png' alt=''></center>";
         strHtml += "<p style='font-weight:bold;padding-top: 12px;color: black;text-align: center;'><mediam>" + Message + " save successfully!</mediam></p>";
@@ -523,9 +563,9 @@ function AlertMessage(Title, Message, fn, data, type) {
         if (type.toLowerCase() == "confirmation") {
             strHtml += "<center><img style='    width: 60px;' src='images/warning.png' alt=''></center>";
             strHtml += "<p style='font-weight:bold;padding-top: 12px;color: black;text-align: center;'><mediam>" + Message + "</mediam></p>";
-    } else {
-        strHtml += "<p style='font-weight:bold;padding-top: 12px;color: black;text-align: center;'><mediam>" + Message + "</mediam></p>";
-    }
+        } else {
+            strHtml += "<p style='font-weight:bold;padding-top: 12px;color: black;text-align: center;'><mediam>" + Message + "</mediam></p>";
+        }
     strHtml += "</div>";
     strHtml += "<div class='modal-footer'>";
     //strHtml += "<input type='button' class='btn btn-primary m-btn' onclick='PopupOk(" + fn + ",\"" + data + "\");' data-dismiss='modal' value='OK'>";
@@ -543,7 +583,7 @@ function SuccessAlert(Title, Message, fn, data) {
     strHtml += "<div id='ErrorModal' class='modal' style='display:block'>";
     strHtml += "<div class='modal-dialog'>";
     strHtml += "<div class='modal-content' style='MARGIN-TOP: 71PX'>";
-    strHtml += "<div class='modal-header' style='background-color: #41ab34'>";    
+    strHtml += "<div class='modal-header' style='background-color: #41ab34'>";
     strHtml += "<h4 class='modal-title' style='font-weight:bold;color: white'>" + Title + "</h4>";
     strHtml += "<button type='button' class='close' data-dismiss='modal' aria-hidden='true' onclick='divhidError();'>×</button>";
     strHtml += "</div>";
@@ -601,6 +641,55 @@ function DeleteAlert(Title, Message, fn, data) {
     $("#commonModalbinder").append(strHtml)
     $("#commonModalbinder").css("display", "block");
 }
+function AlertLOV(Title, LovData, fn, data, type) {
+
+    Title = Title == "warning" ? "Warning" : Title;
+    var strHtml = "";
+    strHtml += "<div id='CreateModal' class='modal lov-modl' style='display:block!important'>";
+    strHtml += "<div class='modal-dialog'>";
+    strHtml += "<div class='modal-content'>";
+    strHtml += "<div class='modal-header'>";
+    Title = Title == "warning" ? "Warning" : Title;
+    strHtml += "<h4 class='modal-title' style='font-weight:bold;color: white'>" + Title + "</h4>";
+    strHtml += "<button type='button' class='close' data-dismiss='modal' aria-hidden='true' onclick='divhideSuccess();'>×</button>";
+    strHtml += "</div>";
+    strHtml += "<div class='modal-body'>";
+
+    strHtml += "<div id='LovId'><div class='table-lov'><table id='HrmsHrdGridLov'></table></div></div>";
+
+    strHtml += "</div>";
+    strHtml += "<div class='modal-footer'>";
+    strHtml += "<input type='button' class='btn btn-success m-btn' disabled onclick='PopupOk(" + fn + "," + JSON.stringify(data) + ");' data-dismiss='modal' value='OK'>";
+    strHtml += "<input type='button' class='btn btn-danger m-btn' onclick='PopupCancel();' data-dismiss='modal' value='Cancel'>";
+
+    strHtml += "</div></div></div></div>";
+    $("#commonModalbinder").append(strHtml)
+    $("#commonModalbinder").css("display", "block");
+    var table = $('#HrmsHrdGridLov').DataTable({
+        "scrollY": "200px",
+        "scrollCollapse": true,
+        data: LovData.listColumnData,
+        "columns": LovData.columnLOV,
+        "columnDefs": [
+            {
+                "targets": hiddencolIndex,
+                "visible": false
+            }]
+    });
+    table.on('click', 'tr', function () {
+        $(".lov-modl .modal-footer .btn-success").removeAttr("disabled");
+        if ($(this).hasClass('Selected')) {
+            $(this).removeClass('Selected');
+
+        }
+        else {
+            table.$('tr.Selected').removeClass('Selected');
+            $(this).addClass('Selected');
+        }
+    });
+    //BindGridWithId([0, 1], [0, 1], '#HrmsHrdGridLov');
+}
+
 function PopupOk(fn, data) {
     CallBack(fn, data);
 }
@@ -645,7 +734,7 @@ function CommonUpdateAlert(Title, Message, bgColor, img) {
     //return 
 }
 
-function BootStrapCalender(Id) {    
+function BootStrapCalender(Id) {
     var date_input = $(Id); //our date input has the name "date"
     var container = $('.bootstrap-iso form').length > 0 ? $('.bootstrap-iso form').parent() : "body";
     var options = {
@@ -731,7 +820,7 @@ function CustomConfrimBox(Title, Content, fn, data) {
     });
 }
 
-function Dateformate(selectedDate) {    
+function Dateformate(selectedDate) {
     var FormattedDate = "";
     if (selectedDate == undefined) {
         FormattedDate = "";
@@ -740,7 +829,8 @@ function Dateformate(selectedDate) {
         FormattedDate = "";
     }
     else {
-        FormattedDate = selectedDate.split("/")[1] + '/' + selectedDate.split("/")[0] + '/' + selectedDate.split("/")[2];
+        //FormattedDate = selectedDate.split("/")[1] + '/' + selectedDate.split("/")[0] + '/' + selectedDate.split("/")[2]; // Managed for OCI deployment
+        FormattedDate = selectedDate.split("/")[0] + '/' + selectedDate.split("/")[1] + '/' + selectedDate.split("/")[2];
     }
 
     return FormattedDate
@@ -748,6 +838,7 @@ function Dateformate(selectedDate) {
 function toValidDate(datestring) {
     return datestring.replace(/(\d{2})(\/)(\d{2})/, "$3$2$1");
 }
+
 function DateformateFromDate(selectedDate) {
     var FormattedDate = "";
     if (selectedDate != null) {
@@ -763,12 +854,12 @@ function GetIndex(thisid) {
     $(".modalLoader").show();
     localStorage.setItem("currentUrl", thisid);
     document.getElementById("page-wrapper").innerHTML = "";
-    $('#page-wrapper').load(thisid);   
-    interval = setInterval(function () {      
+    $('#page-wrapper').load(thisid);
+    interval = setInterval(function () {
         if ($(".plcholder-cn").html() != undefined) {
             $(".modalLoader").hide();
             clearInterval(interval);
-        }        
+        }
     }, 1000);
     return false;
     //alert(window.location.origin + thisid);
@@ -806,9 +897,10 @@ function scriptLoader(path, callback) {
 }
 var url;
 
-$("input[type='submit']").click(function (e) {    
+$("input[type='submit']").click(function (e) {
+    debugger;
     if ($(this).hasClass("report")) {
-        
+
         var valid = this.form.checkValidity();
         if (valid) {
             if (this.form.hasAttribute("onsubmit")) {
@@ -836,37 +928,50 @@ $("input[type='submit']").click(function (e) {
                             CommonAlert(response.alert, response.errorMessage, null, null, "error");
                         }
                         $(".modalLoader").hide();
-                        debugger
-                        var x = window.open('ReportTab','_blank');
+
+                        //////////////////////      Commented in order to fix the report URL Issue  //////////////////////////////////
+
+                        //var x = window.open('','_blank');
+                        //x.document.write('<body></body>');
+                        //var style = x.document.createElement('style');
+                        //style.innerHTML = ".modalLoader { display:block; position:fixed; z-index:9999999; top:0; left:0; height:100%; width:100%; background:rgba(18, 92, 214, 0.25) url('../images/tenor.gif') 50% 50% no-repeat;} body.loading{overflow:hidden;}";
+                        //x.document.head.appendChild(style);
+                        //var div = x.document.createElement('div');
+                        //div.className = "modalLoader";
+                        //div.id = "modalLoaderId"
+                        //x.document.body.appendChild(div);
+                        //var iframe = x.document.createElement('iframe');
+                        //iframe.id = 'reportFrame';
+                        //iframe.src = response.report;
+                        //iframe.style = "width:100%; height:100%;"
+                        //x.document.body.appendChild(iframe);
+                        //var script = x.document.createElement('script');
+                        //script.type = "text/javascript";
+                        //script.innerHTML = "document.getElementById('reportFrame').onload = function(){document.getElementById('modalLoaderId').style.display='none';}";
+                        //x.document.head.appendChild(script);
+                        //x.document.title = response.selectedMenu;
+
+                        var x = window.open('', '_blank');
                         x.document.write('<body></body>');
-                        var style = x.document.createElement('style');
-                        style.innerHTML = ".modalLoader { display:block; position:fixed; z-index:9999999; top:0; left:0; height:100%; width:100%; background:rgba(18, 92, 214, 0.25) url('../images/tenor.gif') 50% 50% no-repeat;} body.loading{overflow:hidden;}";
-                        x.document.head.appendChild(style);
-                        var div = x.document.createElement('div');
-                        div.className = "modalLoader";
-                        div.id = "modalLoaderId"
-                        x.document.body.appendChild(div);
+                        x.location.hash = response.selectedMenu;
                         var embedtag = x.document.createElement('embed');
                         embedtag.id = 'reportEmbed';
-                        embedtag.src = "data:application/pdf;base64," + response.report;
+                        embedtag.src = response.report;
                         embedtag.style = "width:100%; height:100%;";
                         embedtag.alt = "pdf";
                         embedtag.title = "Report";
                         embedtag.type = "application/pdf";
                         embedtag.pluginspage = "http://www.adobe.com/products/acrobat/readstep2.html";
                         x.document.body.appendChild(embedtag);
-                        var script = x.document.createElement('script');
-                        script.type = "text/javascript";
-                        script.innerHTML = "document.getElementById('reportEmbed').onload = function(){document.getElementById('modalLoaderId').style.display='none';}";
-                        x.document.head.appendChild(script);
                         x.document.title = response.selectedMenu;
+
                     }
                 });
                 return false;
             }
         }
     } else {
-        
+
         var valid = this.form.checkValidity();
         if (valid) {
             if (this.form.hasAttribute("onsubmit")) {
@@ -879,22 +984,22 @@ $("input[type='submit']").click(function (e) {
 
                 //var $form = $("input[type='submit']").parents('form');
                 var $form = $(this).parents("form");
-                
+
                 $.ajax({
                     type: "POST",
                     url: $form.attr('action'),
                     data: $form.serialize(),
-                    error: function (xhr, response, error) {                        
-                       CommonAlert("Error", response, null, null, "error");
+                    error: function (xhr, response, error) {
+                        CommonAlert("Error", response, null, null, "error");
                     },
                     success: function (response) {
                         //do something with response                         
                         var contentId;
                         if (response.selectedAction == null) {
-                             contentId = "/" + response.areaName + "/" + response.selectedMenu + "/Index";
+                            contentId = "/" + response.areaName + "/" + response.selectedMenu + "/Index";
                         }
                         else {
-                             contentId = "/" + response.areaName + "/" + response.selectedMenu + "/" + response.selectedAction;
+                            contentId = "/" + response.areaName + "/" + response.selectedMenu + "/" + response.selectedAction;
                         }
                         //CommonAlert(response.alert, response.message, window.location.origin + contentId);
                         url = window.location.origin + contentId;
@@ -909,7 +1014,7 @@ $("input[type='submit']").click(function (e) {
                             $(".modalLoader").hide();
                             GetIndex(url);
                         }
-                        
+
 
                     }
                 });
@@ -920,7 +1025,7 @@ $("input[type='submit']").click(function (e) {
     }
 });
 function CommonSubmit(data, actionUrl, e) {
-    
+    debugger;
     e.preventDefault();
 
     $(".modalLoader").css("display", "block");
@@ -931,10 +1036,10 @@ function CommonSubmit(data, actionUrl, e) {
         data: data,
         //processData: false,//Add for uploading content like pdf
         //contentType: false,//Add for uploading content like pdf
-        error: function (xhr, response, error) {            
+        error: function (xhr, response, error) {
             CommonAlert("Error", response, null, null, "error");
         },
-        success: function (response) {            
+        success: function (response) {
             var url = window.location.origin + "/" + response.areaName + "/" + response.selectedMenu + "/" + response.selectedAction;
 
             if (response.isAlertBox) {
@@ -943,7 +1048,7 @@ function CommonSubmit(data, actionUrl, e) {
                 } else {
                     CommonAlert(response.alert, response.message, SubmitPopup, url, "alert", "create");
                 }
-            } else {                
+            } else {
                 $(".modalLoader").hide();
                 GetIndex(url);
             }
@@ -952,7 +1057,7 @@ function CommonSubmit(data, actionUrl, e) {
     });
 }
 
-function CommonSubmitUpload(data, actionUrl, e) {    
+function CommonSubmitUpload(data, actionUrl, e) {
     e.preventDefault();
 
     $(".modalLoader").css("display", "block");
@@ -988,7 +1093,7 @@ function SubmitPopup(data) {
     $(".modalLoader").hide();
 }
 
-function hideImage() {$(".modalLoader").hide();}
+function hideImage() { $(".modalLoader").hide(); }
 
 
 
@@ -997,7 +1102,7 @@ function hideImage() {$(".modalLoader").hide();}
 //    document.getElementById("deleteModal").style.display = "block";
 //}
 function ResponseSave(response) {
-    
+    debugger;
     var contentId = "/" + response.areaName + "/" + response.selectedMenu + "/Index";
     url = window.location.origin + contentId;
     $("#commonModalbinder").css("display", "none");
@@ -1009,12 +1114,11 @@ function ResponseSave(response) {
 }
 
 function DeleteConfirm(Data) {
-    
+
     $(".modalLoader").css("display", "block");
     CommonAjax(Data.Url, "Get", false, "application/json", false, DeleteSuccess);
 }
 function DeleteSuccess(response) {
-    
     var contentId;
     if (response.selectedAction == null) {
         contentId = "/" + response.areaName + "/" + response.selectedMenu + "/Index";
@@ -1022,15 +1126,18 @@ function DeleteSuccess(response) {
     else {
         contentId = "/" + response.areaName + "/" + response.selectedMenu + "/" + response.selectedAction;
     }
-     
+
     url = window.location.origin + contentId;
-    $("#commonModalbinder").css("display", "none");    
+    $("#commonModalbinder").css("display", "none");
     if (response.errorMessage != "") {
         CommonAlert(response.alert, response.errorMessage, AfterSuccess, url, "error");
     } else {
-        CommonAlert(response.alert, response.message, AfterSuccess, url, "alert", "delete");
+        if (response.alert != null) {
+            CommonAlert(response.alert, response.message, AfterSuccess, url, "alert", response.alert.toLowerCase());
+        }
     }
 }
+
 function AfterSuccess(url) {
     document.getElementById("page-wrapper").innerHTML = "";
     $("#page-wrapper").load(url);
@@ -1055,19 +1162,19 @@ function isDecimal(evt) {
 }
 
 function divShow(url) {
-    
+
     CommonAlert('Delete', 'Do you want to delete?', DeleteConfirm, { 'Url': url }, 'delete');
 }
 function SetDateInHidden(thisVal, hiddenObj) {
-    debugger;
+    ;
     hiddenObj.val(Dateformate(thisVal.value));
 }
 //var hdnPlaceCode = document.getElementById('hdnValue').value
-    //document.getElementById("deleteModal").style.display = "none";
-    //var data = Data+"?id="
+//document.getElementById("deleteModal").style.display = "none";
+//var data = Data+"?id="
 //window.location.href = "/ESTABLISHMENT/EMSC27/DeleteConfirmed?id=" + hdnPlaceCode;
 function OpenPdf(url) {
-    
+
     $(".modalLoader").show();
     var x = window.open('_blank');
     x.document.write('<body></body>');
@@ -1086,6 +1193,55 @@ function OpenPdf(url) {
     var script = x.document.createElement('script');
     script.type = "text/javascript";
     script.innerHTML = "document.getElementById('reportFrame').onload = function(){document.getElementById('modalLoaderId').style.display='none';}";
-    x.document.head.appendChild(script);   
+    x.document.head.appendChild(script);
     $(".modalLoader").hide();
 }
+
+var ScopeObj;
+var pageColId;
+var lovColIndex;
+var hiddencolIndex
+function CommonLOV(ThisObj, actionPath, retColId = "", retColIndex = "", hidColIndex = "") {
+
+    ScopeObj = ThisObj;
+    pageColId = retColId;
+    lovColIndex = retColIndex;
+    if (hidColIndex == "") {
+        hiddencolIndex = null;
+    } else {
+        hiddencolIndex = hidColIndex;
+    }
+
+    CommonAjax(actionPath, 'GET', false, 'application/json', false, ResponsePopupLOV)
+
+    function ResponsePopupLOV(Response) {
+        CommonAlert("LOV", Response, SelectedLovData, "", "LOV");
+    }
+
+    function SelectedLovData(data) {
+
+        var Selectedtr = "";
+        var lovIndex = "";
+        if (pageColId != "" && lovColIndex != "") {
+            $.each(pageColId, function (index, value) {
+
+                lovIndex = lovColIndex[index];
+                Selectedtr = $(".Selected").find("td")[lovIndex];
+                if (($("#" + value).attr("type")) == "text") {
+                    $("#" + value).val($(Selectedtr).text());
+                } else {
+                    $("#" + value).text($(Selectedtr).text());
+                }
+
+            });
+        }
+        else {
+
+            Selectedtr = $(".Selected").find("td")[0]
+            $(ScopeObj).parent().siblings("input").val($(Selectedtr).text());
+        }
+        divhideSuccess();
+    }
+}
+
+
