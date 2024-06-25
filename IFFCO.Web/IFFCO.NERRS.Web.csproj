@@ -85,7 +85,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="CommonFunctions\" />
     <Folder Include="wwwroot\js\datatables\" />
     <Folder Include="wwwroot\pdf\" />
   </ItemGroup>

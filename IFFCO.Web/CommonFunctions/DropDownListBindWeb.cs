@@ -29,29 +29,29 @@ namespace IFFCO.NERRS.Web.CommonFunctions
             //_unitOfWork = new UnitOfWork(_context, _repositoryProvider);
         }
 
-        
-        public List<SelectListItem> GetPlantCDLOV(int PersonnelNo)
-        {
-            //Returns the plant code LOV for employee as per rights in ADM_EMP_UNIT_ACCESS and DESP_ADM_EMP_PLANT_ACCESS_DTLS
-            // Used in - DISC01Controller.cs
+       
+        //public List<SelectListItem> GetPlantCDLOV(int PersonnelNo)
+        //{
+        //    //Returns the plant code LOV for employee as per rights in ADM_EMP_UNIT_ACCESS and DESP_ADM_EMP_PLANT_ACCESS_DTLS
+        //    // Used in - DISC01Controller.cs
 
 
-            string sqlquery = " SELECT A.PLANT_CD PLANT, A.PLANT_CD||' - '||B.PLANT_NAME DESCRIPTION FROM (SELECT B.DESP_UNIT_CD PLANT_CD FROM ADM_EMP_UNIT_ACCESS A, DESP_UNIT_MSTS B WHERE A.UNIT_CODE = B.HRMS_UNIT_CODE AND A.EMPID = '"+PersonnelNo+"' AND PROJECTID = 'DESP' UNION   ";
-            sqlquery += " SELECT DISTINCT A.PLANT_CD PLANT_CD FROM DESP_ADM_EMP_PLANT_ACCESS_DTLS A WHERE   PERSONAL_NO = '"+PersonnelNo+"' ) A, M_PLANT B WHERE A.PLANT_CD = B.PLANT_CD ";
-            DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
-            List<SelectListItem> DRP_VALUE = new List<SelectListItem>();
-            DRP_VALUE = (from DataRow dr in dtDRP_VALUE.Rows
-                         select new SelectListItem()
-                         {
-                             Text = Convert.ToString(dr["DESCRIPTION"]),
-                             Value = Convert.ToString(dr["PLANT"])
+        //    string sqlquery = " SELECT A.PLANT_CD PLANT, A.PLANT_CD||' - '||B.PLANT_NAME DESCRIPTION FROM (SELECT B.DESP_UNIT_CD PLANT_CD FROM ADM_EMP_UNIT_ACCESS A, DESP_UNIT_MSTS B WHERE A.UNIT_CODE = B.HRMS_UNIT_CODE AND A.EMPID = '"+PersonnelNo+"' AND PROJECTID = 'NERRS' UNION   ";
+        //    sqlquery += " SELECT DISTINCT A.PLANT_CD PLANT_CD FROM DESP_ADM_EMP_PLANT_ACCESS_DTLS A WHERE   PERSONAL_NO = '"+PersonnelNo+"' ) A, M_PLANT B WHERE A.PLANT_CD = B.PLANT_CD ";
+        //    DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
+        //    List<SelectListItem> DRP_VALUE = new List<SelectListItem>();
+        //    DRP_VALUE = (from DataRow dr in dtDRP_VALUE.Rows
+        //                 select new SelectListItem()
+        //                 {
+        //                     Text = Convert.ToString(dr["DESCRIPTION"]),
+        //                     Value = Convert.ToString(dr["PLANT"])
 
 
-                         }).ToList();
+        //                 }).ToList();
 
-            return DRP_VALUE;
+        //    return DRP_VALUE;
 
-        }
+        //}
 
         public List<SelectListItem> AdmSubMenuModuleLOVBind(string Projid)
         {
@@ -183,6 +183,63 @@ namespace IFFCO.NERRS.Web.CommonFunctions
                          {
                              Text = Convert.ToString(dr["OCCUPANT_TYPE"]) + " - " + Convert.ToString(dr["OCCUPANT_CODE"]),
                              Value = Convert.ToString(dr["OCCUPANT_CODE"])
+
+
+                         }).ToList();
+
+            return DRP_VALUE;
+
+        }
+
+
+        public List<SelectListItem> OccupantEmpLOVBind()
+        {
+            string sqlquery = "select UNIT_CODE,OCCUPANT_CODE,OCCUPANT_TYPE from M_OCCUPANT_MSTS where Status = 'A' and QUARTER_FOR = 'E' ";
+            DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
+            List<SelectListItem> DRP_VALUE = new List<SelectListItem>();
+            DRP_VALUE = (from DataRow dr in dtDRP_VALUE.Rows
+                         select new SelectListItem()
+                         {
+                             Text = Convert.ToString(dr["OCCUPANT_TYPE"]) + " - " + Convert.ToString(dr["OCCUPANT_CODE"]),
+                             Value = Convert.ToString(dr["OCCUPANT_CODE"])
+
+
+                         }).ToList();
+
+            return DRP_VALUE;
+
+        }
+
+        public List<SelectListItem> OccupantNonEmpLOVBind()
+        {
+            string sqlquery = "select UNIT_CODE,OCCUPANT_CODE,OCCUPANT_TYPE from M_OCCUPANT_MSTS where Status = 'A' and QUARTER_FOR = 'N' ";
+            DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
+            List<SelectListItem> DRP_VALUE = new List<SelectListItem>();
+            DRP_VALUE = (from DataRow dr in dtDRP_VALUE.Rows
+                         select new SelectListItem()
+                         {
+                             Text = Convert.ToString(dr["OCCUPANT_TYPE"]) + " - " + Convert.ToString(dr["OCCUPANT_CODE"]),
+                             Value = Convert.ToString(dr["OCCUPANT_CODE"])
+
+
+                         }).ToList();
+
+            return DRP_VALUE;
+
+        }
+
+
+
+        public List<SelectListItem> RentTypeLOVBind()
+        {
+            string sqlquery = "select UNIT_CODE,RENT_CODE,TYPE_RESI_ACCOM from M_RENT_MSTS where Status = 'A' ";
+            DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
+            List<SelectListItem> DRP_VALUE = new List<SelectListItem>();
+            DRP_VALUE = (from DataRow dr in dtDRP_VALUE.Rows
+                         select new SelectListItem()
+                         {
+                             Text = Convert.ToString(dr["TYPE_RESI_ACCOM"]) + " - " + Convert.ToString(dr["RENT_CODE"]),
+                             Value = Convert.ToString(dr["RENT_CODE"])
 
 
                          }).ToList();

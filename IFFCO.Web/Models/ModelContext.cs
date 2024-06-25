@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using IFFCO.HRMS.Entities.AppConfig;
 using IFFCO.HRMS.Repository.Pattern;
+using IFFCO.NANOAN.Web.Models;
 
 namespace IFFCO.NERRS.Web.Models
 {
@@ -35,6 +36,9 @@ namespace IFFCO.NERRS.Web.Models
         public virtual DbSet<MQuarterTypeMsts> MQuarterTypeMsts { get; set; }
         public virtual DbSet<MRentMsts> MRentMsts { get; set; }
         public virtual DbSet<MVendorMsts> MVendorMsts { get; set; }
+        public virtual DbSet<AdmSubMenuMsts> AdmSubMenuMsts { get; set; }
+        public virtual DbSet<FAllotmentRentDtls> FAllotmentRentDtls { get; set; }
+       
 
         // Unable to generate entity type for table 'NERRS.AC_ALLOTMENT_DTLS'. Please see the warning messages.
         // Unable to generate entity type for table 'NERRS.AC_COLONY_MSTS'. Please see the warning messages.
@@ -591,6 +595,217 @@ namespace IFFCO.NERRS.Web.Models
                     .HasColumnType("varchar2")
                     .HasMaxLength(1);
             });
+
+
+            modelBuilder.Entity<AdmSubMenuMsts>(entity =>
+            {
+                entity.HasKey(e => new { e.Moduleid, e.SubMenuId });
+
+                entity.ToTable("ADM_SUB_MENU_MSTS", "NERRS");
+
+                entity.HasIndex(e => new { e.Moduleid, e.SubMenuId })
+                    .HasName("ADM_SUB_MENU_MSTS_PK")
+                    .IsUnique();
+
+                entity.Property(e => e.Moduleid)
+                    .HasColumnName("MODULEID")
+                    .HasColumnType("varchar2")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.SubMenuId)
+                    .HasColumnName("SUB_MENU_ID")
+                    .HasColumnType("varchar2")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.DisplayOrder).HasColumnName("DISPLAY_ORDER");
+
+                entity.Property(e => e.ParentMenuId)
+                    .HasColumnName("PARENT_MENU_ID")
+                    .HasColumnType("varchar2")
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.Projectid)
+                    .HasColumnName("PROJECTID")
+                    .HasColumnType("varchar2")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.SubMenuName)
+                    .HasColumnName("SUB_MENU_NAME")
+                    .HasColumnType("varchar2")
+                    .HasMaxLength(500);
+            });
+
+            modelBuilder.Entity<FAllotmentRentDtls>(entity =>
+            {
+                entity.HasKey(e => new { e.UnitCode, e.QuarterNo, e.SlNo, e.PersonalNo, e.AllotmentNo, e.RentCode });
+
+                entity.ToTable("F_ALLOTMENT_RENT_DTLS", "NERRS");
+
+                entity.HasIndex(e => new { e.UnitCode, e.QuarterNo, e.SlNo, e.PersonalNo, e.AllotmentNo, e.RentCode })
+                    .HasName("F_ALLOTMENT_RENT_DTLS_PK")
+                    .IsUnique();
+
+                entity.Property(e => e.UnitCode).HasColumnName("UNIT_CODE");
+
+                entity.Property(e => e.QuarterNo).HasColumnName("QUARTER_NO");
+
+                entity.Property(e => e.SlNo).HasColumnName("SL_NO");
+
+                entity.Property(e => e.PersonalNo).HasColumnName("PERSONAL_NO");
+
+                entity.Property(e => e.AllotmentNo).HasColumnName("ALLOTMENT_NO");
+
+                entity.Property(e => e.RentCode)
+                    .HasColumnName("RENT_CODE")
+                    .HasColumnType("varchar2")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.AcInstallationDate)
+                    .HasColumnName("AC_INSTALLATION_DATE")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.AllotmentCancelDate)
+                    .HasColumnName("ALLOTMENT_CANCEL_DATE")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.AllotmentDate)
+                    .HasColumnName("ALLOTMENT_DATE")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.ColonyCode).HasColumnName("COLONY_CODE");
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasColumnName("CREATED_BY")
+                    .HasColumnType("varchar2")
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.DatetimeCreated)
+                    .HasColumnName("DATETIME_CREATED")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.DatetimeModified)
+                    .HasColumnName("DATETIME_MODIFIED")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.ExpectedVacancyDate)
+                    .HasColumnName("EXPECTED_VACANCY_DATE")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.ExtensionApprovedBy).HasColumnName("EXTENSION_APPROVED_BY");
+
+                entity.Property(e => e.ExtensionApprovedDate)
+                    .HasColumnName("EXTENSION_APPROVED_DATE")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.ExtensionCategory)
+                    .HasColumnName("EXTENSION_CATEGORY")
+                    .HasColumnType("varchar2")
+                    .HasMaxLength(1);
+
+                entity.Property(e => e.ExtensionFromDate)
+                    .HasColumnName("EXTENSION_FROM_DATE")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.ExtensionToDate)
+                    .HasColumnName("EXTENSION_TO_DATE")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.FloorNo).HasColumnName("FLOOR_NO");
+
+                entity.Property(e => e.MarketHrrFromDate)
+                    .HasColumnName("MARKET_HRR_FROM_DATE")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.MarketHrrRate)
+                    .HasColumnName("MARKET_HRR_RATE")
+                    .HasColumnType("double");
+
+                entity.Property(e => e.MarketHrrToDate)
+                    .HasColumnName("MARKET_HRR_TO_DATE")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.ModifiedBy)
+                    .HasColumnName("MODIFIED_BY")
+                    .HasColumnType("varchar2")
+                    .HasMaxLength(30);
+
+                entity.Property(e => e.NoOfAcs)
+                    .HasColumnName("NO_OF_ACS")
+                    .HasColumnType("double");
+
+                entity.Property(e => e.NormalHrrRate)
+                    .HasColumnName("NORMAL_HRR_RATE")
+                    .HasColumnType("double");
+
+                entity.Property(e => e.NormalHrrToDate)
+                    .HasColumnName("NORMAL_HRR_TO_DATE")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.NormarlHrrFromDate)
+                    .HasColumnName("NORMARL_HRR_FROM_DATE")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.OccupancyDate)
+                    .HasColumnName("OCCUPANCY_DATE")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.OccupantCode)
+                    .HasColumnName("OCCUPANT_CODE")
+                    .HasColumnType("varchar2")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.PayrollProcessStatus)
+                    .HasColumnName("PAYROLL_PROCESS_STATUS")
+                    .HasColumnType("varchar2")
+                    .HasMaxLength(1);
+
+                entity.Property(e => e.PayrollYearmonth).HasColumnName("PAYROLL_YEARMONTH");
+
+                entity.Property(e => e.PenalHrrFromDate)
+                    .HasColumnName("PENAL_HRR_FROM_DATE")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.PenalHrrRate)
+                    .HasColumnName("PENAL_HRR_RATE")
+                    .HasColumnType("double");
+
+                entity.Property(e => e.PenalHrrToDate)
+                    .HasColumnName("PENAL_HRR_TO_DATE")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.QuarterCategory)
+                    .IsRequired()
+                    .HasColumnName("QUARTER_CATEGORY")
+                    .HasColumnType("varchar2")
+                    .HasMaxLength(3);
+
+                entity.Property(e => e.Remarks)
+                    .HasColumnName("REMARKS")
+                    .HasColumnType("varchar2")
+                    .HasMaxLength(60);
+
+                entity.Property(e => e.RepUnit)
+                    .HasColumnName("REP_UNIT")
+                    .HasColumnType("varchar2")
+                    .HasMaxLength(200);
+
+                entity.Property(e => e.Status)
+                    .IsRequired()
+                    .HasColumnName("STATUS")
+                    .HasColumnType("varchar2")
+                    .HasMaxLength(1);
+
+                entity.Property(e => e.VacancyDate)
+                    .HasColumnName("VACANCY_DATE")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.VendorCode)
+                    .HasColumnName("VENDOR_CODE")
+                    .HasColumnType("varchar2")
+                    .HasMaxLength(6);
+            });
+
 
             modelBuilder.Entity<MOccupantMsts>(entity =>
             {
