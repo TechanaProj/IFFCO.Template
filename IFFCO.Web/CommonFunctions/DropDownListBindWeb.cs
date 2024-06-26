@@ -173,6 +173,57 @@ namespace IFFCO.NERRS.Web.CommonFunctions
 
         }
 
+        public List<SelectListItem> AllotementNoLOVBind()
+        {
+            
+            var AllotmentNoLOV = _context.FAllotmentRentDtls
+                                        .Where(x => x.Status == "A")
+                                        .OrderBy(x => x.AllotmentNo)
+                                        .Select(x => new SelectListItem
+                                        {
+                                            Text = x.AllotmentNo.ToString() + " || " + x.QuarterCategory + " - " + x.QuarterNo,
+                                            Value = x.AllotmentNo.ToString()
+                                        })
+                                        .ToList();
+
+            // Prepend a default option (optional)
+            AllotmentNoLOV.Insert(0, new SelectListItem { Text = "Select Allotment No", Value = "" });
+
+            return AllotmentNoLOV;
+        }
+
+
+
+
+        public List<SelectListItem> GetRecCode()
+        {
+            string sqlquery = "SELECT * FROM REC_CODE_GENERATION_MSTS ORDER BY REC_CODE";
+            DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
+            var DRP_VALUE = (from DataRow dr in dtDRP_VALUE.Rows
+                             select new SelectListItem
+                             {
+                                 Text = Convert.ToString(dr["REC_CODE"]),
+                                 Value = Convert.ToString(dr["REC_CODE"])
+                             }).ToList();
+            return DRP_VALUE;
+        }
+
+        public List<FAllotmentRentDtls> GetFilteredAllotmentRentDetails(DateTime from_date, DateTime to_date, int? allotment_no = null)
+        {
+            var query = _context.FAllotmentRentDtls
+                .Where(d => d.AllotmentDate >= from_date &&
+                            d.AllotmentDate <= to_date);
+
+            if (allotment_no.HasValue)
+            {
+                query = query.Where(d => d.AllotmentNo == allotment_no.Value);
+            }
+
+            return query.ToList();
+        }
+
+
+
         public List<SelectListItem> OccupantLOVBind()
         {
             string sqlquery = "select UNIT_CODE,OCCUPANT_CODE,OCCUPANT_TYPE from M_OCCUPANT_MSTS where Status = 'A' ";

@@ -195,5 +195,8 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
             CommonViewModel.SelectedMenu = this.ControllerContext.RouteData.Values["controller"].ToString();
             return CommonViewModel;
         }
+
     }
+
+
 }

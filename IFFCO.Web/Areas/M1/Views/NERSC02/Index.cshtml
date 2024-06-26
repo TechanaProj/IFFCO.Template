@@ -1,0 +1,151 @@
+﻿@model IFFCO.NERRS.Web.ViewModels.NERSC02ViewModel
+
+@{
+    //ViewData["Title"] = "Create";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/js/Common.js"></script>
+
+<script>
+
+
+
+
+</script>
+
+
+
+<div class="plcholder-cn">
+    <div class="table-responsive">
+        <div class="table-area">
+            <div class="table-title">
+                <div class="btn-area-tbl"></div>
+            </div>
+            <div class="table-wrapper">
+                <div class="table-con">
+                    <div class="tableUp">
+                        <div class="content-box">
+                            <h3 class="sub-heading1"><span>Allotment details</span></h3>
+                            <div class="m-form">
+                                <form id="queryForm" method="post" onsubmit="return Validate();">
+                                    <div class="m-form">
+                                        <div class="m-form-bx">
+                                            <div class="row form-sm">
+                                                <div class="col-sm-2 col-md-1">
+                                                    <label class="m-lbl1 m-lbl2">Unit Code</label>
+                                                </div>
+                                                <div class="col-sm-2 col-md-2">
+                                                    <select id="PlantCD" name="PlantCD" class="form-control" asp-items="@(new SelectList(Model.UnitLOVBind, "Value", "Text"))"></select>
+                                                </div>
+                                                <div class="col-sm-2 col-md-1">
+                                                    <label class="m-lbl1 m-lbl2">From Date</label>
+                                                </div>
+                                                <div class="col-sm-2 col-md-2">
+                                                    <input type="date" class="form-control" id="FromDate" name="FromDate" asp-for="FromDate" />
+                                                </div>
+                                                <div class="col-sm-2 col-md-1">
+                                                    <label class="m-lbl1 m-lbl2">End Date</label>
+                                                </div>
+                                                <div class="col-sm-2 col-md-2">
+                                                    <input type="date" class="form-control" id="ToDate" name="ToDate" asp-for="ToDate" />
+                                                </div>
+                                                <div class="col-sm-2 col-md-1">
+                                                    <label class="m-lbl1 m-lbl2">Allotment No</label>
+                                                </div>
+                                                <div class="col-sm-2 col-md-2">
+                                                    <select id="AllotmentNo" name="AllotmentNo" class="form-control" asp-items="@(new SelectList(Model.AllotementNoLOVBind, "Value", "Text"))"></select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="btn-area1">
+                                            <input type="submit" id="save" class="m-btn-1 save" value="Query" />
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-con">
+                    <div class="tableUp">
+                        <div class="pd-form-area">
+                            <table class="table table-striped table-hover" id="HrmsHrdGrid">
+                                <thead>
+                                    <tr>
+                                        <th>UNIT CODE</th>
+                                        <th>ALLOTMENT NO</th>
+                                        <th>ALLOTMENT DATE</th>
+                                        <th>OCCUPANCY DATE</th>
+                                        <th>EXPECTED VACANCY DATE</th>
+                                        <th>VACANCY DATE</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="commonModalbinder" class="modal" style="display:none!important;z-index:99999999 !important;"></div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function () {
+    $("#queryForm").on("submit", function (event) {
+        event.preventDefault();
+        $.ajax({
+            url: '@Url.Action("Query", "NERSC02", new { area = "M1" })',
+            type: 'POST',
+            data: $(this).serialize(),
+            success: function (response) {
+                if (response.success) {
+                    var tableBody = $("#tableBody");
+                    tableBody.empty();
+                    $.each(response.data, function (index, item) {
+                        var row = "<tr>" +
+                            "<td>" + (item.unitCode || '') + "</td>" +
+                            "<td>" + (item.allotmentNo || '') + "</td>" +
+                            "<td>" + formatDate(item.allotmentDate) + "</td>" +
+                            "<td>" + formatDate(item.occupancyDate) + "</td>" +
+                            "<td>" + formatDate(item.expectedVacancyDate) + "</td>" +
+                            "<td>" + formatDate(item.vacancyDate) + "</td>" +
+                            "</tr>";
+                        tableBody.append(row);
+                    });
+                } else {
+                    alert("Error: " + response.error); // Show alert for specific error message
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX Error: " + status + " " + error);
+                alert("AJAX Error: " + status + " " + error); // Show alert for generic AJAX error
+            }
+        });
+    });
+
+    function formatDate(dateString) {
+        if (!dateString) {
+            return ''; // Return empty string for null or undefined dates
+        }
+        var date = new Date(dateString);
+        if (isNaN(date.getTime())) {
+            return ''; // Return empty string for invalid dates
+        }
+        var day = ('0' + date.getDate()).slice(-2);
+        var month = ('0' + (date.getMonth() + 1)).slice(-2);
+        var year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
+});
+</script>
+
+
+
+
