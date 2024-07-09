@@ -1,7 +1,7 @@
 ﻿@model IFFCO.NERRS.Web.ViewModels.NERSC01ViewModel
 
 @{
-    //ViewData["Title"] = "Create";
+    ViewData["Title"] = "Index";
     //Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -10,7 +10,26 @@
 
 <script>
 
-    
+    function fnGet_Data() {
+        var OccupantList = $('#OccupantList option:selected').val();
+        var OccupantCode = $('#OccupantCode option:selected').val();
+
+        var PlantCD = $('#PlantCD').val();
+
+        if (typeof PlantCD == "undefined" || PlantCD == null || PlantCD.trim() == "") {
+            CommonAlert("Alert", "select Plant CD  ", null, null, "Warning");
+            return false;
+            
+        } else if (OccupantCode == "") {
+            CommonAlert("Alert", "Select Occupant type ", null, null, "Warning");
+            return false;
+        }
+        else {
+
+            PageNotLoad('@Url.Action("Index", "NERSC01", new {area="M1"})?PlantCD=' + PlantCD + '&OccupantType=' + OccupantList + '&OccupantCode=' + OccupantCode, this)
+            //window.location = '@Url.Action("Index", "NERSC01", new {area="M1"})?PlantCD=' + PlantCD + '&OccupantList=' + OccupantList + '&OccupantCode=' + OccupantCode;
+        }
+    }
 
     function Validate() {
 
@@ -19,12 +38,12 @@
         if ($('#PlantCD').val() == "") {
             CommonAlert("Alert", "select Plant CD  ", null, null, "Warning");
             return false;
-        //} else if ($('#FFromDate').val() == "=") {
-        //    CommonAlert("Alert", "Select From Date ", null, null, "Warning");
-        //    return false;
-        //} else if ($('#FToDate').val() == "") {
-        //    CommonAlert("Alert", "Select To Date ", null, null, "Warning");
-        //    return false;
+            //} else if ($('#FFromDate').val() == "=") {
+            //    CommonAlert("Alert", "Select From Date ", null, null, "Warning");
+            //    return false;
+            //} else if ($('#FToDate').val() == "") {
+            //    CommonAlert("Alert", "Select To Date ", null, null, "Warning");
+            //    return false;
         } else if ($('#OccupantCode').val() == "") {
             CommonAlert("Alert", "Select Occupant type ", null, null, "Warning");
             return false;
@@ -34,7 +53,7 @@
             // $('#FToDate').val(Dateformate($('#FToDate').val())).removeClass("datetime");
             return true;
         }
-   }
+    }
 
 
 </script>
@@ -68,11 +87,11 @@
                                                     </div>
                                                     <div class="col-sm-2 col-md-2">
                                                         <div>
-                                                            <select id="PlantCD" name="PlantCD" class="form-control" asp-items="@(new SelectList(Model.UnitLOVBind,"Value","Text"))"></select>
+                                                            <select id="PlantCD" name="PlantCD" class="form-control" asp-items="@(new SelectList(Model.UnitLOVBind,"Value","Text", Model.PlantCD))"></select>
                                                         </div>
                                                     </div>
 
-                                                     <div class="col-sm-2 col-md-2">
+                                                    <div class="col-sm-2 col-md-2">
                                                         <div>
                                                             <label class="m-lbl1 m-lbl2">Type:</label>
                                                         </div>
@@ -83,101 +102,102 @@
                                                                 <option value="">--SELECT--</option>
                                                                 <option value="E"> Employee </option>
                                                                 <option value="N"> Non-Employee </option>
-                                                              </select>
+                                                            </select>
                                                         </div>
                                                     </div>
-                                                     <div class="col-sm-2 col-md-2">
+                                                    <div class="col-sm-2 col-md-2">
                                                         <div>
                                                             <label class="m-lbl1 m-lbl2">Occupant List</label>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-2 col-md-2">
                                                         <div>
-                                                            <select id="OccupantCode" name="OccupantCode" class="form-control" asp-items="@(new SelectList(Model.OccupantLOVBind,"Value","Text"))"><option value="">--SELECT--</option></select>
+                                                            <select id="OccupantCode" name="OccupantCode" class="form-control" asp-items="@(new SelectList(Model.OccupantLOVBind,"Value","Text", Model.OccupantCode))"><option value="">--SELECT--</option></select>
 
                                                         </div>
                                                     </div>
 
-                                                   
+
                                                 </div>
 
-@*
+                                                @*
                                                 <div class="row form-sm">
 
-                                                    <div class="col-sm-2 col-md-2">
-                                                        <div>
-                                                            <label class="m-lbl1 m-lbl2"> From Date</label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-2 col-md-2">
-                                                        <div>
-                                                            <input type="date" class="form-control" id="FFromDate" />
+                                                <div class="col-sm-2 col-md-2">
+                                                <div>
+                                                <label class="m-lbl1 m-lbl2"> From Date</label>
+                                                </div>
+                                                </div>
+                                                <div class="col-sm-2 col-md-2">
+                                                <div>
+                                                <input type="date" class="form-control" id="FFromDate" />
 
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-2 col-md-2">
-                                                        <div>
-                                                            <label class="m-lbl1 m-lbl2">End Date</label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-2 col-md-2">
-                                                        <div>
-                                                            <input type="date" class="form-control" id="FToDate" />
+                                                </div>
+                                                </div>
+                                                <div class="col-sm-2 col-md-2">
+                                                <div>
+                                                <label class="m-lbl1 m-lbl2">End Date</label>
+                                                </div>
+                                                </div>
+                                                <div class="col-sm-2 col-md-2">
+                                                <div>
+                                                <input type="date" class="form-control" id="FToDate" />
 
-                                                        </div>
-                                                    </div>
+                                                </div>
+                                                </div>
                                                 </div>
                                                 <div class="row form-sm">
-                                                   
 
-                                                    <div class="col-sm-2 col-md-2">
-                                                        <div>
-                                                            <label class="m-lbl1 m-lbl2"> Personal No</label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-2 col-md-2">
-                                                        <div>
-                                                            <input type="text" class="form-control" />
 
-                                                        </div>
-                                                    </div>
-                                                   
-
-                                                    <div class="col-sm-2 col-md-2">
-                                                        <div>
-                                                            <label class="m-lbl1 m-lbl2">Quarter type</label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-sm-2 col-md-2">
-                                                        <div>
-
-                                                            <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.RentTypeLOVBind,"Value","Text"))" asp-for="@Model.RentCode"><option value="">--SELECT--</option></select>
-
-                                                        </div>
-                                                    </div>
+                                                <div class="col-sm-2 col-md-2">
+                                                <div>
+                                                <label class="m-lbl1 m-lbl2"> Personal No</label>
                                                 </div>
-*@
-@*
+                                                </div>
+                                                <div class="col-sm-2 col-md-2">
+                                                <div>
+                                                <input type="text" class="form-control" />
+
+                                                </div>
+                                                </div>
+
+
+                                                <div class="col-sm-2 col-md-2">
+                                                <div>
+                                                <label class="m-lbl1 m-lbl2">Quarter type</label>
+                                                </div>
+                                                </div>
+                                                <div class="col-sm-2 col-md-2">
+                                                <div>
+
+                                                <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.RentTypeLOVBind,"Value","Text"))" asp-for="@Model.RentCode"><option value="">--SELECT--</option></select>
+
+                                                </div>
+                                                </div>
+                                                </div>
+                                                *@
+                                                @*
                                                 <div class="row form-sm">
 
-                                                    <div class="col-sm-4 col-md-4">
-                                                        <div>
-                                                            <select id="RoadDILOV" class="form-control"><option value="">--SELECT--</option></select>
-                                                            <input type="hidden" id="SelectedDi" />
-                                                        </div>
-                                                    </div>
-                                                   
+                                                <div class="col-sm-4 col-md-4">
+                                                <div>
+                                                <select id="RoadDILOV" class="form-control"><option value="">--SELECT--</option></select>
+                                                <input type="hidden" id="SelectedDi" />
+                                                </div>
+                                                </div>
+
 
                                                 </div>*@
 
                                             </div>
                                         </div>
                                         <div class="btn-area1">
-                                            <input type="submit" id="save" onclick="Query()" class="m-btn-1 save" value="Fetch Rent details" />
+                                            @*<input type="submit" id="save" onclick="Query()" class="m-btn-1 save" value="Fetch Rent details" />*@
+                                            <button type="button" id="save" onclick="fnGet_Data()" class="m-btn-1 btn-success">Fetch Rent details</button>
                                             <input type="reset" id="save" class="m-btn-1 btn-warning" value="Reset" />
 
+                                            </di>
                                         </div>
-                                    </div>
                                 </form>
                             </div>
                         </div>
@@ -195,19 +215,19 @@
                                 <thead>
                                     <tr>
                                         <th>
-                                           Personal No
+                                            Personal No
                                         </th>
                                         <th>
-                                           Quarter Type
+                                            Quarter Type
                                         </th>
                                         <th>
-                                           Quarter No
+                                            Quarter No
                                         </th>
                                         <th>
-                                           Allotment No
+                                            Allotment No
                                         </th>
                                         <th>
-                                           Allotment Date
+                                            Allotment Date
                                         </th>
                                         <th>
                                             Occupany Date
@@ -215,17 +235,64 @@
                                         <th>
                                             Vacancy Date
                                         </th>
-                                        <th>
-                                            Rent
+                                        <th >
+                                            Occupant
                                         </th>
-                                       
+                                        <th>
+                                            Quarter Rent
+                                        </th>
+
                                         <th>Actions</th>
                                     </tr>
 
                                 </thead>
 
-                                <tbody>
+                                <tbody id="consultantData">
+
                                     @foreach (var item in Model.listVwAonlaConsultantAllotStatus)
+                                    {
+                                        <tr id="tr_@(item.UnitCode)_@(item.AllotmentNo)_@(item.PersonalNo)" data-ischange="0">
+                                            <td>
+
+                                                @Html.DisplayFor(modelItem => item.PersonalNo)
+                                            </td>
+                                            
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.QuarterCategory)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.QuarterNo)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.AllotmentNo)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.ApprovedDate)
+                                            </td>
+                                            <td id="td_Rent_@(item.UnitCode)_@(item.AllotmentNo)_@(item.PersonalNo)">
+                                                @Html.DisplayFor(modelItem => item.OccupancyDate)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.VacancyDate)
+                                            </td>
+                                            <td>
+                                                <select id="OccupantTypeLOV" class="form-control" asp-items="@(new SelectList(Model.OccupantLOVBind,"Value","Text"))" asp-for="@Model.OccupantLOVBind"><option value="">--SELECT--</option></select>
+
+                                            </td>
+                                            <td>
+                                                <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.RentTypeLOVBind,"Value","Text"))" asp-for="@Model.RentCode"><option value="">--SELECT--</option></select>
+
+                                            </td>
+
+                                            <td>
+                                                <input type="checkbox" class="form-control" data-id="@item.AllotmentNo" /> @* save-checkbox*@
+                                            </td>
+
+                                        </tr>
+                                    }
+                                   </tbody>
+                                <tbody id="exEmpData">
+                                    @foreach (var item in Model.listVwAonlaExEmpAllotStatus)
                                     {
                                         <tr>
                                             <td>
@@ -249,31 +316,77 @@
                                             <td>
                                                 @Html.DisplayFor(modelItem => item.VacancyDate)
                                             </td>
-@*
                                             <td>
-                                                @Html.DisplayFor(modelItem => item.Remarks)
-                                            </td>
-                                           *@
-                                            <td style=" width: 15%;">
+                                                <select id="OccupantTypeLOV" class="form-control" asp-items="@(new SelectList(Model.OccupantLOVBind,"Value","Text"))" asp-for="@Model.OccupantLOVBind"><option value="">--SELECT--</option></select>
 
-
-                                            
-@*
-                                                <a style="cursor:pointer" class="delete @Model.Delete glpicon" data-toggle="modal" onclick="divShow('/M1/NERSC01/DeleteConfirmed?id=@item.DiNo&DiDestSno=@item.DiDestSno&DiSno=');"><i class="far fa-trash-alt" data-toggle="tooltip" title="" data-original-title="Delete"></i></a>
-                                           *@
                                             </td>
+                                            <td>
+                                                <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.RentTypeLOVBind,"Value","Text"))" asp-for="@Model.RentCode"><option value="">--SELECT--</option></select>
+
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" class="save-checkbox" data-id="@item.AllotmentNo" />
+                                            </td>
+                                            <td >
 
 
                                         </tr>
                                     }
+</tbody>
+                                <tbody id="nonEmpData">
+                                    @foreach (var item in Model.listVwAonlaNonEmpAllotStatus)
+                                    {
+                                        <tr>
+                                            <td>
+                                                 @Html.DisplayFor(modelItem => item.QuarterNameFor)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.QuarterCategory)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.QuarterNo)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.AllotmentNo)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.ApprovedDate)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.OccupancyDate)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.VacancyDate)
+                                            </td>
+                                            <td>
+                                                <select id="OccupantTypeLOV" class="form-control" asp-items="@(new SelectList(Model.OccupantLOVBind,"Value","Text"))" asp-for="@Model.OccupantLOVBind" style="width:100%"><option value="">--SELECT--</option></select>
+
+                                            </td>
+                                            <td>
+                                                <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.RentTypeLOVBind,"Value","Text"))" asp-for="@Model.RentCode" style="width:70%"><option value="">--SELECT--</option></select>
+
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" class="save-checkbox" data-id="@item.AllotmentNo" />
+                                            </td>
+                                            <td >
+
+
+                                        </tr>
+                                    }
+
+
                                 </tbody>
 
                             </table>
+                                <div class="btn-area1 btn-area-fixed">
+                                     <button type="button" class="m-btn-1 save  @Model.Insert" onclick="SaveAccessToDB()">Save</button>
+                                </div>
 
                         </div>
                     </div>
                 </div>
-
+               
             </div>
         </div>
     </div>
@@ -284,13 +397,8 @@
 
 
 <script type="text/javascript">
-    //$(document).ready(function () {
-    //    $('#HrmsHrdGrid').DataTable();
-    //    var exportfilename = $("#PlantCD").val() + "-RailDIList(" + $("#FFromDate").val() + "-" + $("#FToDate").val() + ")";
-    //    BindGridWithIdCol([0, 1, 2, 3, 4, 5, 8, 9, 10], [0, 1, 2, 3, 4, 5, 8, 9, 10], '#HrmsHrdGrid', exportfilename);
-    //    BootStrapCalender(".datetime");
-    //    AddNewURLBuilder();
-    //});
+
+  
 
 
     $("#PlantCD").change(function () {
@@ -314,6 +422,15 @@
         }, 10);
     }
 
-
+    $(document).ready(function () {
+        debugger;
+        $('#HrmsHrdGrid').DataTable();
+       
+        var exportfilename = $("#PlantCD").val() + "-RentList(" + $("#OccupantCode").val() + ")";
+       
+        BindGridWithIdCol([0, 1, 2, 3, 4, 5, 8, 9, 10], [0, 1, 2, 3, 4, 5, 8, 9, 10], '#HrmsHrdGrid', exportfilename);
+        BootStrapCalender(".datetime");
+        AddNewURLBuilder();
+    });
 
 </script>

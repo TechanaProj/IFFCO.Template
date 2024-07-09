@@ -10,6 +10,7 @@ namespace IFFCO.NERRS.Web.ViewModels
     {
         public string PlantCD { get; set; }
         public string RentCode { get; set; }
+        public string Rates { get; set; }
         public string OccupantCode { get; set; }
         public string OccupantType { get; set; }
         public string Occupant { get; set; }
@@ -42,3 +43,5 @@ namespace IFFCO.NERRS.Web.ViewModels
         public List<SelectListItem> RentTypeLOVBind { get; set; }
     }
 }
+
+

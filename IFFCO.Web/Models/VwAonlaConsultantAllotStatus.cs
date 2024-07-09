@@ -1,11 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System;
 using IFFCO.HRMS.Repository.Pattern.Core;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
 
 namespace IFFCO.NERRS.Web.Models
 {
     public class VwAonlaConsultantAllotStatus : Entity
     {
+
+        public List<SelectListItem> RentTypeLOVBind { get; set; }
 
         [Display(Name = "Unit Code")]
         public string UnitCode { get; set; }

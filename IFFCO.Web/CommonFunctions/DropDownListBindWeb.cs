@@ -173,6 +173,8 @@ namespace IFFCO.NERRS.Web.CommonFunctions
 
         }
 
+
+
         public List<SelectListItem> OccupantLOVBind()
         {
             string sqlquery = "select UNIT_CODE,OCCUPANT_CODE,OCCUPANT_TYPE from M_OCCUPANT_MSTS where Status = 'A' ";
@@ -212,14 +214,15 @@ namespace IFFCO.NERRS.Web.CommonFunctions
 
         public List<SelectListItem> OccupantNonEmpLOVBind()
         {
-            string sqlquery = "select UNIT_CODE,OCCUPANT_CODE,OCCUPANT_TYPE from M_OCCUPANT_MSTS where Status = 'A' and QUARTER_FOR = 'N' ";
+            string sqlquery = "select UNIT_CODE,OCCUPANT_CODE,OCCUPANT_TYPE, QUARTER_ISSUED_TO from M_OCCUPANT_MSTS where Status = 'A' and QUARTER_FOR = 'N' ";
             DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
             List<SelectListItem> DRP_VALUE = new List<SelectListItem>();
             DRP_VALUE = (from DataRow dr in dtDRP_VALUE.Rows
                          select new SelectListItem()
                          {
                              Text = Convert.ToString(dr["OCCUPANT_TYPE"]) + " - " + Convert.ToString(dr["OCCUPANT_CODE"]),
-                             Value = Convert.ToString(dr["OCCUPANT_CODE"])
+                             Value = Convert.ToString(dr["QUARTER_ISSUED_TO"])
+                             //Value = Convert.ToString(dr["OCCUPANT_CODE"])
 
 
                          }).ToList();
@@ -232,13 +235,13 @@ namespace IFFCO.NERRS.Web.CommonFunctions
 
         public List<SelectListItem> RentTypeLOVBind()
         {
-            string sqlquery = "select UNIT_CODE,RENT_CODE,TYPE_RESI_ACCOM from M_RENT_MSTS where Status = 'A' ";
+            string sqlquery = "select UNIT_CODE,RENT_CODE,TYPE_RESI_ACCOM,RATES,MONTH_DAY_TYPE from M_RENT_MSTS where Status = 'A' ";
             DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
             List<SelectListItem> DRP_VALUE = new List<SelectListItem>();
             DRP_VALUE = (from DataRow dr in dtDRP_VALUE.Rows
                          select new SelectListItem()
                          {
-                             Text = Convert.ToString(dr["TYPE_RESI_ACCOM"]) + " - " + Convert.ToString(dr["RENT_CODE"]),
+                             Text = Convert.ToString(dr["TYPE_RESI_ACCOM"]) + " - " + Convert.ToString(dr["RENT_CODE"]) + " -Rates " + Convert.ToString(dr["RATES"]) + " - " + Convert.ToString(dr["MONTH_DAY_TYPE"]),
                              Value = Convert.ToString(dr["RENT_CODE"])
 
 
