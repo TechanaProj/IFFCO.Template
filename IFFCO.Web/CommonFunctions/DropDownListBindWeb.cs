@@ -1,4 +1,4 @@
-﻿using IFFCO.NERRS.Web.Models;
+using IFFCO.NERRS.Web.Models;
 using IFFCO.NERRS.Web.ViewModels;
 using IFFCO.HRMS.Repository.Pattern.Core.Factories;
 using IFFCO.HRMS.Repository.Pattern.UnitOfWork;
@@ -172,6 +172,67 @@ namespace IFFCO.NERRS.Web.CommonFunctions
             return DRP_VALUE;
 
         }
+
+
+        public List<SelectListItem> AllotementNoLOVBind()
+        {
+            
+            var AllotmentNoLOV = _context.FAllotmentRentDtls
+                                        .Where(x => x.Status == "A")
+                                        .OrderBy(x => x.AllotmentNo)
+                                        .Select(x => new SelectListItem
+                                        {
+                                            Text = x.AllotmentNo.ToString() + " || " + x.QuarterCategory + " - " + x.QuarterNo,
+                                            Value = x.AllotmentNo.ToString()
+                                        })
+                                        .ToList();
+
+            // Prepend a default option (optional)
+            AllotmentNoLOV.Insert(0, new SelectListItem { Text = "Select Allotment No", Value = "" });
+
+            return AllotmentNoLOV;
+        }
+
+
+
+
+        public List<SelectListItem> GetRecCode()
+        {
+            string sqlquery = "SELECT * FROM REC_CODE_GENERATION_MSTS ORDER BY REC_CODE";
+            DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
+            var DRP_VALUE = (from DataRow dr in dtDRP_VALUE.Rows
+                             select new SelectListItem
+                             {
+                                 Text = Convert.ToString(dr["REC_CODE"]),
+                                 Value = Convert.ToString(dr["REC_CODE"])
+                             }).ToList();
+            return DRP_VALUE;
+        }
+
+        public List<FAllotmentRentDtls> GetFilteredAllotmentRentDetails(DateTime fromDate, DateTime toDate, int? allotmentNo = null)
+        {
+            var query = _context.FAllotmentRentDtls
+                .Where(d => d.AllotmentDate >= fromDate && d.AllotmentDate <= toDate);
+
+            if (allotmentNo.HasValue)
+            {
+                query = query.Where(d => d.AllotmentNo == allotmentNo.Value);
+            }
+
+            return query.ToList();
+        }
+
+
+        public List<FAllotmentRentDtls> FetchRentCodeFromDatabase(int allotmentno)
+        {
+            var query = _context.FAllotmentRentDtls
+                .Where(d => d.AllotmentNo == allotmentno
+                            );
+
+
+            return query.ToList();
+        }
+
 
 
 

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using IFFCO.NERRS.Web.CommonFunctions;
 using IFFCO.NERRS.Web.Controllers;
 using IFFCO.NERRS.Web.Models;
@@ -234,6 +234,34 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
             return Json(CommonViewModel);
         }
 
-       
+        [HttpPost]
+        //public NERSC01ViewModel GetRailDiList(NERSC01ViewModel nERSC01ViewModel, DateTime? FromDate, DateTime? ToDate, string PlantCD, string Pending = "All")
+        public NERSC01ViewModel GetRentList(NERSC01ViewModel nERSC01ViewModel, string PlantCD, string OccupantCode)
+        {
+            var str = string.Empty;
+            CommonViewModel = nERSC01ViewModel;
+            int PersonnelNumber = Convert.ToInt32(HttpContext.Session.GetInt32("EmpID"));
+            // if (PlantCD == null) { PlantCD = dropDownListBindWeb.GetPlantCDSingle(PersonnelNumber); }
+            // if (FromDate == null) { var first = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1); FromDate = first; }
+            // if (ToDate == null) { ToDate = DateTime.Today; }
+            CommonViewModel.listVwAonlaConsultantAllotStatus = new List<VwAonlaConsultantAllotStatus>();
+            CommonViewModel.listVwAonlaNonEmpAllotStatus = new List<VwAonlaNonEmpAllotStatus>();
+            CommonViewModel.listVwAonlaExEmpAllotStatus = new List<VwAonlaExEmpAllotStatus>();
+            //CommonViewModel.listFAllotmentRentDtls = new List<FAllotmentRentDtls>();
+            //if (Pending == "All")
+            //{
+            //    CommonViewModel.ObjList = _context.VNetRailDi.Where(x => x.PlantCd == PlantCD).Where(x => x.DiDt >= FromDate && x.DiDt <= ToDate).ToList();
+            //}
+            //else
+            //{
+            //    CommonViewModel.ObjList = _context.VNetRailDi.Where(x => x.PlantCd == PlantCD && x.Pending == Pending).Where(x => x.DiDt >= FromDate && x.DiDt <= ToDate).ToList();
+            //}
+
+            CommonViewModel.AreaName = this.ControllerContext.RouteData.Values["area"].ToString();
+            CommonViewModel.SelectedMenu = this.ControllerContext.RouteData.Values["controller"].ToString();
+            return CommonViewModel;
+        }
     }
+
+
 }

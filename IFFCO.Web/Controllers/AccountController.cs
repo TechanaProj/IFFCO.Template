@@ -69,7 +69,7 @@ namespace IFFCO.NERRS.Web.Controllers
                 {
                     try
                     {
-                        var session = accountService.SessionLog(CommonViewModel, clientIp, fullClientIp);
+                        var session = accountService.SessionLog(CommonViewModel, clientIp);
                     }
                     catch (Exception ex) { }
 

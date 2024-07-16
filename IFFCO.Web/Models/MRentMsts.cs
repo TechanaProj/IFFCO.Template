@@ -1,10 +1,9 @@
-﻿using IFFCO.HRMS.Repository.Pattern;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace IFFCO.NERRS.Web.Models
 {
-    public partial class MRentMsts : Entity
+    public partial class MRentMsts
     {
         public int UnitCode { get; set; }
         public string RentCode { get; set; }
@@ -19,5 +18,7 @@ namespace IFFCO.NERRS.Web.Models
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public string QuarterIssuedTo { get; set; }
+        public string ElectStatus { get; set; }
+        public double? DRates { get; set; }
     }
 }
