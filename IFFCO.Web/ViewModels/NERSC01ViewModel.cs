@@ -25,6 +25,7 @@ namespace IFFCO.NERRS.Web.ViewModels
         public MOccupantMsts ObjMOccupantMsts { get; set; }
         public VwAonlaConsultantAllotStatus ObjVwAonlaConsultantAllotStatus { get; set; }
         public VwAonlaExEmpAllotStatus ObjVwAonlaExEmpAllotStatus { get; set; }
+        public VwAonlaDeathCaseAllotStatus ObjVwAonlaDeathCaseAllotStatus { get; set; }
         public VwAonlaNonEmpAllotStatus ObjVwAonlaNonEmpAllotStatus { get; set; }
 
 
@@ -33,6 +34,7 @@ namespace IFFCO.NERRS.Web.ViewModels
         public List<MOccupantMsts> listMOccupantMsts { get; set; }
         public List<VwAonlaConsultantAllotStatus> listVwAonlaConsultantAllotStatus { get; set; }
         public List<VwAonlaExEmpAllotStatus> listVwAonlaExEmpAllotStatus { get; set; }
+        public List<VwAonlaDeathCaseAllotStatus> listVwAonlaDeathCaseAllotStatus { get; set; }
         public List<VwAonlaNonEmpAllotStatus> listVwAonlaNonEmpAllotStatus { get; set; }
 
 

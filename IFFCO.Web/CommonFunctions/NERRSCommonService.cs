@@ -33,7 +33,7 @@ namespace IFFCO.NERRS.Web.CommonFunctions
           
         }
 
-        public List<VwAonlaConsultantAllotStatus> VwAonlaConsultantDtls(string PlantCD)    /* Retired but still on contracts case */
+        public List<VwAonlaConsultantAllotStatus> VwAonlaConsultantDtls(string PlantCD)    /*  contracts case */
         {
 
             string sqlquery = " SELECT UNIT_CODE,ALLOTMENT_NO,QUARTER_FOR,QUARTER_ISSUED_TO,ISSUSE_TO, PERSONAL_NO,NAME,QUARTER_NO,QUARTER_NAME_FOR,APPLICATION_DATE,APPROVED_DATE,QUARTER_CATEGORY,OCCUPANCY_DATE,CON_STATUS,EFFECTIVE_FROM,";
@@ -77,14 +77,57 @@ namespace IFFCO.NERRS.Web.CommonFunctions
             return DTL_VALUE;
         }
 
-
-
-        public List<VwAonlaExEmpAllotStatus> VwAonlaExEmpAllotStatusDtls(string PlantCD)   /*For Death case */
+        public List<VwAonlaDeathCaseAllotStatus> VwAonlaDeathCaseAllotStatus(string PlantCD)   /*For Death case */
         {
 
             string sqlquery = " SELECT UNIT_CODE,ALLOTMENT_NO,QUARTER_FOR,QUARTER_ISSUED_TO,ISSUSE_TO, PERSONAL_NO,NAME,QUARTER_NO,QUARTER_NAME_FOR,APPLICATION_DATE,APPROVED_DATE,QUARTER_CATEGORY,OCCUPANCY_DATE,EFFECTIVE_FROM,";
             sqlquery += " EFFECTIVE_TO,VACANCY_DATE,STAY_PERIOD,NO_OF_DAYS,NO_OF_YEARS,STATUS ";
-            sqlquery += " from VW_AONLA_EX_EMP_ALLOT_STATUS where UNIT_CODE = ' "+ PlantCD + "' and QUARTER_ISSUED_TO = 'D' order by OCCUPANCY_DATE desc ";
+            sqlquery += " from VW_AONLA_DEATH_CASE_ALLOT_STATUS where UNIT_CODE = ' " + PlantCD + "' and QUARTER_ISSUED_TO = 'D' order by OCCUPANCY_DATE desc ";
+
+
+            DataTable dtDTL_VALUE = new DataTable();
+            dtDTL_VALUE = _context.GetSQLQuery(sqlquery);
+            List<VwAonlaDeathCaseAllotStatus> DTL_VALUE = new List<VwAonlaDeathCaseAllotStatus>();
+            DTL_VALUE = (from DataRow dr in dtDTL_VALUE.Rows
+                         select new VwAonlaDeathCaseAllotStatus()
+                         {
+
+                             UnitCode = Convert.ToString(dr["UNIT_CODE"]),
+                             AllotmentNo = (dr["ALLOTMENT_NO"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["ALLOTMENT_NO"]),
+                             QuarterFor = Convert.ToString(dr["QUARTER_FOR"]),
+                             Name = Convert.ToString(dr["NAME"]),
+                             QuarterNo = Convert.ToString(dr["QUARTER_NO"]),
+                             QuarterNameFor = Convert.ToString(dr["QUARTER_NAME_FOR"]),
+                             PersonalNo = Convert.ToString(dr["PERSONAL_NO"]),
+
+                             //ApplicationDate = Convert.ToDateTime(dr["APPLICATION_DATE"]),
+                             //ApprovedDate = Convert.ToDateTime(dr["APPROVED_DATE"]),
+                             QuarterCategory = Convert.ToString(dr["QUARTER_CATEGORY"]),
+                             //OccupancyDate = Convert.ToDateTime(dr["OCCUPANCY_DATE"]),
+                             //EffectiveFrom = Convert.ToDateTime(dr["EFFECTIVE_FROM"]),
+                             //EffectiveTo = Convert.ToDateTime(dr["EFFECTIVE_TO"]),
+                             //VacancyDate = Convert.ToDateTime(dr["VACANCY_DATE"]),
+                             //StayPeriod = Convert.ToString(dr["STAY_PERIOD"]),
+                             //NoOfDays = (dr["NO_OF_DAYS"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["NO_OF_DAYS"]),
+                             //NoOfYears = (dr["NO_OF_YEARS"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["NO_OF_YEARS"]),
+                             //Status = Convert.ToString(dr["Status"]),
+
+
+
+
+                         }).ToList();
+            return DTL_VALUE;
+        }
+
+
+
+
+        public List<VwAonlaExEmpAllotStatus> VwAonlaExEmpAllotStatusDtls(string PlantCD)    /*For Ex employee - Retired case */
+        {
+
+            string sqlquery = " SELECT UNIT_CODE,ALLOTMENT_NO,QUARTER_FOR,QUARTER_ISSUED_TO,ISSUSE_TO, PERSONAL_NO,NAME,QUARTER_NO,QUARTER_NAME_FOR,APPLICATION_DATE,APPROVED_DATE,QUARTER_CATEGORY,OCCUPANCY_DATE,EFFECTIVE_FROM,";
+            sqlquery += " EFFECTIVE_TO,VACANCY_DATE,STAY_PERIOD,NO_OF_DAYS,NO_OF_YEARS,STATUS ";
+            sqlquery += " from VW_AONLA_EX_EMP_ALLOT_STATUS where UNIT_CODE = ' "+ PlantCD + "' and QUARTER_ISSUED_TO = 'U' order by OCCUPANCY_DATE desc ";
 
 
             DataTable dtDTL_VALUE = new DataTable();
@@ -120,6 +163,9 @@ namespace IFFCO.NERRS.Web.CommonFunctions
                          }).ToList();
             return DTL_VALUE;
         }
+
+       
+
 
 
         public List<VwAonlaNonEmpAllotStatus> VwAonlaNonEmpAllotStatus(string PlantCD, string OccupantCode)   /*For Non-Employees */
