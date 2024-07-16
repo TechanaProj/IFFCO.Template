@@ -208,16 +208,26 @@ namespace IFFCO.NERRS.Web.CommonFunctions
             return DRP_VALUE;
         }
 
-        public List<FAllotmentRentDtls> GetFilteredAllotmentRentDetails(DateTime from_date, DateTime to_date, int? allotment_no = null)
+        public List<FAllotmentRentDtls> GetFilteredAllotmentRentDetails(DateTime fromDate, DateTime toDate, int? allotmentNo = null)
         {
             var query = _context.FAllotmentRentDtls
-                .Where(d => d.AllotmentDate >= from_date &&
-                            d.AllotmentDate <= to_date);
+                .Where(d => d.AllotmentDate >= fromDate && d.AllotmentDate <= toDate);
 
-            if (allotment_no.HasValue)
+            if (allotmentNo.HasValue)
             {
-                query = query.Where(d => d.AllotmentNo == allotment_no.Value);
+                query = query.Where(d => d.AllotmentNo == allotmentNo.Value);
             }
+
+            return query.ToList();
+        }
+
+
+        public List<FAllotmentRentDtls> FetchRentCodeFromDatabase(int allotmentno)
+        {
+            var query = _context.FAllotmentRentDtls
+                .Where(d => d.AllotmentNo == allotmentno
+                            );
+
 
             return query.ToList();
         }

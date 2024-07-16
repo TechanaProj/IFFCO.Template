@@ -13,7 +13,34 @@
 
 
 </script>
+<style>
+    #sendMailButton {
+        background-color: orangered;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+    }
 
+        #sendMailButton i {
+            margin-right: 5px;
+        }
+
+        #sendMailButton:hover {
+            background-color: darkred;
+        }
+
+    #rentCodeDisplay {
+        display: none;
+    }
+</style>
 
 
 <div class="plcholder-cn">
@@ -35,6 +62,7 @@
                                                 <div class="col-sm-2 col-md-1">
                                                     <label class="m-lbl1 m-lbl2">Unit Code</label>
                                                 </div>
+
                                                 <div class="col-sm-2 col-md-2">
                                                     <select id="PlantCD" name="PlantCD" class="form-control" asp-items="@(new SelectList(Model.UnitLOVBind, "Value", "Text"))"></select>
                                                 </div>
@@ -54,15 +82,45 @@
                                                     <label class="m-lbl1 m-lbl2">Allotment No</label>
                                                 </div>
                                                 <div class="col-sm-2 col-md-2">
-                                                    <select id="AllotmentNo" name="AllotmentNo" class="form-control" asp-items="@(new SelectList(Model.AllotementNoLOVBind, "Value", "Text"))"></select>
+                                                    <select id="AllotmentNo" name="AllotmentNo" class="form-control" onchange="fetchRentCode()" asp-items="@(new SelectList(Model.AllotementNoLOVBind, "Value", "Text"))"></select>
                                                 </div>
+                                                <!-- Example HTML -->
+                                              
+                                               
+                                                <span id="rentCode"  style="display:none;"></span>
+
+                                                <br />
+
+                                                <div class="col-sm-2 col-md-1">
+                                                    <label class="m-lbl1 m-lbl2">Monthly/Daily</label>
+                                                </div>
+                                                <div class="col-sm-2 col-md-2">
+                                                    <select class="form-control" id="timePeriod">
+                                                        <option value="">Select For Compute</option>
+                                                        <option value="M">Monthly</option>
+                                                        <option value="D">Daily</option>
+                                                    </select>
+                                                </div>
+
+
                                             </div>
                                         </div>
                                         <div class="btn-area1">
                                             <input type="submit" id="save" class="m-btn-1 save" value="Query" />
+
+
                                         </div>
+
+
                                     </div>
                                 </form>
+                                <div style="text-align: center;">
+                                    <button id="sendMailButton">
+                                        <i class="fas fa-calculator" style="margin-right: 5px;"></i>
+                                        Compute
+                                    </button>
+
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -79,6 +137,8 @@
                                         <th>OCCUPANCY DATE</th>
                                         <th>EXPECTED VACANCY DATE</th>
                                         <th>VACANCY DATE</th>
+                                        <th>ACTION</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody id="tableBody">
@@ -96,6 +156,10 @@
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
 <script>
 $(document).ready(function () {
     $("#queryForm").on("submit", function (event) {
@@ -116,6 +180,7 @@ $(document).ready(function () {
                             "<td>" + formatDate(item.occupancyDate) + "</td>" +
                             "<td>" + formatDate(item.expectedVacancyDate) + "</td>" +
                             "<td>" + formatDate(item.vacancyDate) + "</td>" +
+                            "<td><button class='actionButton' data-unitCode='" + (item.unitCode || '') + "' data-allotmentNo='" + (item.allotmentNo || '') + "'>Action</button></td>" +
                             "</tr>";
                         tableBody.append(row);
                     });
@@ -144,6 +209,109 @@ $(document).ready(function () {
         return `${day}/${month}/${year}`;
     }
 });
+
+    $(document).ready(function () {
+        $("#sendMailButton").click(function (event) {
+            event.preventDefault(); // Prevent the default form submission
+            debugger;
+            // Get the values from the form
+            var fromDate = $("#FromDate").val();
+            var toDate = $("#ToDate").val();
+            var allotmentNo = $("#AllotmentNo").val();
+            var timePeriod = $("#timePeriod").val();
+            var rentCode = $("#rentCode").text();
+
+            // Check if any required fields are empty
+            if (!fromDate) {
+                showAlert('From date is required.');
+                return;
+            }
+            if (!toDate) {
+                showAlert('To date is required.');
+                return;
+            }
+            if (!allotmentNo) {
+                showAlert('Allotment number is required.');
+                return;
+            }
+            if (!timePeriod) {
+                showAlert('Select Monthly/Daily Dropdowmlist.');
+                return;
+            }
+
+          
+            $.ajax({
+                url: '/M1/NERSC02/Compute', 
+                type: 'POST',
+                data: {
+                    FromDate: fromDate,
+                    ToDate: toDate,
+                    AllotmentNo: allotmentNo,
+                    TimePeriod: timePeriod,
+                    rentCode: rentCode,
+                },
+                success: function (response) {
+                    if (response.success) {
+                        // Handle success case
+                        $("#tableBody").html(response.data);
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: 'Data processed successfully!'
+                        });
+                    } else {
+                        // Handle error case
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.error
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Handle any errors
+                    console.error(error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An error occurred: ' + error
+                    });
+                }
+            });
+        });
+
+        
+        function showAlert(message) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: message
+            });
+        }
+    });
+
+
+
+    function fetchRentCode() {
+        debugger;
+        var allotmentNo = $("#AllotmentNo").val();
+        $.ajax({
+            url: '/M1/NERSC02/GetRentCode', 
+            type: 'GET',
+            data: { allotmentNo: allotmentNo },
+            success: function (response) {
+                debugger;
+               
+                $("#rentCode").text(response.rentCode);
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching rent code: ", error);
+            }
+        });
+    }
+
+
+
 </script>
 
 

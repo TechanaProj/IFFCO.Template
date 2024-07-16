@@ -30,6 +30,7 @@ namespace IFFCO.NERRS.Web.ViewModels
         public VwAonlaConsultantAllotStatus ObjVwAonlaConsultantAllotStatus { get; set; }
         public VwAonlaExEmpAllotStatus ObjVwAonlaExEmpAllotStatus { get; set; }
         public VwAonlaNonEmpAllotStatus ObjVwAonlaNonEmpAllotStatus { get; set; }
+        public string MonthDayType { get; set; }
 
 
         //List of Tables
