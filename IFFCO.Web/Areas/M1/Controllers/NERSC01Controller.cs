@@ -157,66 +157,51 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
             CommonViewModel = JsonConvert.DeserializeObject<NERSC01ViewModel>(TempData["CommonViewModel"].ToString());
             return View("Index", CommonViewModel);
         }
+        
         [HttpPost]
-        public async Task<IActionResult> Add(NERSC01ViewModel nERSC01ViewModel )
+        public async Task<IActionResult> Add(NERSC01ViewModel nERSC01ViewModel)
         {
-            int counter = 0;
-            List<FAllotmentRentDtls> listFAllotmentRentDtls = new List<FAllotmentRentDtls>();
-
-            string occupantType = nERSC01ViewModel.OccupantType;
             string personnelNumber = Convert.ToString(HttpContext.Session.GetInt32("EmpID"));
 
             try
             {
-               // if (!string.IsNullOrWhiteSpace(occupantType))
-              //  {
-                 //   switch (occupantType)
-                  //  {
-                     //   case "E": // Employees
-                            foreach (var value in nERSC01ViewModel.listVwAonlaConsultantAllotStatus)
-                            {
-                                if (!_context.FAllotmentRentDtls.Any(x => x.UnitCode.Equals(value.UnitCode) && x.AllotmentNo == value.AllotmentNo))
-                                {
-                                    var newRecord = new FAllotmentRentDtls
-                                    {
-                                        //UnitCode = value.UnitCode,
-                                        AllotmentNo = value.AllotmentNo,
-                                        OccupantCode = value.OccupantType,
-                                        QuarterCategory= value.QuarterCategory,
-                                        QuarterNo= Int32.Parse(value.QuarterNo),
-                                        RentCode = value.RentType,
-                                        CreatedBy = personnelNumber,
-                                        DatetimeCreated = DateTime.Now
-                                    };
+                // Assuming you want to save the first row in the list
+                var value = nERSC01ViewModel.listVwAonlaConsultantAllotStatus.FirstOrDefault();
 
-                      
-                                    _context.Add(newRecord);
-                                     counter++;
-                                }
-                            }
-
-                //if (listFAllotmentRentDtls.Any())
-                if (counter > 0)
+                if (value != null)
                 {
-                              
-                                await _context.SaveChangesAsync();
-                                CommonViewModel.Status = "Create";
-                                CommonViewModel.Message = $"{counter} Records Created";
-                               
+                    if (!_context.FAllotmentRentDtls.Any(x => x.UnitCode.Equals(value.UnitCode) && x.AllotmentNo == value.AllotmentNo))
+                    {
+                        var newRecord = new FAllotmentRentDtls
+                        {
+                           // UnitCode = Int32.Parse(value.UnitCode),
+                            AllotmentNo = value.AllotmentNo,
+                            //OccupantCode = value.OccupantType,
+                           // QuarterCategory = value.QuarterCategory,
+                           // QuarterNo = Int32.Parse(value.QuarterNo),
+                          //  RentCode = value.RentType,
+                            CreatedBy = personnelNumber,
+                            DatetimeCreated = DateTime.Now
+                        };
+
+                        _context.Add(newRecord);
+                        await _context.SaveChangesAsync();
+
+                        CommonViewModel.Status = "Create";
+                        CommonViewModel.Message = "Record Created";
+                    }
+                    else
+                    {
+                        CommonViewModel.Message = "Record already exists";
+                        CommonViewModel.Alert = "Warning";
+                        CommonViewModel.Status = "Warning";
+                    }
                 }
-
-                         //   break;
-
-                     //   default:
-                       //     break;
-                   // }
-              //  }
                 else
                 {
-                    CommonViewModel.Message = "Please check data again";
+                    CommonViewModel.Message = "No data to save";
                     CommonViewModel.Alert = "Warning";
                     CommonViewModel.Status = "Warning";
-                    CommonViewModel.ErrorMessage = "1";
                 }
 
                 CommonViewModel.IsAlertBox = true;
@@ -234,6 +219,86 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
             return Json(CommonViewModel);
         }
 
-       
+
+
+
+
+        //public async Task<IActionResult> Add1(NERSC01ViewModel nERSC01ViewModel )
+        //{
+        //    int counter = 0;
+        //    List<FAllotmentRentDtls> listFAllotmentRentDtls = new List<FAllotmentRentDtls>();
+
+        //    string occupantType = nERSC01ViewModel.OccupantType;
+        //    string personnelNumber = Convert.ToString(HttpContext.Session.GetInt32("EmpID"));
+
+        //    try
+        //    {
+        //       // if (!string.IsNullOrWhiteSpace(occupantType))
+        //      //  {
+        //         //   switch (occupantType)
+        //          //  {
+        //             //   case "E": // Employees
+        //                    foreach (var value in nERSC01ViewModel.listVwAonlaConsultantAllotStatus)
+        //                    {
+        //                        if (!_context.FAllotmentRentDtls.Any(x => x.UnitCode.Equals(value.UnitCode) && x.AllotmentNo == value.AllotmentNo))
+        //                        {
+        //                            var newRecord = new FAllotmentRentDtls
+        //                            {
+        //                                //UnitCode = value.UnitCode,
+        //                                AllotmentNo = value.AllotmentNo,
+        //                                OccupantCode = value.OccupantType,
+        //                                QuarterCategory= value.QuarterCategory,
+        //                                QuarterNo= Int32.Parse(value.QuarterNo),
+        //                                RentCode = value.RentType,
+        //                                CreatedBy = personnelNumber,
+        //                                DatetimeCreated = DateTime.Now
+        //                            };
+
+
+        //                            _context.Add(newRecord);
+        //                             counter++;
+        //                        }
+        //                    }
+
+        //        //if (listFAllotmentRentDtls.Any())
+        //        if (counter > 0)
+        //        {
+
+        //                        await _context.SaveChangesAsync();
+        //                        CommonViewModel.Status = "Create";
+        //                        CommonViewModel.Message = $"{counter} Records Created";
+
+        //        }
+
+        //                 //   break;
+
+        //             //   default:
+        //               //     break;
+        //           // }
+        //      //  }
+        //        else
+        //        {
+        //            CommonViewModel.Message = "Please check data again";
+        //            CommonViewModel.Alert = "Warning";
+        //            CommonViewModel.Status = "Warning";
+        //            CommonViewModel.ErrorMessage = "1";
+        //        }
+
+        //        CommonViewModel.IsAlertBox = true;
+        //        CommonViewModel.AreaName = this.ControllerContext.RouteData.Values["area"].ToString();
+        //        CommonViewModel.SelectedMenu = this.ControllerContext.RouteData.Values["controller"].ToString();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        commonException.GetCommonExcepton(CommonViewModel, ex);
+        //        CommonViewModel.AreaName = this.ControllerContext.RouteData.Values["area"].ToString();
+        //        CommonViewModel.SelectedMenu = this.ControllerContext.RouteData.Values["controller"].ToString();
+        //        return Json(CommonViewModel);
+        //    }
+
+        //    return Json(CommonViewModel);
+        //}
+
+
     }
 }

@@ -49,11 +49,12 @@
 
                 $("#HrmsHrdGrid tbody tr").each(function (index, e) {
                     var row = $(this);
-                    var isChecked = row.find("td:eq(9) input[type='checkbox']").is(":checked");
+                    var isChecked = row.find("td:eq(10) input[type='checkbox']").is(":checked");
                     var occupantType = row.find("td:eq(7) select option:selected").val();
                     var rentType = row.find("td:eq(8) select option:selected").val();
 
                     if (isChecked && occupantType && rentType) {
+                   
                         hasValidData = true;
                        // formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].PersonalNo', row.find("td:eq(0)").text().trim());
                        // formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].QuarterCategory', row.find("td:eq(1)").text().trim());
@@ -81,7 +82,8 @@
                     var occupantType = row.find("td:eq(7) select option:selected").val();
                     var rentType = row.find("td:eq(8) select option:selected").val();
 
-                    if (isChecked && occupantType && rentType) {
+                   // if (isChecked && occupantType && rentType) {
+                    if (isChecked && rentType) {
                         hasValidData = true;
                        // formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].PersonalNo', row.find("td:eq(0)").text().trim());
                         //formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].QuarterCategory', row.find("td:eq(1)").text().trim());
@@ -231,6 +233,7 @@
                                         <th>Vacancy Date</th>
                                         <th>Occupant</th>
                                         <th>Quarter Rent</th>
+                                        <th>No. of beds</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -254,6 +257,9 @@
                                                 <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.RentTypeLOVBind, "Value", "Text"))" asp-for="@Model.RentCode">
                                                     <option value="">--SELECT--</option>
                                                 </select>
+                                            </td>
+                                            <td>
+
                                             </td>
                                             <td>
                                                 <input type="checkbox" class="form-control" data-id="@item.AllotmentNo" />
@@ -283,6 +289,9 @@
                                                 </select>
                                             </td>
                                             <td>
+
+                                            </td>
+                                            <td>
                                                 <input type="checkbox" class="save-checkbox" data-id="@item.AllotmentNo" />
                                             </td>
                                         </tr>
@@ -310,6 +319,9 @@
                                                 </select>
                                             </td>
                                             <td>
+
+                                            </td>
+                                            <td>
                                                 <input type="checkbox" class="save-checkbox" data-id="@item.AllotmentNo" />
                                             </td>
                                         </tr>
@@ -335,6 +347,9 @@
                                                 <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.RentTypeLOVBind, "Value", "Text"))" asp-for="@Model.RentCode">
                                                     <option value="">--SELECT--</option>
                                                 </select>
+                                            </td>
+                                            <td>
+                                                <input type="number" style="width:30%">
                                             </td>
                                             <td>
                                                 <input type="checkbox" class="save-checkbox" data-id="@item.AllotmentNo" />
