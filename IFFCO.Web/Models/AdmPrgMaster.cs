@@ -1,10 +1,9 @@
-﻿using IFFCO.HRMS.Repository.Pattern;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace IFFCO.NERRS.Web.Models
 {
-    public partial class AdmPrgMaster : Entity
+    public partial class AdmPrgMaster
     {
         public string Projectid { get; set; }
         public string Moduleid { get; set; }

@@ -1,12 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System;
 using IFFCO.HRMS.Repository.Pattern.Core;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace IFFCO.NERRS.Web.Models
 {
-    public class VwAonlaConsultantAllotStatus : Entity
-    {
+    public class VwAonlaNonEmpAllotStatus : Entity
 
+    {
         [Display(Name = "Unit Code")]
         public string UnitCode { get; set; }
 
@@ -24,12 +25,6 @@ namespace IFFCO.NERRS.Web.Models
 
         [Display(Name = "Issued To")]
         public string IssuedTo { get; set; }
-
-        [Display(Name = "Personal Number")]
-        public string PersonalNo { get; set; }
-
-        [Display(Name = "Name")]
-        public string Name { get; set; }
 
         [Display(Name = "Quarter Name For")]
         public string QuarterNameFor { get; set; }
@@ -52,17 +47,6 @@ namespace IFFCO.NERRS.Web.Models
         [DataType(DataType.Date)]
         public DateTime? OccupancyDate { get; set; }
 
-        [Display(Name = "Construction Status")]
-        public string ConStatus { get; set; }
-
-        [Display(Name = "Effective From")]
-        [DataType(DataType.Date)]
-        public DateTime? EffectiveFrom { get; set; }
-
-        [Display(Name = "Effective To")]
-        [DataType(DataType.Date)]
-        public DateTime? EffectiveTo { get; set; }
-
         [Display(Name = "Vacancy Date")]
         [DataType(DataType.Date)]
         public DateTime? VacancyDate { get; set; }
@@ -78,6 +62,10 @@ namespace IFFCO.NERRS.Web.Models
 
         [Display(Name = "Status")]
         public string Status { get; set; }
+        [NotMapped]
+        public string OccupantType { get; set; }
+        [NotMapped]
+        public string RentType { get; set; }
 
     }
 }

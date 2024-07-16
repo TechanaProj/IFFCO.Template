@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System;
-using IFFCO.HRMS.Repository.Pattern.Core;
+using IFFCO.HRMS.Repository.Pattern;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace IFFCO.NERRS.Web.Models
 {
-    public class VwAonlaConsultantAllotStatus : Entity
+    public class VwAonlaExEmpAllotStatus : Entity
     {
 
         [Display(Name = "Unit Code")]
@@ -52,9 +53,6 @@ namespace IFFCO.NERRS.Web.Models
         [DataType(DataType.Date)]
         public DateTime? OccupancyDate { get; set; }
 
-        [Display(Name = "Construction Status")]
-        public string ConStatus { get; set; }
-
         [Display(Name = "Effective From")]
         [DataType(DataType.Date)]
         public DateTime? EffectiveFrom { get; set; }
@@ -79,5 +77,9 @@ namespace IFFCO.NERRS.Web.Models
         [Display(Name = "Status")]
         public string Status { get; set; }
 
+        [NotMapped]
+        public string OccupantType { get; set; }
+        [NotMapped]
+        public string RentType { get; set; }
     }
 }

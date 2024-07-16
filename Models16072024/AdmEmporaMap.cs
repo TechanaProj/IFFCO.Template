@@ -1,9 +1,10 @@
-﻿using System;
+﻿using IFFCO.HRMS.Repository.Pattern;
+using System;
 using System.Collections.Generic;
 
 namespace IFFCO.NERRS.Web.Models
 {
-    public partial class AdmEmporaMap
+    public partial class AdmEmporaMap : Entity
     {
         public long Empid { get; set; }
         public string Orausername { get; set; }

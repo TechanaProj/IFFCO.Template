@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using IFFCO.HRMS.Repository.Pattern;
+using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace IFFCO.NERRS.Web.Models
 {
-    public partial class FAllotmentRentDtls
+    public partial class FAllotmentRentDtls : Entity
     {
         public int UnitCode { get; set; }
         public string QuarterCategory { get; set; }
@@ -46,9 +47,5 @@ namespace IFFCO.NERRS.Web.Models
         public string RentCode { get; set; }
         public string VendorCode { get; set; }
         public string OccupantCode { get; set; }
-        public decimal? ElecRate { get; set; }
-        public decimal? ElectricityCount { get; set; }
-        public string MonthDayType { get; set; }
-        public long? NoOfBeds { get; set; }
     }
 }

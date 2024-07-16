@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System;
 using IFFCO.HRMS.Repository.Pattern;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace IFFCO.NERRS.Web.Models
 {
@@ -76,10 +75,5 @@ namespace IFFCO.NERRS.Web.Models
 
         [Display(Name = "Status")]
         public string Status { get; set; }
-
-        [NotMapped]
-        public string OccupantType { get; set; }
-        [NotMapped]
-        public string RentType { get; set; }
     }
 }
