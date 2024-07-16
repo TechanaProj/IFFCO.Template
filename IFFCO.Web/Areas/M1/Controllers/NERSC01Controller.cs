@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using IFFCO.NERRS.Web.CommonFunctions;
 using IFFCO.NERRS.Web.Controllers;
 using IFFCO.NERRS.Web.Models;
 using IFFCO.NERRS.Web.ViewModels;
 using IFFCO.HRMS.Service;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -13,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
 
 namespace IFFCO.NERRS.Web.Areas.M1.Controllers
 {
@@ -20,11 +20,11 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
     public class NERSC01Controller : BaseController<NERSC01ViewModel>
     {
         private readonly ModelContext _context;
-        private readonly DropDownListBindWeb dropDownListBindWeb = null;
-        private readonly NERRSCommonService nERRSCommonService = null;
-        private readonly PrimaryKeyGen primaryKeyGen = null;
-        CommonException<NERSC01ViewModel> commonException = null;
-        public ReportRepositoryWithParameters reportRepository = null;
+        private readonly DropDownListBindWeb dropDownListBindWeb;
+        private readonly NERRSCommonService nERRSCommonService;
+        private readonly PrimaryKeyGen primaryKeyGen;
+        private readonly CommonException<NERSC01ViewModel> commonException;
+        public ReportRepositoryWithParameters reportRepository;
 
         public NERSC01Controller(ModelContext context)
         {
@@ -35,12 +35,12 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
             dropDownListBindWeb = new DropDownListBindWeb();
             primaryKeyGen = new PrimaryKeyGen();
         }
-        public IActionResult Index()
+
+        public IActionResult Index(string PlantCD = null, string OccupantType = null, string OccupantCode = null)
         {
-            //int PersonnelNumber = Convert.ToInt32(HttpContext.Session.GetInt32("EmpID"));
-            // ViewBag.PlantCDLOVList = dropDownListBindWeb.GetPlantCDLOV(PersonnelNumber);
             int EMP_ID = Convert.ToInt32(HttpContext.Session.GetInt32("EmpID"));
             string moduleid = Convert.ToString(HttpContext.Session.GetString("ModuleID"));
+
             if (Convert.ToString(TempData["Message"]) != "")
             {
                 CommonViewModel.Message = Convert.ToString(TempData["Message"]);
@@ -51,38 +51,31 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
             CommonViewModel.UnitLOVBind = dropDownListBindWeb.GetUnitWithSecurity(Convert.ToString(EMP_ID), moduleid);
             CommonViewModel.OccupantLOVBind = dropDownListBindWeb.OccupantLOVBind();
             CommonViewModel.RentTypeLOVBind = dropDownListBindWeb.RentTypeLOVBind();
+
+            if (OccupantType == "E")
+            {
+                CommonViewModel.OccupantLOVBind = dropDownListBindWeb.OccupantEmpLOVBind();
+            }
+            else if (OccupantType == "N")
+            {
+                CommonViewModel.OccupantLOVBind = dropDownListBindWeb.OccupantNonEmpLOVBind();
+            }
+
             CommonViewModel.listFAllotmentRentDtls = new List<FAllotmentRentDtls>();
             CommonViewModel.listVwAonlaConsultantAllotStatus = new List<VwAonlaConsultantAllotStatus>();
-            // CommonViewModel.FromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
-            // CommonViewModel.ToDate = DateTime.Today;
-            //CommonViewModel = GetRentList(CommonViewModel, CommonViewModel.FromDate, CommonViewModel.ToDate, null, "Y");
-            CommonViewModel = GetRentList(CommonViewModel,CommonViewModel.PlantCD, CommonViewModel.OccupantCode);
+            CommonViewModel.listVwAonlaExEmpAllotStatus = new List<VwAonlaExEmpAllotStatus>();
+            CommonViewModel.listVwAonlaDeathCaseAllotStatus = new List<VwAonlaDeathCaseAllotStatus>();
+            CommonViewModel.listVwAonlaNonEmpAllotStatus = new List<VwAonlaNonEmpAllotStatus>();
+
+            CommonViewModel = GetRentList(CommonViewModel, PlantCD, OccupantCode);
             CommonViewModel.AreaName = this.ControllerContext.RouteData.Values["area"].ToString();
             CommonViewModel.SelectedMenu = this.ControllerContext.RouteData.Values["controller"].ToString();
+
+            CommonViewModel.PlantCD = PlantCD;
+            CommonViewModel.OccupantCode = OccupantCode;
+            CommonViewModel.OccupantType = OccupantType;
+
             return View(CommonViewModel);
-        }
-
-
-
-        public IActionResult Query(NERSC01ViewModel nERSC01ViewModel)
-        {
-            try
-            {
-                // CommonViewModel = GetRailDiList(nERSC01ViewModel, Convert.ToDateTime(nERSC01ViewModel.FromDate), Convert.ToDateTime(nERSC01ViewModel.ToDate), nERSC01ViewModel.PlantCD, nERSC01ViewModel.Pending);
-                CommonViewModel = GetRentList(nERSC01ViewModel, nERSC01ViewModel.PlantCD, nERSC01ViewModel.OccupantCode);
-                TempData["CommonViewModel"] = JsonConvert.SerializeObject(CommonViewModel);
-                CommonViewModel.IsAlertBox = false;
-                CommonViewModel.SelectedAction = "GetListSearch";
-                CommonViewModel.ErrorMessage = "";
-                CommonViewModel.AreaName = this.ControllerContext.RouteData.Values["area"].ToString();
-                CommonViewModel.SelectedMenu = this.ControllerContext.RouteData.Values["controller"].ToString();
-
-            }
-            catch (Exception ex)
-            {
-
-            }
-            return Json(CommonViewModel);
         }
 
         public List<SelectListItem> OccupantLOVBindJSON(string OccupantType)
@@ -99,55 +92,136 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
             return OccupantCodeLOV;
         }
 
-
-
-        public JsonResult PopulateOccupanttDtl(NERSC01ViewModel nERSC01ViewModel)
+        public IActionResult Query(NERSC01ViewModel nERSC01ViewModel)
         {
             try
             {
-                nERSC01ViewModel.Insert = CommonViewModel.Insert;
-                nERSC01ViewModel.Edit = CommonViewModel.Edit;
-                nERSC01ViewModel.Select = CommonViewModel.Select;
-                nERSC01ViewModel.Delete = CommonViewModel.Delete;
-                CommonViewModel = nERSC01ViewModel;
-
-                var ConsultantDtlsObj = new List<VwAonlaConsultantAllotStatus>();
-
-                VwAonlaConsultantAllotStatus vwAonlaConsultantAllotStatusDtls = nERRSCommonService.VwAonlaConsultantDtls().FirstOrDefault();
-
-                //var dOcpDtlObj = new List<FAllotmentRentDtls>();
-               // FAllotmentRentDtls fAllotmentRentDtls = _context.FAllotmentRentDtls.FirstOrDefault(x => x.RentCode.Equals(nERSC01ViewModel.RentCode));
-
-                //var rentcode = vwAonlaConsultantAllotStatusDtls.RentCode;
-                //var allotdate = vwAonlaConsultantAllotStatusDtls.AllotmentDate;
-               // nERSC01ViewModel.RentCode = rentcode;
-              //  CommonViewModel = Convert.ToDateTime(allotdate);
-                //ConsultantDtlsObj = nERRSCommonService.VwAonlaConsultantDtls().FirstOrDefault().ToList();
-                //ConsultantDtlsObj = _context.FAllotmentRentDtls.Where(x => x.RentCode == nERSC01ViewModel.RentCode && x.UnitCode.Equals(nERSC01ViewModel.UnitCode)).ToList();
-               // CommonViewModel.indentHdr = _context.FAllotmentRentDtls.FirstOrDefault(x => x.RentCode == nERSC01ViewModel.RentCode && x.UnitCode.Equals(nERSC01ViewModel.UnitCode));
-                CommonViewModel.AlottedOccupantList = ConsultantDtlsObj;
-
-
-                //nERSC01ViewModel.RailIndentDistLov = dropDownListBindWeb.GetDiTptrLOV(nERSC01ViewModel.PlantCD, nERSC01ViewModel.DINo);
-                //var obj = nERSC01ViewModel.RailIndentDistLov;
-
-                //CommonViewModel.WagonTypeLov = _context.MWagon.Where(x => x.Status == "A").Select(x => new SelectListItem
-                //{
-                //    Text = string.Concat(x.WagonType, " - ", x.WagonDesc, " - CC-", x.WagonCc, " - ChargeWt ~ ", x.ChargeWt),
-                //    Value = x.WagonType.ToString()
-                //}).ToList();
-
-
-                // CommonViewModel.SelectedDestSno = obj.FirstOrDefault().Value ?? "001";
-
-                // CommonViewModel.AlottedOccupantList = RowDiDtlPopulate(CommonViewModel);
-                // CommonViewModel.AlottedOccupantList = dOcpDtlObj;
-                CommonViewModel.ActionMode = "Update";
+                CommonViewModel = GetRentList(nERSC01ViewModel, nERSC01ViewModel.PlantCD, nERSC01ViewModel.OccupantCode);
+                TempData["CommonViewModel"] = JsonConvert.SerializeObject(CommonViewModel);
                 CommonViewModel.IsAlertBox = false;
                 CommonViewModel.SelectedAction = "GetListSearch";
+                CommonViewModel.ErrorMessage = "";
                 CommonViewModel.AreaName = this.ControllerContext.RouteData.Values["area"].ToString();
                 CommonViewModel.SelectedMenu = this.ControllerContext.RouteData.Values["controller"].ToString();
-                TempData["CommonViewModel"] = JsonConvert.SerializeObject(CommonViewModel);
+            }
+            catch (Exception ex)
+            {
+                // Handle exception
+            }
+            return Json(CommonViewModel);
+
+
+
+        }
+
+
+
+        [HttpPost]
+        public NERSC01ViewModel GetRentList(NERSC01ViewModel nERSC01ViewModel, string PlantCD, string OccupantCode)
+        {
+            CommonViewModel = nERSC01ViewModel;
+            int PersonnelNumber = Convert.ToInt32(HttpContext.Session.GetInt32("EmpID"));
+            CommonViewModel.listVwAonlaConsultantAllotStatus = new List<VwAonlaConsultantAllotStatus>();
+            CommonViewModel.listVwAonlaNonEmpAllotStatus = new List<VwAonlaNonEmpAllotStatus>();
+            CommonViewModel.listVwAonlaExEmpAllotStatus = new List<VwAonlaExEmpAllotStatus>();
+            CommonViewModel.listVwAonlaDeathCaseAllotStatus = new List<VwAonlaDeathCaseAllotStatus>();
+
+
+
+            if (OccupantCode == "1001")
+            {
+                CommonViewModel.listVwAonlaConsultantAllotStatus = nERRSCommonService.VwAonlaConsultantDtls(PlantCD);
+            }
+            else if (OccupantCode == "1002")
+            {
+                CommonViewModel.listVwAonlaDeathCaseAllotStatus = nERRSCommonService.VwAonlaDeathCaseAllotStatus(PlantCD);
+            }
+            else if (OccupantCode == "1016")
+            {
+                CommonViewModel.listVwAonlaExEmpAllotStatus = nERRSCommonService.VwAonlaExEmpAllotStatusDtls(PlantCD);
+            }
+           
+            else
+            {
+                CommonViewModel.listVwAonlaNonEmpAllotStatus = nERRSCommonService.VwAonlaNonEmpAllotStatus(PlantCD, OccupantCode);
+            }
+
+            CommonViewModel.AreaName = this.ControllerContext.RouteData.Values["area"].ToString();
+            CommonViewModel.SelectedMenu = this.ControllerContext.RouteData.Values["controller"].ToString();
+            return CommonViewModel;
+        }
+
+        public async Task<IActionResult> GetListSearch()
+        {
+            NERSC01ViewModel CommonViewModel = new NERSC01ViewModel();
+            CommonViewModel = JsonConvert.DeserializeObject<NERSC01ViewModel>(TempData["CommonViewModel"].ToString());
+            return View("Index", CommonViewModel);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Add(NERSC01ViewModel nERSC01ViewModel )
+        {
+            int counter = 0;
+            List<FAllotmentRentDtls> listFAllotmentRentDtls = new List<FAllotmentRentDtls>();
+
+            string occupantType = nERSC01ViewModel.OccupantType;
+            string personnelNumber = Convert.ToString(HttpContext.Session.GetInt32("EmpID"));
+
+            try
+            {
+               // if (!string.IsNullOrWhiteSpace(occupantType))
+              //  {
+                 //   switch (occupantType)
+                  //  {
+                     //   case "E": // Employees
+                            foreach (var value in nERSC01ViewModel.listVwAonlaConsultantAllotStatus)
+                            {
+                                if (!_context.FAllotmentRentDtls.Any(x => x.UnitCode.Equals(value.UnitCode) && x.AllotmentNo == value.AllotmentNo))
+                                {
+                                    var newRecord = new FAllotmentRentDtls
+                                    {
+                                        //UnitCode = value.UnitCode,
+                                        AllotmentNo = value.AllotmentNo,
+                                        OccupantCode = value.OccupantType,
+                                        QuarterCategory= value.QuarterCategory,
+                                        QuarterNo= Int32.Parse(value.QuarterNo),
+                                        RentCode = value.RentType,
+                                        CreatedBy = personnelNumber,
+                                        DatetimeCreated = DateTime.Now
+                                    };
+
+                      
+                                    _context.Add(newRecord);
+                                     counter++;
+                                }
+                            }
+
+                //if (listFAllotmentRentDtls.Any())
+                if (counter > 0)
+                {
+                              
+                                await _context.SaveChangesAsync();
+                                CommonViewModel.Status = "Create";
+                                CommonViewModel.Message = $"{counter} Records Created";
+                               
+                }
+
+                         //   break;
+
+                     //   default:
+                       //     break;
+                   // }
+              //  }
+                else
+                {
+                    CommonViewModel.Message = "Please check data again";
+                    CommonViewModel.Alert = "Warning";
+                    CommonViewModel.Status = "Warning";
+                    CommonViewModel.ErrorMessage = "1";
+                }
+
+                CommonViewModel.IsAlertBox = true;
+                CommonViewModel.AreaName = this.ControllerContext.RouteData.Values["area"].ToString();
+                CommonViewModel.SelectedMenu = this.ControllerContext.RouteData.Values["controller"].ToString();
             }
             catch (Exception ex)
             {
@@ -155,17 +229,9 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                 CommonViewModel.AreaName = this.ControllerContext.RouteData.Values["area"].ToString();
                 CommonViewModel.SelectedMenu = this.ControllerContext.RouteData.Values["controller"].ToString();
                 return Json(CommonViewModel);
-
             }
+
             return Json(CommonViewModel);
-        }
-        public async Task<IActionResult> GetListSearch()
-        {
-            //int PersonnelNumber = Convert.ToInt32(HttpContext.Session.GetInt32("EmpID"));
-            //ViewBag.PlantCDLOVList = dropDownListBindWeb.GetPlantCDLOV(PersonnelNumber);
-            NERSC01ViewModel CommonViewModel = new NERSC01ViewModel();
-            CommonViewModel = JsonConvert.DeserializeObject<NERSC01ViewModel>(TempData["CommonViewModel"].ToString());
-            return View("Index", CommonViewModel);
         }
 
         [HttpPost]
@@ -195,7 +261,6 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
             CommonViewModel.SelectedMenu = this.ControllerContext.RouteData.Values["controller"].ToString();
             return CommonViewModel;
         }
-
     }
 
 

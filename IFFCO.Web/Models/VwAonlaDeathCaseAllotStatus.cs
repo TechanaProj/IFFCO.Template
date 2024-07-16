@@ -1,13 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 using System;
 using IFFCO.HRMS.Repository.Pattern;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace IFFCO.NERRS.Web.Models
 {
-    public class VwAonlaExEmpAllotStatus : Entity
+    public class VwAonlaDeathCaseAllotStatus : Entity
     {
-
         [Display(Name = "Unit Code")]
         public string UnitCode { get; set; }
 

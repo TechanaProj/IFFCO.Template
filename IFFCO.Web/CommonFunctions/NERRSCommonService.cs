@@ -33,12 +33,12 @@ namespace IFFCO.NERRS.Web.CommonFunctions
           
         }
 
-        public List<VwAonlaConsultantAllotStatus> VwAonlaConsultantDtls()
+        public List<VwAonlaConsultantAllotStatus> VwAonlaConsultantDtls(string PlantCD)    /*  contracts case */
         {
 
-            string sqlquery = "SELECT UNIT_CODE,ALLOTMENT_NO,QUARTER_FOR,QUARTER_ISSUED_TO,ISSUSE_TO, PERSONAL_NO,NAME,QUARTER_NO,QUARTER_NAME_FOR,APPLICATION_DATE,APPROVED_DATE,QUARTER_CATEGORY,OCCUPANCY_DATE,CON_STATUS,EFFECTIVE_FROM";
-                  sqlquery += "EFFECTIVE_TO,VACANCY_DATE,STAY_PERIOD,NO_OF_DAYS,NO_OF_YEARS,STATUS";
-                  sqlquery += "from VW_AONLA_CONSULTANT_ALLOT_STATUS order by OCCUPANCY_DATE desc ";
+            string sqlquery = " SELECT UNIT_CODE,ALLOTMENT_NO,QUARTER_FOR,QUARTER_ISSUED_TO,ISSUSE_TO, PERSONAL_NO,NAME,QUARTER_NO,QUARTER_NAME_FOR,APPLICATION_DATE,APPROVED_DATE,QUARTER_CATEGORY,OCCUPANCY_DATE,CON_STATUS,EFFECTIVE_FROM,";
+                  sqlquery += " EFFECTIVE_TO,VACANCY_DATE,STAY_PERIOD,NO_OF_DAYS,NO_OF_YEARS,STATUS ";
+                  sqlquery += " from VW_AONLA_CONSULTANT_ALLOT_STATUS WHERE UNIT_CODE = '"+ PlantCD + "' order by OCCUPANCY_DATE desc ";
            
 
             DataTable dtDTL_VALUE = new DataTable();
@@ -51,13 +51,162 @@ namespace IFFCO.NERRS.Web.CommonFunctions
                              UnitCode = Convert.ToString(dr["UNIT_CODE"]),
                              AllotmentNo = (dr["ALLOTMENT_NO"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["ALLOTMENT_NO"]),
                              QuarterFor = Convert.ToString(dr["QUARTER_FOR"]),
-                            
-                             
+                             QuarterIssuedTo = Convert.ToString(dr["QUARTER_ISSUED_TO"]),
+                             IssuedTo = Convert.ToString(dr["ISSUSE_TO"]),
+                             PersonalNo = Convert.ToString(dr["PERSONAL_NO"]),
+                             Name = Convert.ToString(dr["NAME"]),
+                             QuarterNo = Convert.ToString(dr["QUARTER_NO"]),
+                             QuarterNameFor = Convert.ToString(dr["QUARTER_NAME_FOR"]),
+                             ApplicationDate = Convert.ToDateTime(dr["APPLICATION_DATE"]),
+                             ApprovedDate = Convert.ToDateTime(dr["APPROVED_DATE"]),
+                             QuarterCategory = Convert.ToString(dr["QUARTER_CATEGORY"]),
+                             OccupancyDate = Convert.ToDateTime(dr["OCCUPANCY_DATE"]),
+                             ConStatus = Convert.ToString(dr["CON_STATUS"]),
+                             EffectiveFrom = Convert.ToDateTime(dr["EFFECTIVE_FROM"]),
+                             //EffectiveTo = Convert.ToDateTime(dr["EFFECTIVE_TO"]),
+                             //VacancyDate = Convert.ToDateTime(dr["VACANCY_DATE"]),
+                             //StayPeriod = Convert.ToString(dr["STAY_PERIOD"]),
+                             //NoOfDays = (dr["NO_OF_DAYS"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["NO_OF_DAYS"]),
+                             //NoOfYears = (dr["NO_OF_YEARS"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["NO_OF_YEARS"]),
+                             //Status = Convert.ToString(dr["Status"]),
+
+
 
 
                          }).ToList();
             return DTL_VALUE;
         }
+
+        public List<VwAonlaDeathCaseAllotStatus> VwAonlaDeathCaseAllotStatus(string PlantCD)   /*For Death case */
+        {
+
+            string sqlquery = " SELECT UNIT_CODE,ALLOTMENT_NO,QUARTER_FOR,QUARTER_ISSUED_TO,ISSUSE_TO, PERSONAL_NO,NAME,QUARTER_NO,QUARTER_NAME_FOR,APPLICATION_DATE,APPROVED_DATE,QUARTER_CATEGORY,OCCUPANCY_DATE,EFFECTIVE_FROM,";
+            sqlquery += " EFFECTIVE_TO,VACANCY_DATE,STAY_PERIOD,NO_OF_DAYS,NO_OF_YEARS,STATUS ";
+            sqlquery += " from VW_AONLA_DEATH_CASE_ALLOT_STATUS where UNIT_CODE = ' " + PlantCD + "' and QUARTER_ISSUED_TO = 'D' order by OCCUPANCY_DATE desc ";
+
+
+            DataTable dtDTL_VALUE = new DataTable();
+            dtDTL_VALUE = _context.GetSQLQuery(sqlquery);
+            List<VwAonlaDeathCaseAllotStatus> DTL_VALUE = new List<VwAonlaDeathCaseAllotStatus>();
+            DTL_VALUE = (from DataRow dr in dtDTL_VALUE.Rows
+                         select new VwAonlaDeathCaseAllotStatus()
+                         {
+
+                             UnitCode = Convert.ToString(dr["UNIT_CODE"]),
+                             AllotmentNo = (dr["ALLOTMENT_NO"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["ALLOTMENT_NO"]),
+                             QuarterFor = Convert.ToString(dr["QUARTER_FOR"]),
+                             Name = Convert.ToString(dr["NAME"]),
+                             QuarterNo = Convert.ToString(dr["QUARTER_NO"]),
+                             QuarterNameFor = Convert.ToString(dr["QUARTER_NAME_FOR"]),
+                             PersonalNo = Convert.ToString(dr["PERSONAL_NO"]),
+
+                             //ApplicationDate = Convert.ToDateTime(dr["APPLICATION_DATE"]),
+                             //ApprovedDate = Convert.ToDateTime(dr["APPROVED_DATE"]),
+                             QuarterCategory = Convert.ToString(dr["QUARTER_CATEGORY"]),
+                             //OccupancyDate = Convert.ToDateTime(dr["OCCUPANCY_DATE"]),
+                             //EffectiveFrom = Convert.ToDateTime(dr["EFFECTIVE_FROM"]),
+                             //EffectiveTo = Convert.ToDateTime(dr["EFFECTIVE_TO"]),
+                             //VacancyDate = Convert.ToDateTime(dr["VACANCY_DATE"]),
+                             //StayPeriod = Convert.ToString(dr["STAY_PERIOD"]),
+                             //NoOfDays = (dr["NO_OF_DAYS"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["NO_OF_DAYS"]),
+                             //NoOfYears = (dr["NO_OF_YEARS"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["NO_OF_YEARS"]),
+                             //Status = Convert.ToString(dr["Status"]),
+
+
+
+
+                         }).ToList();
+            return DTL_VALUE;
+        }
+
+
+
+
+        public List<VwAonlaExEmpAllotStatus> VwAonlaExEmpAllotStatusDtls(string PlantCD)    /*For Ex employee - Retired case */
+        {
+
+            string sqlquery = " SELECT UNIT_CODE,ALLOTMENT_NO,QUARTER_FOR,QUARTER_ISSUED_TO,ISSUSE_TO, PERSONAL_NO,NAME,QUARTER_NO,QUARTER_NAME_FOR,APPLICATION_DATE,APPROVED_DATE,QUARTER_CATEGORY,OCCUPANCY_DATE,EFFECTIVE_FROM,";
+            sqlquery += " EFFECTIVE_TO,VACANCY_DATE,STAY_PERIOD,NO_OF_DAYS,NO_OF_YEARS,STATUS ";
+            sqlquery += " from VW_AONLA_EX_EMP_ALLOT_STATUS where UNIT_CODE = ' "+ PlantCD + "' and QUARTER_ISSUED_TO = 'U' order by OCCUPANCY_DATE desc ";
+
+
+            DataTable dtDTL_VALUE = new DataTable();
+            dtDTL_VALUE = _context.GetSQLQuery(sqlquery);
+            List<VwAonlaExEmpAllotStatus> DTL_VALUE = new List<VwAonlaExEmpAllotStatus>();
+            DTL_VALUE = (from DataRow dr in dtDTL_VALUE.Rows
+                         select new VwAonlaExEmpAllotStatus()
+                         {
+
+                             UnitCode = Convert.ToString(dr["UNIT_CODE"]),
+                             AllotmentNo = (dr["ALLOTMENT_NO"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["ALLOTMENT_NO"]),
+                             QuarterFor = Convert.ToString(dr["QUARTER_FOR"]),
+                             Name = Convert.ToString(dr["NAME"]),
+                             QuarterNo = Convert.ToString(dr["QUARTER_NO"]),
+                             QuarterNameFor = Convert.ToString(dr["QUARTER_NAME_FOR"]),
+                             PersonalNo = Convert.ToString(dr["PERSONAL_NO"]),
+                            
+                             //ApplicationDate = Convert.ToDateTime(dr["APPLICATION_DATE"]),
+                             //ApprovedDate = Convert.ToDateTime(dr["APPROVED_DATE"]),
+                             QuarterCategory = Convert.ToString(dr["QUARTER_CATEGORY"]),
+                             //OccupancyDate = Convert.ToDateTime(dr["OCCUPANCY_DATE"]),
+                             //EffectiveFrom = Convert.ToDateTime(dr["EFFECTIVE_FROM"]),
+                             //EffectiveTo = Convert.ToDateTime(dr["EFFECTIVE_TO"]),
+                             //VacancyDate = Convert.ToDateTime(dr["VACANCY_DATE"]),
+                             //StayPeriod = Convert.ToString(dr["STAY_PERIOD"]),
+                             //NoOfDays = (dr["NO_OF_DAYS"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["NO_OF_DAYS"]),
+                             //NoOfYears = (dr["NO_OF_YEARS"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["NO_OF_YEARS"]),
+                             //Status = Convert.ToString(dr["Status"]),
+
+
+
+
+                         }).ToList();
+            return DTL_VALUE;
+        }
+
+       
+
+
+
+        public List<VwAonlaNonEmpAllotStatus> VwAonlaNonEmpAllotStatus(string PlantCD, string OccupantCode)   /*For Non-Employees */
+        {
+
+            string sqlquery = "select a.UNIT_CODE, a.ALLOTMENT_NO,a.QUARTER_FOR,a.ALLOTMENT_TYPE,a.QUARTER_ISSUED_TO,a.ISSUSE_TO,a.QUARTER_NAME_FOR,a.APPLICATION_DATE, a.APPROVED_DATE, a.QUARTER_CATEGORY, a.QUARTER_NO,a.OCCUPANCY_DATE, a.VACANCY_DATE, ";
+            sqlquery += " a.STAY_PERIOD, a.NO_OF_DAYS, a.NO_OF_YEARS, a.STATUS ";
+            sqlquery += " from VW_AONLA_NON_EMP_ALLOT_STATUS a  where UNIT_CODE = '"+ PlantCD + "' and QUARTER_ISSUED_TO = '" + OccupantCode + "' order by OCCUPANCY_DATE desc ";
+
+
+            DataTable dtDTL_VALUE = new DataTable();
+            dtDTL_VALUE = _context.GetSQLQuery(sqlquery);
+            List<VwAonlaNonEmpAllotStatus> DTL_VALUE = new List<VwAonlaNonEmpAllotStatus>();
+            DTL_VALUE = (from DataRow dr in dtDTL_VALUE.Rows
+                         select new VwAonlaNonEmpAllotStatus()
+                         {
+
+                             UnitCode = Convert.ToString(dr["UNIT_CODE"]),
+                             AllotmentNo = (dr["ALLOTMENT_NO"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["ALLOTMENT_NO"]),
+                             QuarterFor = Convert.ToString(dr["QUARTER_FOR"]),
+                             QuarterNo = Convert.ToString(dr["QUARTER_NO"]),
+                             QuarterNameFor = Convert.ToString(dr["QUARTER_NAME_FOR"]),
+                             //ApplicationDate = Convert.ToDateTime(dr["APPLICATION_DATE"]),
+                             //ApprovedDate = Convert.ToDateTime(dr["APPROVED_DATE"]),
+                             QuarterCategory = Convert.ToString(dr["QUARTER_CATEGORY"]),
+                             // OccupancyDate = Convert.ToDateTime(dr["OCCUPANCY_DATE"]),
+                             // EffectiveFrom = Convert.ToDateTime(dr["EFFECTIVE_FROM"]),
+                             //EffectiveTo = Convert.ToDateTime(dr["EFFECTIVE_TO"]),
+                            // VacancyDate = Convert.ToDateTime(dr["VACANCY_DATE"]),
+                             //StayPeriod = Convert.ToString(dr["STAY_PERIOD"]),
+                             //NoOfDays = (dr["NO_OF_DAYS"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["NO_OF_DAYS"]),
+                             //NoOfYears = (dr["NO_OF_YEARS"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["NO_OF_YEARS"]),
+                             Status = Convert.ToString(dr["Status"]),
+
+
+
+
+                         }).ToList();
+            return DTL_VALUE;
+        }
+
 
     }
 }
