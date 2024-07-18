@@ -1,9 +1,10 @@
-﻿using System;
+﻿using IFFCO.HRMS.Repository.Pattern;
+using System;
 using System.Collections.Generic;
 
 namespace IFFCO.NERRS.Web.Models
 {
-    public partial class MQuarterTypeMsts
+    public partial class MQuarterTypeMsts : Entity
     {
         public int UnitCode { get; set; }
         public string QuarterType { get; set; }

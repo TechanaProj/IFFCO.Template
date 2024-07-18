@@ -1,9 +1,10 @@
-﻿using System;
+﻿using IFFCO.HRMS.Repository.Pattern;
+using System;
 using System.Collections.Generic;
 
 namespace IFFCO.NERRS.Web.Models
 {
-    public partial class MVendorMsts
+    public partial class MVendorMsts : Entity
     {
         public int UnitCode { get; set; }
         public string VendorCode { get; set; }

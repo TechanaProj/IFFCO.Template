@@ -44,7 +44,7 @@
                 var formData = new FormData();
                 var hasValidData = false;
                 var isInvalidDataFound = false; // Flag to check for invalid data
-                
+
                 var cnt = 0;
 
                 $("#HrmsHrdGrid tbody tr").each(function (index, e) {
@@ -54,15 +54,15 @@
                     var rentType = row.find("td:eq(8) select option:selected").val();
 
                     if (isChecked && occupantType && rentType) {
-                   
+
                         hasValidData = true;
-                       // formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].PersonalNo', row.find("td:eq(0)").text().trim());
-                       // formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].QuarterCategory', row.find("td:eq(1)").text().trim());
-                       // formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].QuarterNo', row.find("td:eq(2)").text().trim());
+                        // formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].PersonalNo', row.find("td:eq(0)").text().trim());
+                        // formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].QuarterCategory', row.find("td:eq(1)").text().trim());
+                        // formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].QuarterNo', row.find("td:eq(2)").text().trim());
                         formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].AllotmentNo', row.find("td:eq(3)").text().trim());
-                       // formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].ApprovedDate', row.find("td:eq(4)").text().trim());
-                       // formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].OccupancyDate', row.find("td:eq(5)").text().trim());
-                       // formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].VacancyDate', row.find("td:eq(6)").text().trim());
+                        // formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].ApprovedDate', row.find("td:eq(4)").text().trim());
+                        // formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].OccupancyDate', row.find("td:eq(5)").text().trim());
+                        //formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].VacancyDate', row.find("td:eq(6)").text().trim());
                         formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].OccupantType', occupantType);
                         formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].RentType', rentType);
 
@@ -78,22 +78,59 @@
 
                 $("#HrmsHrdGrid tbody tr").each(function (index, e) {
                     var row = $(this);
-                    var isChecked = row.find("td:eq(9) input[type='checkbox']").is(":checked");
+                    var isChecked = row.find("td:eq(10) input[type='checkbox']").is(":checked");
                     var occupantType = row.find("td:eq(7) select option:selected").val();
                     var rentType = row.find("td:eq(8) select option:selected").val();
 
-                   // if (isChecked && occupantType && rentType) {
-                    if (isChecked && rentType) {
+                    if (isChecked && occupantType && rentType) {
                         hasValidData = true;
-                       // formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].PersonalNo', row.find("td:eq(0)").text().trim());
-                        //formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].QuarterCategory', row.find("td:eq(1)").text().trim());
-                        //formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].QuarterNo', row.find("td:eq(2)").text().trim());
                         formData.append('nERSC01ViewModel.listVwAonlaExEmpAllotStatus[' + cnt + '].AllotmentNo', row.find("td:eq(3)").text().trim());
-                        //formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].ApprovedDate', row.find("td:eq(4)").text().trim());
-                        //formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].OccupancyDate', row.find("td:eq(5)").text().trim());
-                        //formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].VacancyDate', row.find("td:eq(6)").text().trim());
                         formData.append('nERSC01ViewModel.listVwAonlaExEmpAllotStatus[' + cnt + '].OccupantType', occupantType);
                         formData.append('nERSC01ViewModel.listVwAonlaExEmpAllotStatus[' + cnt + '].RentType', rentType);
+
+                        cnt = cnt + 1;
+                    } else if (isChecked && (!occupantType || !rentType)) {
+                        CommonAlert("Alert", "Please select both Occupant Type and Rent Type for checked rows.", null, null, "Warning");
+                        $(".modalLoader").css("display", "none");
+                        return false;
+                    }
+                });
+
+                cnt = 0;
+
+                $("#HrmsHrdGrid tbody tr").each(function (index, e) {
+                    var row = $(this);
+                    var isChecked = row.find("td:eq(10) input[type='checkbox']").is(":checked");
+                    var occupantType = row.find("td:eq(7) select option:selected").val();
+                    var rentType = row.find("td:eq(8) select option:selected").val();
+
+                    if (isChecked && occupantType && rentType) {
+                        hasValidData = true;
+                        formData.append('nERSC01ViewModel.listVwAonlaNonEmpAllotStatus[' + cnt + '].AllotmentNo', row.find("td:eq(3)").text().trim());
+                        formData.append('nERSC01ViewModel.listVwAonlaNonEmpAllotStatus[' + cnt + '].OccupantType', occupantType);
+                        formData.append('nERSC01ViewModel.listVwAonlaNonEmpAllotStatus[' + cnt + '].RentType', rentType);
+
+                        cnt = cnt + 1;
+                    } else if (isChecked && (!occupantType || !rentType)) {
+                        CommonAlert("Alert", "Please select both Occupant Type and Rent Type for checked rows.", null, null, "Warning");
+                        $(".modalLoader").css("display", "none");
+                        return false;
+                    }
+                });
+
+                cnt = 0;
+
+                $("#HrmsHrdGrid tbody tr").each(function (index, e) {
+                    var row = $(this);
+                    var isChecked = row.find("td:eq(10) input[type='checkbox']").is(":checked");
+                    var occupantType = row.find("td:eq(7) select option:selected").val();
+                    var rentType = row.find("td:eq(8) select option:selected").val();
+
+                    if (isChecked && occupantType && rentType) {
+                        hasValidData = true;
+                        formData.append('nERSC01ViewModel.listVwAonlaDeathCaseAllotStatus[' + cnt + '].AllotmentNo', row.find("td:eq(3)").text().trim());
+                        formData.append('nERSC01ViewModel.listVwAonlaDeathCaseAllotStatus[' + cnt + '].OccupantType', occupantType);
+                        formData.append('nERSC01ViewModel.listVwAonlaDeathCaseAllotStatus[' + cnt + '].RentType', rentType);
 
                         cnt = cnt + 1;
                     } else if (isChecked && (!occupantType || !rentType)) {
@@ -195,6 +232,8 @@
                                                         <option value="E">Ex-Employee</option>
                                                         <option value="N">Non-Employee</option>
                                                     </select>
+
+
                                                 </div>
                                                 <div class="col-sm-2 col-md-2">
                                                     <label class="m-lbl1 m-lbl2">Occupant List</label>
@@ -237,6 +276,9 @@
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
+
+
+
                                 <tbody id="consultantData">
                                     @foreach (var item in Model.listVwAonlaConsultantAllotStatus)
                                     {
@@ -247,19 +289,30 @@
                                             <td>@Html.DisplayFor(modelItem => item.AllotmentNo)</td>
                                             <td>@Html.DisplayFor(modelItem => item.ApprovedDate)</td>
                                             <td id="td_Rent_@(item.UnitCode)_@(item.AllotmentNo)_@(item.PersonalNo)">@Html.DisplayFor(modelItem => item.OccupancyDate)</td>
-                                            <td>@Html.DisplayFor(modelItem => item.VacancyDate)</td>
+                                            <td>@Html.EditorFor(modelItem => item.VacancyDate)</td>
                                             <td>
-                                                <select id="OccupantTypeLOV" class="form-control" asp-items="@(new SelectList(Model.OccupantLOVBind, "Value", "Text", Model.OccupantCode))" Readonly>
+                                                <select id="OccupantTypeLOV" class="form-control" asp-items="@(new SelectList(Model.OccupantLOVBind, "Value", "Text", item.OccupantType))" Readonly>
                                                     <option value="">--SELECT--</option>
                                                 </select>
                                             </td>
                                             <td>
-                                                <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.RentTypeLOVBind, "Value", "Text"))" asp-for="@Model.RentCode">
-                                                    <option value="">--SELECT--</option>
-                                                </select>
-                                            </td>
-                                            <td>
+                                                
 
+                                                @if (!string.IsNullOrEmpty(item.RentType))
+                                                {
+                                                    <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.RentTypeLOVBind, "Value", "Text", item.RentType))" disabled>
+                                                        <option value="">--SELECT--</option>
+                                                    </select>
+                                                }
+                                                else
+                                                {
+                                                    <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.RentTypeLOVBind, "Value", "Text", item.RentType))">
+                                                        <option value="">--SELECT--</option>
+                                                    </select>
+                                                }
+
+                                            </td>
+                                            <td>
                                             </td>
                                             <td>
                                                 <input type="checkbox" class="form-control" data-id="@item.AllotmentNo" />
@@ -277,7 +330,7 @@
                                             <td>@Html.DisplayFor(modelItem => item.AllotmentNo)</td>
                                             <td>@Html.DisplayFor(modelItem => item.ApprovedDate)</td>
                                             <td>@Html.DisplayFor(modelItem => item.OccupancyDate)</td>
-                                            <td>@Html.DisplayFor(modelItem => item.VacancyDate)</td>
+                                            <td>@Html.EditorFor(modelItem => item.VacancyDate)</td>
                                             <td>
                                                 <select id="OccupantTypeLOV" class="form-control" asp-items="@(new SelectList(Model.OccupantLOVBind, "Value", "Text" , Model.OccupantCode))">
                                                     <option value="">--SELECT--</option>
@@ -289,7 +342,6 @@
                                                 </select>
                                             </td>
                                             <td>
-
                                             </td>
                                             <td>
                                                 <input type="checkbox" class="save-checkbox" data-id="@item.AllotmentNo" />
@@ -307,7 +359,7 @@
                                             <td>@Html.DisplayFor(modelItem => item.AllotmentNo)</td>
                                             <td>@Html.DisplayFor(modelItem => item.ApprovedDate)</td>
                                             <td>@Html.DisplayFor(modelItem => item.OccupancyDate)</td>
-                                            <td>@Html.DisplayFor(modelItem => item.VacancyDate)</td>
+                                            <td>@Html.EditorFor(modelItem => item.VacancyDate)</td>
                                             <td>
                                                 <select id="OccupantTypeLOV" class="form-control" asp-items="@(new SelectList(Model.OccupantLOVBind, "Value", "Text" , Model.OccupantCode))">
                                                     <option value="">--SELECT--</option>
@@ -319,7 +371,6 @@
                                                 </select>
                                             </td>
                                             <td>
-
                                             </td>
                                             <td>
                                                 <input type="checkbox" class="save-checkbox" data-id="@item.AllotmentNo" />
@@ -337,7 +388,7 @@
                                             <td>@Html.DisplayFor(modelItem => item.AllotmentNo)</td>
                                             <td>@Html.DisplayFor(modelItem => item.ApprovedDate)</td>
                                             <td>@Html.DisplayFor(modelItem => item.OccupancyDate)</td>
-                                            <td>@Html.DisplayFor(modelItem => item.VacancyDate)</td>
+                                            <td>@Html.EditorFor(modelItem => item.VacancyDate)</td>
                                             <td>
                                                 <select id="OccupantTypeLOV" class="form-control" asp-items="@(new SelectList(Model.OccupantLOVBind, "Value", "Text" , Model.OccupantCode))">
                                                     <option value="">--SELECT--</option>

@@ -1,11 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System;
 using IFFCO.HRMS.Repository.Pattern.Core;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace IFFCO.NERRS.Web.Models
 {
     public class VwAonlaConsultantAllotStatus : Entity
     {
+
+        public List<SelectListItem> RentTypeLOVBind { get; set; }
 
         [Display(Name = "Unit Code")]
         public string UnitCode { get; set; }
@@ -78,6 +83,10 @@ namespace IFFCO.NERRS.Web.Models
 
         [Display(Name = "Status")]
         public string Status { get; set; }
+        [NotMapped]
+        public string OccupantType { get; set; }
+        [NotMapped]
+        public string RentType { get; set; }
 
     }
 }
