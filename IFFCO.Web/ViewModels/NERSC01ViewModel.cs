@@ -1,4 +1,5 @@
 ﻿using IFFCO.HRMS.Shared.Entities;
+using IFFCO.NERRS.Web.CommonFunctions;
 using IFFCO.NERRS.Web.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -16,6 +17,7 @@ namespace IFFCO.NERRS.Web.ViewModels
         public string Occupant { get; set; }
 
         public DateTime AllotmentDate { get; set; }
+        public DateTime VacancyDate { get; set; }
         public DateTime FromDate { get; set; }
 
         public DateTime ToDate { get; set; }
@@ -42,7 +44,12 @@ namespace IFFCO.NERRS.Web.ViewModels
         //SelectLists
         public List<SelectListItem> UnitLOVBind { get; set; }
         public List<SelectListItem> OccupantLOVBind { get; set; }
+        public List<SelectListItem> RentLOVBindJSON { get; set; }
+        public List<SelectListItem_Custom> RentTypeLOVBindnew { get; set; }  //customized
         public List<SelectListItem> RentTypeLOVBind { get; set; }
+        public List<SelectListItem> IOBRentTypeLOVBind { get; set; }
+        public List<SelectListItem> IGTIRentTypeLOVBind { get; set; }
+        public List<SelectListItem> GAILRentTypeLOVBind { get; set; }
     }
 }
 

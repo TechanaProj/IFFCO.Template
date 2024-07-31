@@ -45,6 +45,10 @@
                 var hasValidData = false;
                 var isInvalidDataFound = false; // Flag to check for invalid data
 
+                formData.append("nERSC01ViewModel.PlantCD", $('#PlantCD option:selected').val());
+                formData.append("nERSC01ViewModel.OccupantCode", $('#OccupantCode option:selected').val());
+                //formData.append("nERSC01ViewModel.VacancyDate", $('#vacancyDateId ').val());
+
                 var cnt = 0;
 
                 $("#HrmsHrdGrid tbody tr").each(function (index, e) {
@@ -62,7 +66,7 @@
                         formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].AllotmentNo', row.find("td:eq(3)").text().trim());
                         // formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].ApprovedDate', row.find("td:eq(4)").text().trim());
                         // formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].OccupancyDate', row.find("td:eq(5)").text().trim());
-                        //formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].VacancyDate', row.find("td:eq(6)").text().trim());
+                        formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].VacancyDate_Text', row.find("td:eq(6) input").val());
                         formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].OccupantType', occupantType);
                         formData.append('nERSC01ViewModel.listVwAonlaConsultantAllotStatus[' + cnt + '].RentType', rentType);
 
@@ -85,6 +89,7 @@
                     if (isChecked && occupantType && rentType) {
                         hasValidData = true;
                         formData.append('nERSC01ViewModel.listVwAonlaExEmpAllotStatus[' + cnt + '].AllotmentNo', row.find("td:eq(3)").text().trim());
+                        formData.append('nERSC01ViewModel.listVwAonlaExEmpAllotStatus[' + cnt + '].VacancyDate_Text', row.find("td:eq(6) input").val());
                         formData.append('nERSC01ViewModel.listVwAonlaExEmpAllotStatus[' + cnt + '].OccupantType', occupantType);
                         formData.append('nERSC01ViewModel.listVwAonlaExEmpAllotStatus[' + cnt + '].RentType', rentType);
 
@@ -103,10 +108,12 @@
                     var isChecked = row.find("td:eq(10) input[type='checkbox']").is(":checked");
                     var occupantType = row.find("td:eq(7) select option:selected").val();
                     var rentType = row.find("td:eq(8) select option:selected").val();
+                    
 
                     if (isChecked && occupantType && rentType) {
                         hasValidData = true;
                         formData.append('nERSC01ViewModel.listVwAonlaNonEmpAllotStatus[' + cnt + '].AllotmentNo', row.find("td:eq(3)").text().trim());
+                        formData.append('nERSC01ViewModel.listVwAonlaNonEmpAllotStatus[' + cnt + '].VacancyDate_Text', row.find("td:eq(6) input").val());
                         formData.append('nERSC01ViewModel.listVwAonlaNonEmpAllotStatus[' + cnt + '].OccupantType', occupantType);
                         formData.append('nERSC01ViewModel.listVwAonlaNonEmpAllotStatus[' + cnt + '].RentType', rentType);
 
@@ -129,6 +136,7 @@
                     if (isChecked && occupantType && rentType) {
                         hasValidData = true;
                         formData.append('nERSC01ViewModel.listVwAonlaDeathCaseAllotStatus[' + cnt + '].AllotmentNo', row.find("td:eq(3)").text().trim());
+                        formData.append('nERSC01ViewModel.listVwAonlaDeathCaseAllotStatus[' + cnt + '].VacancyDate_Text', row.find("td:eq(6) input").val());
                         formData.append('nERSC01ViewModel.listVwAonlaDeathCaseAllotStatus[' + cnt + '].OccupantType', occupantType);
                         formData.append('nERSC01ViewModel.listVwAonlaDeathCaseAllotStatus[' + cnt + '].RentType', rentType);
 
@@ -196,6 +204,15 @@
         $(".modalLoader").css("display", "block");
         setTimeout(function () {
             CommonAjax('/M1/NERSC01/OccupantLOVBindJSON', "GET", false, "application/json", false, BindDropDownWithSelectAsNull, "#OccupantCode", { OccupantType: $('#OccupantList').val() });
+            $(".modalLoader").hide();
+        }, 10);
+    }
+
+    function RentLOV_pop() {
+        debugger;
+        $(".modalLoader").css("display", "block");
+        setTimeout(function () {
+            CommonAjax('/M1/NERSC01/RentLOVBindJSON', "GET", false, "application/json", false, BindDropDownWithSelectAsNull, "#OccupantCode", { OccupantType: $('#OccupantList').val() });
             $(".modalLoader").hide();
         }, 10);
     }
@@ -272,31 +289,84 @@
                                         <th>Vacancy Date</th>
                                         <th>Occupant</th>
                                         <th>Quarter Rent</th>
-                                        <th>No. of beds</th>
+                                        <th> </th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
 
-
-
                                 <tbody id="consultantData">
+
                                     @foreach (var item in Model.listVwAonlaConsultantAllotStatus)
                                     {
-                                        <tr id="tr_@(item.UnitCode)_@(item.AllotmentNo)_@(item.PersonalNo)" data-ischange="0">
+                                        <tr id="tr_@(item.UnitCode)_@(item.AllotmentNo)_@(item.PersonalNo)" data-ischange="0" style="@(!string.IsNullOrEmpty(item.RentType) ? "background-color:#e1ad01;" : "")">
                                             <td>@Html.DisplayFor(modelItem => item.PersonalNo) - @Html.DisplayFor(modelItem => item.Name) </td>
                                             <td>@Html.DisplayFor(modelItem => item.QuarterCategory)</td>
                                             <td>@Html.DisplayFor(modelItem => item.QuarterNo)</td>
                                             <td>@Html.DisplayFor(modelItem => item.AllotmentNo)</td>
                                             <td>@Html.DisplayFor(modelItem => item.ApprovedDate)</td>
                                             <td id="td_Rent_@(item.UnitCode)_@(item.AllotmentNo)_@(item.PersonalNo)">@Html.DisplayFor(modelItem => item.OccupancyDate)</td>
-                                            <td>@Html.EditorFor(modelItem => item.VacancyDate)</td>
+
                                             <td>
-                                                <select id="OccupantTypeLOV" class="form-control" asp-items="@(new SelectList(Model.OccupantLOVBind, "Value", "Text", item.OccupantType))" Readonly>
+                                                @*@Html.EditorFor(modelItem => item.VacancyDate, new { htmlAttributes = new { @id = "vacancyDateId",  } })*@
+                                                @*<input type="date"  class="form-control" asp-for="@Model.VacancyDate" value="@Model.VacancyDate.ToString("yyyy-MM-dd").Replace("/","-")">*@
+                                                <input type="text" class="form-control datetime" value="@item.VacancyDate?.ToString("dd/MM/yyyy").Replace("-","/")">
+                                            </td>
+
+
+
+                                            <td>
+                                                <select class="form-control" asp-items="@(new SelectList(Model.OccupantLOVBind, "Value", "Text", Model.OccupantCode))" Readonly>
                                                     <option value="">--SELECT--</option>
                                                 </select>
                                             </td>
                                             <td>
-                                                
+
+
+                                                @if (!string.IsNullOrEmpty(item.RentType))
+                                                {
+                                                    <select class="form-control" asp-items="@(new SelectList(Model.RentTypeLOVBind, "Value", "Text", item.RentType))" disabled>
+                                                        <option value="">--SELECT--</option>
+                                                    </select>
+                                                }
+                                                else
+                                                {
+                                                    <select class="form-control" asp-items="@(new SelectList(Model.RentTypeLOVBind, "Value", "Text", item.RentType))">
+                                                        <option value="">--SELECT--</option>
+                                                    </select>
+                                                }
+
+                                            </td>
+                                            <td>
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" class="form-control" data-id="@item.AllotmentNo" />
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tbody id="deathCaseData">
+                                    @foreach (var item in Model.listVwAonlaDeathCaseAllotStatus)
+                                    {
+                                        <tr id="tr_@(item.UnitCode)_@(item.AllotmentNo)_@(item.PersonalNo)" data-ischange="0" style="@(!string.IsNullOrEmpty(item.RentType) ? "background-color:#e1ad01;" : "")">
+                                            <td>@Html.DisplayFor(modelItem => item.PersonalNo) - @Html.DisplayFor(modelItem => item.Name) </td>
+                                            <td>@Html.DisplayFor(modelItem => item.QuarterCategory)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.QuarterNo)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.AllotmentNo)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.ApprovedDate)</td>
+                                            <td id="td_Rent_@(item.UnitCode)_@(item.AllotmentNo)_@(item.PersonalNo)">@Html.DisplayFor(modelItem => item.OccupancyDate)</td>
+
+                                            <td>
+                                                @*@Html.EditorFor(modelItem => item.VacancyDate, new { htmlAttributes = new { @id = "vacancyDateId",  } })*@
+                                                <input type="text" class="form-control datetime" value="@item.VacancyDate?.ToString("dd/MM/yyyy").Replace("-","/")">
+
+                                            </td>
+                                            <td>
+                                                <select id="OccupantTypeLOV" class="form-control" asp-items="@(new SelectList(Model.OccupantLOVBind, "Value", "Text", Model.OccupantCode))" Readonly>
+                                                    <option value="">--SELECT--</option>
+                                                </select>
+                                            </td>
+                                            <td>
+
 
                                                 @if (!string.IsNullOrEmpty(item.RentType))
                                                 {
@@ -315,35 +385,6 @@
                                             <td>
                                             </td>
                                             <td>
-                                                <input type="checkbox" class="form-control" data-id="@item.AllotmentNo" />
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                                <tbody id="deathCaseData">
-                                    @foreach (var item in Model.listVwAonlaDeathCaseAllotStatus)
-                                    {
-                                        <tr>
-                                            <td>@Html.DisplayFor(modelItem => item.PersonalNo)-@Html.DisplayFor(modelItem => item.Name)</td>
-                                            <td>@Html.DisplayFor(modelItem => item.QuarterCategory)</td>
-                                            <td>@Html.DisplayFor(modelItem => item.QuarterNo)</td>
-                                            <td>@Html.DisplayFor(modelItem => item.AllotmentNo)</td>
-                                            <td>@Html.DisplayFor(modelItem => item.ApprovedDate)</td>
-                                            <td>@Html.DisplayFor(modelItem => item.OccupancyDate)</td>
-                                            <td>@Html.EditorFor(modelItem => item.VacancyDate)</td>
-                                            <td>
-                                                <select id="OccupantTypeLOV" class="form-control" asp-items="@(new SelectList(Model.OccupantLOVBind, "Value", "Text" , Model.OccupantCode))">
-                                                    <option value="">--SELECT--</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.RentTypeLOVBind, "Value", "Text"))" asp-for="@Model.RentCode">
-                                                    <option value="">--SELECT--</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                            </td>
-                                            <td>
                                                 <input type="checkbox" class="save-checkbox" data-id="@item.AllotmentNo" />
                                             </td>
                                         </tr>
@@ -352,23 +393,42 @@
                                 <tbody id="exEmpData">
                                     @foreach (var item in Model.listVwAonlaExEmpAllotStatus)
                                     {
-                                        <tr>
-                                            <td>@Html.DisplayFor(modelItem => item.PersonalNo)-@Html.DisplayFor(modelItem => item.Name))</td>
+                                        <tr id="tr_@(item.UnitCode)_@(item.AllotmentNo)_@(item.PersonalNo)" data-ischange="0" style="@(!string.IsNullOrEmpty(item.RentType) ? "background-color:#e1ad01;" : "")">
+                                            <td>@Html.DisplayFor(modelItem => item.PersonalNo) - @Html.DisplayFor(modelItem => item.Name) </td>
                                             <td>@Html.DisplayFor(modelItem => item.QuarterCategory)</td>
                                             <td>@Html.DisplayFor(modelItem => item.QuarterNo)</td>
                                             <td>@Html.DisplayFor(modelItem => item.AllotmentNo)</td>
                                             <td>@Html.DisplayFor(modelItem => item.ApprovedDate)</td>
-                                            <td>@Html.DisplayFor(modelItem => item.OccupancyDate)</td>
-                                            <td>@Html.EditorFor(modelItem => item.VacancyDate)</td>
+                                            <td id="td_Rent_@(item.UnitCode)_@(item.AllotmentNo)_@(item.PersonalNo)">@Html.DisplayFor(modelItem => item.OccupancyDate)</td>
+
                                             <td>
-                                                <select id="OccupantTypeLOV" class="form-control" asp-items="@(new SelectList(Model.OccupantLOVBind, "Value", "Text" , Model.OccupantCode))">
+                                                @*@Html.EditorFor(modelItem => item.VacancyDate, new { htmlAttributes = new { @id = "vacancyDateId",  } })
+                                                <input type="date" id="vacancyDateId" class="form-control" asp-for="@Model.VacancyDate" value="@Model.VacancyDate.ToString("dd-MM-yyyy")">
+                                            *@
+                                                <input type="text" class="form-control datetime" value="@item.VacancyDate?.ToString("dd/MM/yyyy").Replace("-","/")">
+                                           
+                                            </td>
+                                            <td>
+                                                <select id="OccupantTypeLOV" class="form-control" asp-items="@(new SelectList(Model.OccupantLOVBind, "Value", "Text", Model.OccupantCode))" Readonly>
                                                     <option value="">--SELECT--</option>
                                                 </select>
                                             </td>
                                             <td>
-                                                <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.RentTypeLOVBind, "Value", "Text"))" asp-for="@Model.RentCode">
-                                                    <option value="">--SELECT--</option>
-                                                </select>
+
+
+                                                @if (!string.IsNullOrEmpty(item.RentType))
+                                                {
+                                                    <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.RentTypeLOVBind, "Value", "Text", item.RentType))" disabled>
+                                                        <option value="">--SELECT--</option>
+                                                    </select>
+                                                }
+                                                else
+                                                {
+                                                    <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.RentTypeLOVBind, "Value", "Text", item.RentType))">
+                                                        <option value="">--SELECT--</option>
+                                                    </select>
+                                                }
+
                                             </td>
                                             <td>
                                             </td>
@@ -381,27 +441,47 @@
                                 <tbody id="nonEmpData">
                                     @foreach (var item in Model.listVwAonlaNonEmpAllotStatus)
                                     {
-                                        <tr>
+                                        <tr id="tr_@(item.UnitCode)_@(item.AllotmentNo)" data-ischange="0" style="@(!string.IsNullOrEmpty(item.RentType) ? "background-color:#e1ad01;" : "")">
                                             <td>@Html.DisplayFor(modelItem => item.QuarterNameFor)</td>
                                             <td>@Html.DisplayFor(modelItem => item.QuarterCategory)</td>
                                             <td>@Html.DisplayFor(modelItem => item.QuarterNo)</td>
                                             <td>@Html.DisplayFor(modelItem => item.AllotmentNo)</td>
                                             <td>@Html.DisplayFor(modelItem => item.ApprovedDate)</td>
-                                            <td>@Html.DisplayFor(modelItem => item.OccupancyDate)</td>
-                                            <td>@Html.EditorFor(modelItem => item.VacancyDate)</td>
+                                            <td id="td_Rent_@(item.UnitCode)_@(item.AllotmentNo)">@Html.DisplayFor(modelItem => item.OccupancyDate)</td>
+
                                             <td>
-                                                <select id="OccupantTypeLOV" class="form-control" asp-items="@(new SelectList(Model.OccupantLOVBind, "Value", "Text" , Model.OccupantCode))">
+                                                @*@Html.EditorFor(modelItem => item.VacancyDate, new { htmlAttributes = new { @id = "vacancyDateId",  } })
+                                                <input type="date" id="vacancyDateId" class="form-control" asp-for="@Model.VacancyDate" value="@Model.VacancyDate.ToString("dd-MM-yyyy")">
+                                                *@
+                                                <input type="text" class="form-control datetime" value="@item.VacancyDate?.ToString("dd/MM/yyyy").Replace("-","/")">
+
+                                            </td>
+                                            <td>
+                                                <select id="OccupantTypeLOV" class="form-control" asp-items="@(new SelectList(Model.OccupantLOVBind, "Value", "Text", Model.OccupantCode))" Readonly>
                                                     <option value="">--SELECT--</option>
                                                 </select>
                                             </td>
                                             <td>
-                                                <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.RentTypeLOVBind, "Value", "Text"))" asp-for="@Model.RentCode">
-                                                    <option value="">--SELECT--</option>
-                                                </select>
+
+
+                                                @if (!string.IsNullOrEmpty(item.RentType))
+                                                {
+                                                    <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.RentTypeLOVBind, "Value", "Text", item.RentType))" disabled>
+                                                        <option value="">--SELECT--</option>
+                                                    </select>
+                                                }
+                                                else
+                                                {
+                                                    <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.RentTypeLOVBind, "Value", "Text", item.RentType))">
+                                                        <option value="">--SELECT--</option>
+                                                    </select>
+                                                }
+
                                             </td>
+
                                             <td>
-                                                <input type="number" style="width:30%">
                                             </td>
+
                                             <td>
                                                 <input type="checkbox" class="save-checkbox" data-id="@item.AllotmentNo" />
                                             </td>

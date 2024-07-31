@@ -1,4 +1,5 @@
 ﻿//using IFFCO.NERRS.Web.Models;
+using IFFCO.HRMS.Shared.Entities;
 using IFFCO.NERRS.Web.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace IFFCO.NERRS.Web.ViewModels
 {
-    public class NERSC02ViewModel
+    public class NERSC02ViewModel : BaseModel
     {
 
         public string PlantCD { get; set; }

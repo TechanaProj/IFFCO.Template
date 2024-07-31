@@ -7,7 +7,7 @@ namespace IFFCO.NERRS.Web.Models
 {
     public class VwAonlaExEmpAllotStatus : Entity
     {
-
+        
         [Display(Name = "Unit Code")]
         public string UnitCode { get; set; }
 
@@ -64,6 +64,7 @@ namespace IFFCO.NERRS.Web.Models
         [Display(Name = "Vacancy Date")]
         [DataType(DataType.Date)]
         public DateTime? VacancyDate { get; set; }
+        [NotMapped] public string VacancyDate_Text { get; set; }
 
         [Display(Name = "Stay Period")]
         public string StayPeriod { get; set; }

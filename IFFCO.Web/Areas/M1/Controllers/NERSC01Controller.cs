@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
 using System.Data;
 using AspNetCore;
+using System.Globalization;
 
 namespace IFFCO.NERRS.Web.Areas.M1.Controllers
 {
@@ -53,6 +54,10 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
             CommonViewModel.UnitLOVBind = dropDownListBindWeb.GetUnitWithSecurity(Convert.ToString(EMP_ID), moduleid);
             CommonViewModel.OccupantLOVBind = dropDownListBindWeb.OccupantLOVBind();
             CommonViewModel.RentTypeLOVBind = dropDownListBindWeb.RentTypeLOVBind();
+            CommonViewModel.RentTypeLOVBindnew = dropDownListBindWeb.RentTypeLOVBindnew();
+            CommonViewModel.IOBRentTypeLOVBind = dropDownListBindWeb.IOBRentTypeLOVBind(); //filter IOB list
+            CommonViewModel.IGTIRentTypeLOVBind = dropDownListBindWeb.IGTIRentTypeLOVBind(); //filter IGTI list
+            CommonViewModel.GAILRentTypeLOVBind = dropDownListBindWeb.GAILRentTypeLOVBind(); //filter GAIL list
 
             if (OccupantType == "E")
             {
@@ -112,10 +117,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
             }
             return Json(CommonViewModel);
 
-
-
         }
-
 
 
         [HttpPost]
@@ -166,113 +168,435 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
         {
             string personnelNumber = Convert.ToString(HttpContext.Session.GetInt32("EmpID"));
             FAllotmentRentDtls fAllotmentRentDtls = new FAllotmentRentDtls();
-          
-          
+
+
             try
             {
 
-            //if(CommonViewModel.OccupantType == '1001')
-                    
-                
+                if (nERSC01ViewModel.OccupantCode == "1001") //Consultant employees
+                {
+
 
                     foreach (var value in nERSC01ViewModel.listVwAonlaConsultantAllotStatus)
-                {
-                    // Check if the record already exists
-                    if (!_context.FAllotmentRentDtls.Any(x => x.UnitCode == Convert.ToInt32(value.UnitCode) && x.AllotmentNo == value.AllotmentNo))
                     {
-                        DateTime? Dtime = null;
-                        DataTable dt = _context.GetSQLQuery("select UNIT_CODE,ALLOTMENT_NO,PERSONAL_NO,APPROVED_DATE,QUARTER_CATEGORY, QUARTER_NO,APPROVED_DATE, OCCUPANCY_DATE, VACANCY_DATE " +
-                            "from VW_AONLA_CONSULTANT_ALLOT_STATUS where ALLOTMENT_NO = " + value.AllotmentNo + " and UNIT_CODE= '3'  ");
-
-                        List<VwAonlaConsultantAllotStatus> DTL_VALUE = new List<VwAonlaConsultantAllotStatus>();
-                        DTL_VALUE = (from DataRow dr in dt.Rows
-                                     select new VwAonlaConsultantAllotStatus()
-                                     {
-
-                                         UnitCode = Convert.ToString(dr["UNIT_CODE"]),
-                                         AllotmentNo = (dr["ALLOTMENT_NO"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["ALLOTMENT_NO"]),
-                                         PersonalNo = Convert.ToString(dr["PERSONAL_NO"]),
-                                         QuarterNo = Convert.ToString(dr["QUARTER_NO"]),
-                                         ApprovedDate = Convert.ToDateTime(dr["APPROVED_DATE"]),
-                                        // VacancyDate = string.IsNullOrEmpty(Convert.ToString(dr["VACANCY_DATE"])) ? Dtime : Convert.ToDateTime(Convert.ToString(dr["VACANCY_DATE"])),
-                                         QuarterCategory = Convert.ToString(dr["QUARTER_CATEGORY"]),
-                                         OccupancyDate = Convert.ToDateTime(dr["OCCUPANCY_DATE"]),
-                                         
-
-                                     }).ToList();
-
-
-                        string sqlquery = "select UNIT_CODE,RENT_CODE,TYPE_RESI_ACCOM,RATES,MONTH_DAY_TYPE from M_RENT_MSTS where Status = 'A' ";
-                        DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
-                        
-                        foreach (var x in DTL_VALUE)
+                        // Check if the record already exists
+                        //if (!_context.FAllotmentRentDtls.Any(x => x.UnitCode == Convert.ToInt32(value.UnitCode) && x.AllotmentNo == value.AllotmentNo))
+                        if (!_context.FAllotmentRentDtls.Any(x => x.UnitCode == Convert.ToInt32(nERSC01ViewModel.PlantCD) && x.AllotmentNo == value.AllotmentNo))
                         {
-                            DataRow[] filteredRows = dtDRP_VALUE.Select("RENT_CODE = '" + value.RentType + "'");
+                            DateTime? Dtime = null;
+                            DataTable dt = _context.GetSQLQuery("select UNIT_CODE,ALLOTMENT_NO,PERSONAL_NO,APPROVED_DATE,QUARTER_CATEGORY, QUARTER_NO,APPROVED_DATE, OCCUPANCY_DATE, VACANCY_DATE " +
+                                "from VW_AONLA_CONSULTANT_ALLOT_STATUS where ALLOTMENT_NO = " + value.AllotmentNo + " and UNIT_CODE= ' " + nERSC01ViewModel.PlantCD + " '  ");
 
-                            var y = _context.FAllotmentRentDtls.Where(z => z.AllotmentNo == x.AllotmentNo).FirstOrDefault();
-                            if (y != null)
+                            List<VwAonlaConsultantAllotStatus> DTL_VALUE = new List<VwAonlaConsultantAllotStatus>();
+                            DTL_VALUE = (from DataRow dr in dt.Rows
+                                         select new VwAonlaConsultantAllotStatus()
+                                         {
+
+                                             UnitCode = Convert.ToString(dr["UNIT_CODE"]),
+                                             AllotmentNo = (dr["ALLOTMENT_NO"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["ALLOTMENT_NO"]),
+                                             PersonalNo = Convert.ToString(dr["PERSONAL_NO"]),
+                                             QuarterNo = Convert.ToString(dr["QUARTER_NO"]),
+                                             ApprovedDate = Convert.ToDateTime(dr["APPROVED_DATE"]),
+                                             //VacancyDate = string.IsNullOrEmpty(Convert.ToString(dr["VACANCY_DATE"])) ? Dtime : Convert.ToDateTime(Convert.ToString(dr["VACANCY_DATE"])),
+                                             QuarterCategory = Convert.ToString(dr["QUARTER_CATEGORY"]),
+                                             OccupancyDate = Convert.ToDateTime(dr["OCCUPANCY_DATE"]),
+
+
+                                         }).ToList();
+
+
+                            string sqlquery = "select UNIT_CODE,RENT_CODE,TYPE_RESI_ACCOM,RATES,MONTH_DAY_TYPE from M_RENT_MSTS where Status = 'A' ";
+                            DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
+
+                            foreach (var x in DTL_VALUE)
                             {
-                                y.UnitCode = Convert.ToInt32(x.UnitCode);
-                                y.AllotmentNo = x.AllotmentNo;
-                                y.PersonalNo = Convert.ToInt32(x.PersonalNo);
-                                y.QuarterCategory = x.QuarterCategory;
-                                y.QuarterNo = Convert.ToInt32(x.QuarterNo);
-                                y.OccupantCode = value.OccupantType;
-                                y.RentCode = value.RentType;
-                                y.VacancyDate = (DateTime)value.VacancyDate;
-                                y.MonthDayType = (filteredRows != null && filteredRows.Length > 0 ? Convert.ToString(filteredRows[0]["MONTH_DAY_TYPE"]) : "");
-                                y.ModifiedBy = personnelNumber;
-                                y.DatetimeModified = DateTime.Now;
+                                DataRow[] filteredRows = dtDRP_VALUE.Select("RENT_CODE = '" + value.RentType + "'");
 
-
-                                 _context.Update(y);
-                                _context.SaveChanges();
-                            }
-                            else
-                            {
-                                fAllotmentRentDtls = new FAllotmentRentDtls
+                                var y = _context.FAllotmentRentDtls.Where(z => z.AllotmentNo == x.AllotmentNo).FirstOrDefault();
+                                if (y != null)
                                 {
-                                    UnitCode = Convert.ToInt32(x.UnitCode),
-                                    AllotmentNo = value.AllotmentNo,
-                                    PersonalNo = Convert.ToInt32(x.PersonalNo),
-                                    QuarterCategory = x.QuarterCategory,
-                                    QuarterNo = Convert.ToInt32(x.QuarterNo),
-                                    AllotmentDate = (DateTime)x.ApprovedDate,
-                                    //VacancyDate = (DateTime)value.VacancyDate,
-                                    OccupantCode = value.OccupantType,
-                                    RentCode = value.RentType,
-                                    MonthDayType = (filteredRows != null && filteredRows.Length > 0 ? Convert.ToString(filteredRows[0]["MONTH_DAY_TYPE"]) : ""),
-                                    SlNo = Convert.ToInt32("1"),
-                                    Status = "A",
-                                    CreatedBy = personnelNumber,
-                                    DatetimeCreated = DateTime.Now
-                                };
+                                    y.UnitCode = Convert.ToInt32(x.UnitCode);
+                                    y.AllotmentNo = x.AllotmentNo;
+                                    y.PersonalNo = Convert.ToInt32(x.PersonalNo);
+                                    y.QuarterCategory = x.QuarterCategory;
+                                    y.QuarterNo = Convert.ToInt32(x.QuarterNo);
+                                    y.OccupantCode = value.OccupantType;
+                                    y.RentCode = value.RentType;
+                                    y.VacancyDate = (DateTime)value.VacancyDate;
+                                    y.MonthDayType = (filteredRows != null && filteredRows.Length > 0 ? Convert.ToString(filteredRows[0]["MONTH_DAY_TYPE"]) : "");
+                                    y.ModifiedBy = personnelNumber;
+                                    y.DatetimeModified = DateTime.Now;
 
-                               
-                                _context.Add(fAllotmentRentDtls);
-                                await _context.SaveChangesAsync();
 
-                               
+                                    _context.Update(y);
+                                    _context.SaveChanges();
+                                }
+                                else
+                                {
+                                    fAllotmentRentDtls = new FAllotmentRentDtls
+                                    {
+                                        UnitCode = Convert.ToInt32(x.UnitCode),
+                                        AllotmentNo = value.AllotmentNo,
+                                        PersonalNo = Convert.ToInt32(x.PersonalNo),
+                                        QuarterCategory = x.QuarterCategory,
+                                        QuarterNo = Convert.ToInt32(x.QuarterNo),
+                                        AllotmentDate = (DateTime)x.ApprovedDate,
+                                        VacancyDate = string.IsNullOrEmpty(value.VacancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.VacancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture),
+                                        OccupantCode = value.OccupantType,
+                                        RentCode = value.RentType,
+                                        MonthDayType = (filteredRows != null && filteredRows.Length > 0 ? Convert.ToString(filteredRows[0]["MONTH_DAY_TYPE"]) : ""),
+                                        SlNo = Convert.ToInt32("1"),
+                                        Status = "A",
+                                        CreatedBy = personnelNumber,
+                                        DatetimeCreated = DateTime.Now
+                                    };
+
+
+                                    _context.Add(fAllotmentRentDtls);
+                                    await _context.SaveChangesAsync();
+
+
+
+                                }
 
                             }
+                            CommonViewModel.Alert = "success";
+                            CommonViewModel.Status = "Create";
+                            CommonViewModel.Message = "Record created successfully";
+
+                            CommonViewModel.ErrorMessage = "";
+
 
                         }
-                        CommonViewModel.Alert = "success";
-                        CommonViewModel.Status = "Create";
-                        CommonViewModel.Message = "Record created successfully";
-
-                        CommonViewModel.ErrorMessage = "";
-
-
+                        else
+                        {
+                            CommonViewModel.Message = "Record already exists";
+                            CommonViewModel.Alert = "Warning";
+                            CommonViewModel.Status = "Warning";
+                        }
                     }
-                    else
+
+                }
+                else if (nERSC01ViewModel.OccupantCode == "1002") //Death Case
+                {
+                    foreach (var value in nERSC01ViewModel.listVwAonlaDeathCaseAllotStatus)
                     {
-                        CommonViewModel.Message = "Record already exists";
-                        CommonViewModel.Alert = "Warning";
-                        CommonViewModel.Status = "Warning";
+                        // Check if the record already exists
+                        if (!_context.FAllotmentRentDtls.Any(x => x.UnitCode == Convert.ToInt32(nERSC01ViewModel.PlantCD) && x.AllotmentNo == value.AllotmentNo))
+                        {
+                            DateTime? Dtime = null;
+                            DataTable dt = _context.GetSQLQuery("select UNIT_CODE,ALLOTMENT_NO,PERSONAL_NO,APPROVED_DATE,QUARTER_CATEGORY, QUARTER_NO,APPROVED_DATE, OCCUPANCY_DATE, VACANCY_DATE " +
+                                "from VW_AONLA_DEATH_CASE_ALLOT_STATUS where ALLOTMENT_NO = " + value.AllotmentNo + " and UNIT_CODE= ' " + nERSC01ViewModel.PlantCD + " '  ");
+
+                            List<VwAonlaDeathCaseAllotStatus> DTL_VALUE = new List<VwAonlaDeathCaseAllotStatus>();
+                            DTL_VALUE = (from DataRow dr in dt.Rows
+                                         select new VwAonlaDeathCaseAllotStatus()
+                                         {
+
+                                             UnitCode = Convert.ToString(dr["UNIT_CODE"]),
+                                             AllotmentNo = (dr["ALLOTMENT_NO"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["ALLOTMENT_NO"]),
+                                             QuarterNo = Convert.ToString(dr["QUARTER_NO"]),
+                                             PersonalNo = Convert.ToString(dr["PERSONAL_NO"]),
+                                             ApprovedDate = Convert.ToDateTime(dr["APPROVED_DATE"]),
+                                             QuarterCategory = Convert.ToString(dr["QUARTER_CATEGORY"]),
+                                             OccupancyDate = Convert.ToDateTime(dr["OCCUPANCY_DATE"]),
+                                             VacancyDate = string.IsNullOrEmpty(Convert.ToString(dr["VACANCY_DATE"])) ? Dtime : Convert.ToDateTime(Convert.ToString(dr["VACANCY_DATE"])),
+
+
+                                         }).ToList();
+
+
+                            string sqlquery = "select UNIT_CODE,RENT_CODE,TYPE_RESI_ACCOM,RATES,MONTH_DAY_TYPE from M_RENT_MSTS where Status = 'A' ";
+                            DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
+
+                            foreach (var x in DTL_VALUE)
+                            {
+                                DataRow[] filteredRows = dtDRP_VALUE.Select("RENT_CODE = '" + value.RentType + "'");
+
+                                var y = _context.FAllotmentRentDtls.Where(z => z.AllotmentNo == x.AllotmentNo).FirstOrDefault();
+                                if (y != null)
+                                {
+                                    y.UnitCode = Convert.ToInt32(x.UnitCode);
+                                    y.AllotmentNo = x.AllotmentNo;
+                                    y.PersonalNo = Convert.ToInt32(x.PersonalNo);
+                                    y.QuarterCategory = x.QuarterCategory;
+                                    y.QuarterNo = Convert.ToInt32(x.QuarterNo);
+                                    y.OccupantCode = value.OccupantType;
+                                    y.RentCode = value.RentType;
+                                    y.VacancyDate = (DateTime)value.VacancyDate;
+                                    y.MonthDayType = (filteredRows != null && filteredRows.Length > 0 ? Convert.ToString(filteredRows[0]["MONTH_DAY_TYPE"]) : "");
+                                    y.ModifiedBy = personnelNumber;
+                                    y.DatetimeModified = DateTime.Now;
+
+
+                                    _context.Update(y);
+                                    _context.SaveChanges();
+                                }
+                                else
+                                {
+                                    fAllotmentRentDtls = new FAllotmentRentDtls
+                                    {
+                                        UnitCode = Convert.ToInt32(x.UnitCode),
+                                        AllotmentNo = value.AllotmentNo,
+                                        PersonalNo = Convert.ToInt32(x.PersonalNo),
+                                        QuarterCategory = x.QuarterCategory,
+                                        QuarterNo = Convert.ToInt32(x.QuarterNo),
+                                        AllotmentDate = (DateTime)x.ApprovedDate,
+                                        VacancyDate = string.IsNullOrEmpty(value.VacancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.VacancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture),
+
+                                        //VacancyDate = nERSC01ViewModel.VacancyDate,
+                                        OccupantCode = value.OccupantType,
+                                        RentCode = value.RentType,
+                                        MonthDayType = (filteredRows != null && filteredRows.Length > 0 ? Convert.ToString(filteredRows[0]["MONTH_DAY_TYPE"]) : ""),
+                                        SlNo = Convert.ToInt32("1"),
+                                        Status = "A",
+                                        CreatedBy = personnelNumber,
+                                        DatetimeCreated = DateTime.Now
+                                    };
+
+
+                                    _context.Add(fAllotmentRentDtls);
+                                    await _context.SaveChangesAsync();
+
+
+
+                                }
+
+                            }
+                            CommonViewModel.Alert = "success";
+                            CommonViewModel.Status = "Create";
+                            CommonViewModel.Message = "Record created successfully";
+
+                            CommonViewModel.ErrorMessage = "";
+
+
+                        }
+                        else
+                        {
+                            CommonViewModel.Message = "Record already exists";
+                            CommonViewModel.Alert = "Warning";
+                            CommonViewModel.Status = "Warning";
+                        }
                     }
                 }
-                
+
+                else if (nERSC01ViewModel.OccupantCode == "1016") //Retired Case
+                {
+                    foreach (var value in nERSC01ViewModel.listVwAonlaExEmpAllotStatus)
+                    {
+                        // Check if the record already exists
+                        if (!_context.FAllotmentRentDtls.Any(x => x.UnitCode == Convert.ToInt32(nERSC01ViewModel.PlantCD) && x.AllotmentNo == value.AllotmentNo))
+                        {
+                            DateTime? Dtime = null;
+                            DataTable dt = _context.GetSQLQuery("select UNIT_CODE,ALLOTMENT_NO,PERSONAL_NO,APPROVED_DATE,QUARTER_CATEGORY, QUARTER_NO,APPROVED_DATE, OCCUPANCY_DATE, VACANCY_DATE " +
+                                "from VW_AONLA_EX_EMP_ALLOT_STATUS where ALLOTMENT_NO = " + value.AllotmentNo + " and UNIT_CODE= ' " + nERSC01ViewModel.PlantCD + " '  ");
+
+                            List<VwAonlaExEmpAllotStatus> DTL_VALUE = new List<VwAonlaExEmpAllotStatus>();
+                            DTL_VALUE = (from DataRow dr in dt.Rows
+                                         select new VwAonlaExEmpAllotStatus()
+                                         {
+
+                                             UnitCode = Convert.ToString(dr["UNIT_CODE"]),
+                                             AllotmentNo = (dr["ALLOTMENT_NO"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["ALLOTMENT_NO"]),
+                                             QuarterNo = Convert.ToString(dr["QUARTER_NO"]),
+                                             PersonalNo = Convert.ToString(dr["PERSONAL_NO"]),
+                                             ApprovedDate = Convert.ToDateTime(dr["APPROVED_DATE"]),
+                                             QuarterCategory = Convert.ToString(dr["QUARTER_CATEGORY"]),
+                                             OccupancyDate = Convert.ToDateTime(dr["OCCUPANCY_DATE"]),
+                                             VacancyDate = string.IsNullOrEmpty(Convert.ToString(dr["VACANCY_DATE"])) ? Dtime : Convert.ToDateTime(Convert.ToString(dr["VACANCY_DATE"])),
+
+
+                                         }).ToList();
+
+
+                            string sqlquery = "select UNIT_CODE,RENT_CODE,TYPE_RESI_ACCOM,RATES,MONTH_DAY_TYPE from M_RENT_MSTS where Status = 'A' ";
+                            DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
+
+                            foreach (var x in DTL_VALUE)
+                            {
+                                DataRow[] filteredRows = dtDRP_VALUE.Select("RENT_CODE = '" + value.RentType + "'");
+
+                                var y = _context.FAllotmentRentDtls.Where(z => z.AllotmentNo == x.AllotmentNo).FirstOrDefault();
+                                if (y != null)
+                                {
+                                    y.UnitCode = Convert.ToInt32(x.UnitCode);
+                                    y.AllotmentNo = x.AllotmentNo;
+                                    y.PersonalNo = Convert.ToInt32(x.PersonalNo);
+                                    y.QuarterCategory = x.QuarterCategory;
+                                    y.QuarterNo = Convert.ToInt32(x.QuarterNo);
+                                    y.OccupantCode = value.OccupantType;
+                                    y.RentCode = value.RentType;
+                                    y.VacancyDate = (DateTime)value.VacancyDate;
+                                    y.MonthDayType = (filteredRows != null && filteredRows.Length > 0 ? Convert.ToString(filteredRows[0]["MONTH_DAY_TYPE"]) : "");
+                                    y.ModifiedBy = personnelNumber;
+                                    y.DatetimeModified = DateTime.Now;
+
+
+                                    _context.Update(y);
+                                    _context.SaveChanges();
+                                }
+                                else
+                                {
+                                    fAllotmentRentDtls = new FAllotmentRentDtls
+                                    {
+                                        UnitCode = Convert.ToInt32(x.UnitCode),
+                                        AllotmentNo = value.AllotmentNo,
+                                        PersonalNo = Convert.ToInt32(x.PersonalNo),
+                                        QuarterCategory = x.QuarterCategory,
+                                        QuarterNo = Convert.ToInt32(x.QuarterNo),
+                                        AllotmentDate = (DateTime)x.ApprovedDate,
+                                        VacancyDate = string.IsNullOrEmpty(value.VacancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.VacancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture),
+
+                                        //VacancyDate = nERSC01ViewModel.VacancyDate,
+                                        OccupantCode = value.OccupantType,
+                                        RentCode = value.RentType,
+                                        MonthDayType = (filteredRows != null && filteredRows.Length > 0 ? Convert.ToString(filteredRows[0]["MONTH_DAY_TYPE"]) : ""),
+                                        SlNo = Convert.ToInt32("1"),
+                                        Status = "A",
+                                        CreatedBy = personnelNumber,
+                                        DatetimeCreated = DateTime.Now
+                                    };
+
+
+                                    _context.Add(fAllotmentRentDtls);
+                                    await _context.SaveChangesAsync();
+
+
+
+                                }
+
+                            }
+                            CommonViewModel.Alert = "success";
+                            CommonViewModel.Status = "Create";
+                            CommonViewModel.Message = "Record created successfully";
+
+                            CommonViewModel.ErrorMessage = "";
+
+
+                        }
+                        else
+                        {
+                            CommonViewModel.Message = "Record already exists";
+                            CommonViewModel.Alert = "Warning";
+                            CommonViewModel.Status = "Warning";
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var value in nERSC01ViewModel.listVwAonlaNonEmpAllotStatus)
+                    {
+
+                        var alt = value.AllotmentNo;
+                        var dtt = nERSC01ViewModel.VacancyDate;
+
+
+
+                        // Check if the record already exists
+                        if (!_context.FAllotmentRentDtls.Any(x => x.UnitCode == Convert.ToInt32(nERSC01ViewModel.PlantCD) && x.AllotmentNo == alt))
+                        {
+
+                            DateTime? Dtime = null;
+                            DataTable dt = _context.GetSQLQuery(" select UNIT_CODE, ALLOTMENT_NO,QUARTER_FOR,ALLOTMENT_TYPE,QUARTER_ISSUED_TO,ISSUSE_TO,QUARTER_NAME_FOR,APPLICATION_DATE, APPROVED_DATE, QUARTER_CATEGORY, QUARTER_NO, OCCUPANCY_DATE, VACANCY_DATE " +
+                                                              "from VW_AONLA_NON_EMP_ALLOT_STATUS where ALLOTMENT_NO = " + alt + " and UNIT_CODE= ' " + nERSC01ViewModel.PlantCD + " '  ");
+
+                            List<VwAonlaNonEmpAllotStatus> DTL_VALUE = new List<VwAonlaNonEmpAllotStatus>();
+                            DTL_VALUE = (from DataRow dr in dt.Rows
+                                         select new VwAonlaNonEmpAllotStatus()
+                                         {
+
+                                             UnitCode = Convert.ToString(dr["UNIT_CODE"]),
+                                             AllotmentNo = (dr["ALLOTMENT_NO"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["ALLOTMENT_NO"]),
+                                             QuarterNo = Convert.ToString(dr["QUARTER_NO"]),
+                                             QuarterNameFor = Convert.ToString(dr["QUARTER_NAME_FOR"]),
+                                             //PersonalNo = Convert.ToString(dr["PERSONAL_NO"]),
+                                             ApprovedDate = Convert.ToDateTime(dr["APPROVED_DATE"]),
+                                             QuarterCategory = Convert.ToString(dr["QUARTER_CATEGORY"]),
+                                             OccupancyDate = Convert.ToDateTime(dr["OCCUPANCY_DATE"]),
+                                             VacancyDate = string.IsNullOrEmpty(Convert.ToString(dr["VACANCY_DATE"])) ? Dtime : Convert.ToDateTime(Convert.ToString(dr["VACANCY_DATE"])),
+
+
+                                         }).ToList();
+
+
+
+                            string sqlquery = "select UNIT_CODE,RENT_CODE,TYPE_RESI_ACCOM,RATES,MONTH_DAY_TYPE from M_RENT_MSTS where Status = 'A' ";
+                            DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
+
+                            foreach (var xy in DTL_VALUE)
+                            {
+                                DataRow[] filteredRows = dtDRP_VALUE.Select("RENT_CODE = '" + value.RentType + "'");
+
+                                var y = _context.FAllotmentRentDtls.Where(z => z.AllotmentNo == xy.AllotmentNo).FirstOrDefault();
+                                if (y != null)
+                                {
+                                    y.UnitCode = Convert.ToInt32(xy.UnitCode);
+                                    y.AllotmentNo = xy.AllotmentNo;
+                                    //y.PersonalNo = Convert.ToInt32(x.PersonalNo);
+                                    y.QuarterCategory = xy.QuarterCategory;
+                                    y.QuarterNo = Convert.ToInt32(xy.QuarterNo);
+                                    y.OccupantCode = value.OccupantType;
+                                    y.RentCode = value.RentType;
+                                    y.VacancyDate = nERSC01ViewModel.VacancyDate;
+                                    // y.VacancyDate = (DateTime)value.VacancyDate;
+                                    y.MonthDayType = (filteredRows != null && filteredRows.Length > 0 ? Convert.ToString(filteredRows[0]["MONTH_DAY_TYPE"]) : "");
+                                    y.ModifiedBy = personnelNumber;
+                                    y.DatetimeModified = DateTime.Now;
+
+
+                                    _context.Update(y);
+                                    _context.SaveChanges();
+                                }
+                                else
+                                {
+                                    fAllotmentRentDtls = new FAllotmentRentDtls
+                                    {
+
+                                        UnitCode = Convert.ToInt32(nERSC01ViewModel.PlantCD),
+                                        //AllotmentNo = x.AllotmentNo,
+                                        AllotmentNo = alt,
+                                        PersonalNo = Convert.ToInt32("123456"),
+                                        QuarterCategory = xy.QuarterCategory,
+                                        QuarterNo = Convert.ToInt32(xy.QuarterNo),
+                                        AllotmentDate = (DateTime)xy.ApprovedDate,
+                                        VacancyDate = string.IsNullOrEmpty(value.VacancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.VacancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture),
+
+                                        // VacancyDate = nERSC01ViewModel.VacancyDate,
+                                        // VacancyDate = dtt,
+                                        OccupantCode = value.OccupantType,
+                                        RentCode = value.RentType,
+                                        MonthDayType = (filteredRows != null && filteredRows.Length > 0 ? Convert.ToString(filteredRows[0]["MONTH_DAY_TYPE"]) : ""),
+                                        SlNo = Convert.ToInt32("1"),
+                                        Status = "A",
+                                        CreatedBy = personnelNumber,
+                                        DatetimeCreated = DateTime.Now
+                                    };
+
+
+                                    _context.Add(fAllotmentRentDtls);
+                                    await _context.SaveChangesAsync();
+
+
+
+                                }
+
+                            }
+                            CommonViewModel.Alert = "success";
+                            CommonViewModel.Status = "Create";
+                            CommonViewModel.Message = "Record created successfully";
+
+                            CommonViewModel.ErrorMessage = "";
+
+
+                        }
+                        else
+                        {
+                            CommonViewModel.Message = "Record already exists";
+                            CommonViewModel.Alert = "Warning";
+                            CommonViewModel.Status = "Warning";
+                        }
+                    }
+                }
 
                 if (nERSC01ViewModel.listVwAonlaConsultantAllotStatus.Count == 0)
                 {
@@ -299,7 +623,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
 
 
 
-       
+
 
 
     }

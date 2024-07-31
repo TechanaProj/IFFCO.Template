@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Drawing;
 
 namespace IFFCO.NERRS.Web.CommonFunctions
 {
@@ -232,10 +233,102 @@ namespace IFFCO.NERRS.Web.CommonFunctions
         }
 
 
-
         public List<SelectListItem> RentTypeLOVBind()
         {
             string sqlquery = "select UNIT_CODE,RENT_CODE,TYPE_RESI_ACCOM,RATES,MONTH_DAY_TYPE from M_RENT_MSTS where Status = 'A' ";
+            //string sqlquery = "SELECT UNIT_CODE,RENT_CODE,TYPE_RESI_ACCOM,RATES,MONTH_DAY_TYPE FROM M_RENT_MSTS WHERE RENT_CODE NOT LIKE 'IB%' AND RENT_CODE NOT LIKE 'IG%' AND RENT_CODE NOT LIKE 'GL%' AND STATUS = 'A' ";
+             DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
+            List<SelectListItem> DRP_VALUE = new List<SelectListItem>();
+            DRP_VALUE = (from DataRow dr in dtDRP_VALUE.Rows
+                         select new SelectListItem()
+                         {
+                             Text = Convert.ToString(dr["TYPE_RESI_ACCOM"]) + " - " + Convert.ToString(dr["RENT_CODE"]) + " -Rates " + Convert.ToString(dr["RATES"]) + " - " + Convert.ToString(dr["MONTH_DAY_TYPE"]),
+                             Value = Convert.ToString(dr["RENT_CODE"])
+
+
+                         }).ToList();
+
+            return DRP_VALUE;
+
+        }
+
+        public List<SelectListItem_Custom> RentTypeLOVBindnew()
+        {
+            //string sqlquery = "select UNIT_CODE,RENT_CODE,TYPE_RESI_ACCOM,RATES,MONTH_DAY_TYPE from M_RENT_MSTS where Status = 'A' ";
+             string sqlquery = "SELECT UNIT_CODE,   RENT_CODE, TYPE_RESI_ACCOM,    RATES,    MONTH_DAY_TYPE,   CASE   WHEN SUBSTR(RENT_CODE, 1, 2) = 'IB' THEN 'I' WHEN SUBSTR(RENT_CODE, 1, 2) = 'IG' THEN 'S'  WHEN SUBSTR(RENT_CODE, 1, 2) = 'GL' THEN 'G' ELSE SUBSTR(RENT_CODE, 1, 2)   END AS OccupantCode FROM  M_RENT_MSTS WHERE    STATUS = 'A' ";
+           // string sqlquery = "select UNIT_CODE,RENT_CODE,TYPE_RESI_ACCOM,RATES,MONTH_DAY_TYPE, DECODE(SUBSTR(RENT_CODE, 1, 2), 'IB', 'I', 'IG', 'S', 'GL','G', NULL)OccupantCode from M_RENT_MSTS where Status = 'A' ";
+
+            DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
+            List<SelectListItem_Custom> DRP_VALUE = new List<SelectListItem_Custom>();
+            DRP_VALUE = (from DataRow dr in dtDRP_VALUE.Rows
+                         select new SelectListItem_Custom()
+                         {
+                             Text = Convert.ToString(dr["TYPE_RESI_ACCOM"]) + " - " + Convert.ToString(dr["RENT_CODE"]) + " -Rates " + Convert.ToString(dr["RATES"]) + " - " + Convert.ToString(dr["MONTH_DAY_TYPE"]),
+                             Value = Convert.ToString(dr["RENT_CODE"]),
+                             Value2 = Convert.ToString(dr["OccupantCode"])
+
+                         }).ToList();
+
+            return DRP_VALUE;
+
+        }
+
+        public List<SelectListItem> ConOccupantLOVBind()
+        {
+            string sqlquery = "select UNIT_CODE,OCCUPANT_CODE,OCCUPANT_TYPE from M_OCCUPANT_MSTS where OCCUPANT_CODE NOT IN('1001','1002','1016','1005','1006','1007') and  Status = 'A' ";
+            DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
+            List<SelectListItem> DRP_VALUE = new List<SelectListItem>();
+            DRP_VALUE = (from DataRow dr in dtDRP_VALUE.Rows
+                         select new SelectListItem()
+                         {
+                             Text = Convert.ToString(dr["OCCUPANT_TYPE"]) + " - " + Convert.ToString(dr["OCCUPANT_CODE"]),
+                             Value = Convert.ToString(dr["OCCUPANT_CODE"])
+
+
+                         }).ToList();
+
+            return DRP_VALUE;
+
+        }
+        public List<SelectListItem> IOBRentTypeLOVBind()
+        {
+            string sqlquery = "select UNIT_CODE,RENT_CODE,TYPE_RESI_ACCOM,RATES,MONTH_DAY_TYPE from M_RENT_MSTS where RENT_CODE like 'IB%' and Status = 'A' ";
+            DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
+            List<SelectListItem> DRP_VALUE = new List<SelectListItem>();
+            DRP_VALUE = (from DataRow dr in dtDRP_VALUE.Rows
+                         select new SelectListItem()
+                         {
+                             Text = Convert.ToString(dr["TYPE_RESI_ACCOM"]) + " - " + Convert.ToString(dr["RENT_CODE"]) + " -Rates " + Convert.ToString(dr["RATES"]) + " - " + Convert.ToString(dr["MONTH_DAY_TYPE"]),
+                             Value = Convert.ToString(dr["RENT_CODE"])
+
+
+                         }).ToList();
+
+            return DRP_VALUE;
+
+        }
+
+        public List<SelectListItem> IGTIRentTypeLOVBind()
+        {
+            string sqlquery = "select UNIT_CODE,RENT_CODE,TYPE_RESI_ACCOM,RATES,MONTH_DAY_TYPE from M_RENT_MSTS where RENT_CODE like 'IG%' and Status = 'A'";
+            DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
+            List<SelectListItem> DRP_VALUE = new List<SelectListItem>();
+            DRP_VALUE = (from DataRow dr in dtDRP_VALUE.Rows
+                         select new SelectListItem()
+                         {
+                             Text = Convert.ToString(dr["TYPE_RESI_ACCOM"]) + " - " + Convert.ToString(dr["RENT_CODE"]) + " -Rates " + Convert.ToString(dr["RATES"]) + " - " + Convert.ToString(dr["MONTH_DAY_TYPE"]),
+                             Value = Convert.ToString(dr["RENT_CODE"])
+
+
+                         }).ToList();
+
+            return DRP_VALUE;
+
+        }
+
+        public List<SelectListItem> GAILRentTypeLOVBind()
+        {
+            string sqlquery = "select UNIT_CODE,RENT_CODE,TYPE_RESI_ACCOM,RATES,MONTH_DAY_TYPE from M_RENT_MSTS where RENT_CODE like 'GL%' and Status = 'A'";
             DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
             List<SelectListItem> DRP_VALUE = new List<SelectListItem>();
             DRP_VALUE = (from DataRow dr in dtDRP_VALUE.Rows
@@ -270,7 +363,7 @@ namespace IFFCO.NERRS.Web.CommonFunctions
             return AllotmentNoLOV;
         }
 
-
+        
         public List<FAllotmentRentDtls> GetFilteredAllotmentRentDetails(DateTime fromDate, DateTime toDate, int? allotmentNo = null)
         {
             var query = _context.FAllotmentRentDtls

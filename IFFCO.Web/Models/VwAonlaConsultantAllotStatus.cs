@@ -68,9 +68,10 @@ namespace IFFCO.NERRS.Web.Models
         [DataType(DataType.Date)]
         public DateTime? EffectiveTo { get; set; }
 
-        [Display(Name = "Vacancy Date")]
+        //[Display(Name = "Vacancy Date")]
         [DataType(DataType.Date)]
         public DateTime? VacancyDate { get; set; }
+        [NotMapped] public string VacancyDate_Text { get; set; }
 
         [Display(Name = "Stay Period")]
         public string StayPeriod { get; set; }
