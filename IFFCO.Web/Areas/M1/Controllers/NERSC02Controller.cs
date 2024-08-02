@@ -46,7 +46,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
             string moduleid = Convert.ToString(HttpContext.Session.GetString("ModuleID"));
 
             var ApplicantLov = dropDownListBindWeb.AllotementNoLOVBind();
-            CommonViewModel.AllotementNoLOVBind = ApplicantLov ?? new List<SelectListItem>(); // Ensure it's not null
+            CommonViewModel.AllotementNoLOVBind = ApplicantLov ?? new List<SelectListItem>(); 
 
             if (!string.IsNullOrEmpty(Convert.ToString(TempData["Message"])))
             {
@@ -234,6 +234,9 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                     new OracleParameter { ParameterName = "p_allotment_id", OracleDbType = OracleDbType.Int64, Value = allotmentNo },
                     new OracleParameter { ParameterName = "p_personal_number", OracleDbType = OracleDbType.Int64, Value = empId },
                     new OracleParameter { ParameterName = "p_computation_type", OracleDbType = OracleDbType.VarChar, Value = timePeriod },
+                    new OracleParameter { ParameterName = "p_electricity_count", OracleDbType = OracleDbType.Int64, Value = timePeriod },
+                    new OracleParameter { ParameterName = "p_electricity_rate", OracleDbType = OracleDbType.Int64, Value = timePeriod },
+                    new OracleParameter { ParameterName = "p_no_of_beds", OracleDbType = OracleDbType.Int64, Value = timePeriod },
                     new OracleParameter { ParameterName = "o_total_amount", OracleDbType = OracleDbType.Double, Size = 2000, Direction = ParameterDirection.Output }
                 };
 

@@ -83,8 +83,6 @@
                                                 <div class="col-sm-2 col-md-2">
                                                     <select id="AllotmentNo" name="AllotmentNo" class="form-control" onchange="fetchRentCode()" asp-items="@(new SelectList(Model.AllotementNoLOVBind, "Value", "Text"))"></select>
                                                 </div>
-                                                <!-- Example HTML -->
-                                              
                                                
                                                 <span id="rentCode"  style="display:none;"></span>
 
@@ -114,10 +112,10 @@
                                     </div>
                                 </form>
                                 <div style="text-align: center;">
-                                    <button id="sendMailButton">
+                                  @*  <button id="sendMailButton">
                                         <i class="fas fa-calculator" style="margin-right: 5px;"></i>
                                         Compute
-                                    </button>
+                                    </button>*@
 
                                 </div>
                             </div>
@@ -136,8 +134,9 @@
                                         <th>OCCUPANCY DATE</th>
                                         <th>EXPECTED VACANCY DATE</th>
                                         <th>VACANCY DATE</th>
+                                       
                                         <th>ACTION</th>
-                                        <th></th>
+                                        
                                     </tr>
                                 </thead>
                                 <tbody id="tableBody">
@@ -179,8 +178,10 @@ $(document).ready(function () {
                             "<td>" + formatDate(item.occupancyDate) + "</td>" +
                             "<td>" + formatDate(item.expectedVacancyDate) + "</td>" +
                             "<td>" + formatDate(item.vacancyDate) + "</td>" +
-                            "<td><button class='actionButton' data-unitCode='" + (item.unitCode || '') + "' data-allotmentNo='" + (item.allotmentNo || '') + "'>Action</button></td>" +
-                            "</tr>";
+                           // "<td><button class='actionButton' data-unitCode='" + (item.unitCode || '') + "' data-allotmentNo='" + (item.allotmentNo || '') + "'>Action</button></td>" +
+                            "<td><button class='sendMailButton' data-unitCode='" + (item.unitCode || '') + "' data-allotmentNo='" + (item.allotmentNo || '') + "'>Action</button></td>" +
+              
+                           "</tr>";
                         tableBody.append(row);
                     });
                 } else {
@@ -193,6 +194,8 @@ $(document).ready(function () {
             }
         });
     });
+
+      
 
     function formatDate(dateString) {
         if (!dateString) {
@@ -210,15 +213,18 @@ $(document).ready(function () {
 });
 
     $(document).ready(function () {
-        $("#sendMailButton").click(function (event) {
+        $(document).on('click', '.sendMailButton', function (event) {
             event.preventDefault(); // Prevent the default form submission
-            debugger;
-            // Get the values from the form
+             debugger;
+            console.log("Action/Compute button clicked");
+
+             // Get the values from the form
+            var allotmentNo = $(this).data('allotmentno');
             var fromDate = $("#FromDate").val();
             var toDate = $("#ToDate").val();
-            var allotmentNo = $("#AllotmentNo").val();
+          //var allotmentNo = $("#AllotmentNo").val();
             var timePeriod = $("#timePeriod").val();
-            var rentCode = $("#rentCode").text();
+          //var rentCode = $("#rentCode").text();
 
             // Check if any required fields are empty
             if (!fromDate) {
@@ -238,9 +244,12 @@ $(document).ready(function () {
                 return;
             }
 
-          
+
+            
             $.ajax({
-                url: '/M1/NERSC02/Compute', 
+               // debugger;
+                url: '/M1/NERSC02/Compute',
+                //url: '@Url.Action("Compute", "NERSC02", new { area = "M1" })',
                 type: 'POST',
                 data: {
                     FromDate: fromDate,
@@ -251,7 +260,6 @@ $(document).ready(function () {
                 },
                 success: function (response) {
                     if (response.success) {
-                        // Handle success case
                         $("#tableBody").html(response.data);
                         Swal.fire({
                             icon: 'success',
@@ -259,7 +267,6 @@ $(document).ready(function () {
                             text: 'Data processed successfully!'
                         });
                     } else {
-                        // Handle error case
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
@@ -268,7 +275,6 @@ $(document).ready(function () {
                     }
                 },
                 error: function (xhr, status, error) {
-                    // Handle any errors
                     console.error(error);
                     Swal.fire({
                         icon: 'error',
@@ -279,7 +285,6 @@ $(document).ready(function () {
             });
         });
 
-        
         function showAlert(message) {
             Swal.fire({
                 icon: 'error',
@@ -308,6 +313,7 @@ $(document).ready(function () {
             }
         });
     }
+
 
 
 
