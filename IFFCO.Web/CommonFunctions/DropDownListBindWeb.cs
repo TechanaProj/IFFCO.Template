@@ -194,6 +194,25 @@ namespace IFFCO.NERRS.Web.CommonFunctions
 
         }
 
+        public List<SelectListItem> QuarterLOVBind()
+        {
+            string sqlquery = "select QUARTER_CATEGORY,QUARTER_NO,QUARTER_ISSUED_TO, UNIT_CODE from VW_AONLA_NON_EMP_ALLOT_STATUS where QUARTER_ISSUED_TO = 'A'";
+            DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
+            List<SelectListItem> DRP_VALUE = new List<SelectListItem>();
+            DRP_VALUE = (from DataRow dr in dtDRP_VALUE.Rows
+                         select new SelectListItem()
+                         {
+                             Text = Convert.ToString(dr["QUARTER_CATEGORY"]) + " - " + Convert.ToString(dr["QUARTER_NO"]),
+                             Value = Convert.ToString(dr["QUARTER_ISSUED_TO"])
+
+
+                         }).ToList();
+
+            return DRP_VALUE;
+
+        }
+
+
 
         public List<SelectListItem> OccupantEmpLOVBind()
         {

@@ -14,6 +14,7 @@ namespace IFFCO.NERRS.Web.ViewModels
         public string Rates { get; set; }
         public string OccupantCode { get; set; }
         public string OccupantType { get; set; }
+        public string QuarterCode { get; set; }
         public string Occupant { get; set; }
 
         public DateTime AllotmentDate { get; set; }
@@ -41,6 +42,9 @@ namespace IFFCO.NERRS.Web.ViewModels
             public List<SelectListItem> AllotementNoLOVBind { get; set; }
             public List<SelectListItem> ConOccupantLOVBind { get; set; }
             public List<SelectListItem> RentTypeLOVBind { get; set; }
+            public List<SelectListItem> QuarterLOVBind { get; set; }
+
+
            
         
 

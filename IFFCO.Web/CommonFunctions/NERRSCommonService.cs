@@ -251,5 +251,56 @@ namespace IFFCO.NERRS.Web.CommonFunctions
         }
 
 
+
+        public List<VwAonlaNonEmpAllotStatus> VwAonlaNonEmpShutDown(string PlantCD, string OccupantCode, string QuarterCode)   /*For ShutDown */
+        {
+            string sqlquery = $@"select X.UNIT_CODE, X.ALLOTMENT_NO,X.QUARTER_FOR,X.ALLOTMENT_TYPE,X.QUARTER_ISSUED_TO,X.ISSUSE_TO,X.QUARTER_NAME_FOR,X.APPLICATION_DATE, X.APPROVED_DATE, X.QUARTER_CATEGORY, X.QUARTER_NO,X.OCCUPANCY_DATE, X.VACANCY_DATE, 
+                              X.STAY_PERIOD, X.NO_OF_DAYS, X.NO_OF_YEARS, X.STATUS 
+                                from VW_AONLA_NON_EMP_ALLOT_STATUS X  
+                                LEFT JOIN F_ALLOTMENT_RENT_DTLS Z ON Z.ALLOTMENT_NO = X.ALLOTMENT_NO AND Z.UNIT_CODE = X.UNIT_CODE 
+                                where X.UNIT_CODE = '{PlantCD}' and X.QUARTER_ISSUED_TO = '{OccupantCode}'
+                                order by X.OCCUPANCY_DATE desc";
+
+            // string sqlquery = "select a.UNIT_CODE, a.ALLOTMENT_NO,a.QUARTER_FOR,a.ALLOTMENT_TYPE,a.QUARTER_ISSUED_TO,a.ISSUSE_TO,a.QUARTER_NAME_FOR,a.APPLICATION_DATE, a.APPROVED_DATE, a.QUARTER_CATEGORY, a.QUARTER_NO,a.OCCUPANCY_DATE, a.VACANCY_DATE, ";
+            // sqlquery += " a.STAY_PERIOD, a.NO_OF_DAYS, a.NO_OF_YEARS, a.STATUS ";
+            // sqlquery += " from VW_AONLA_NON_EMP_ALLOT_STATUS a  where UNIT_CODE = '"+ PlantCD + "' and QUARTER_ISSUED_TO = '" + OccupantCode + "' order by OCCUPANCY_DATE desc ";
+
+            DateTime? vacay = null;
+            DataTable dtDTL_VALUE = new DataTable();
+            dtDTL_VALUE = _context.GetSQLQuery(sqlquery);
+            List<VwAonlaNonEmpAllotStatus> DTL_VALUE = new List<VwAonlaNonEmpAllotStatus>();
+            DTL_VALUE = (from DataRow dr in dtDTL_VALUE.Rows
+                         select new VwAonlaNonEmpAllotStatus()
+                         {
+
+                             UnitCode = Convert.ToString(dr["UNIT_CODE"]),
+                             AllotmentNo = (dr["ALLOTMENT_NO"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["ALLOTMENT_NO"]),
+                             QuarterFor = Convert.ToString(dr["QUARTER_FOR"]),
+                             QuarterNo = Convert.ToString(dr["QUARTER_NO"]),
+                             QuarterNameFor = Convert.ToString(dr["QUARTER_NAME_FOR"]),
+                             //ApplicationDate = Convert.ToDateTime(dr["APPLICATION_DATE"]),
+                             ApprovedDate = Convert.ToDateTime(dr["APPROVED_DATE"]),
+                             QuarterCategory = Convert.ToString(dr["QUARTER_CATEGORY"]),
+                             //OccupancyDate = Convert.ToDateTime(dr["OCCUPANCY_DATE"]),
+                             OccupancyDate = string.IsNullOrEmpty(Convert.ToString(dr["OCCUPANCY_DATE"])) ? vacay : Convert.ToDateTime(Convert.ToString(dr["OCCUPANCY_DATE"])),
+
+                             // EffectiveFrom = Convert.ToDateTime(dr["EFFECTIVE_FROM"]),
+                             //EffectiveTo = Convert.ToDateTime(dr["EFFECTIVE_TO"]),
+                             //VacancyDate = Convert.ToDateTime(dr["VACANCY_DATE"]),
+                             VacancyDate = string.IsNullOrEmpty(Convert.ToString(dr["VACANCY_DATE"])) ? vacay : Convert.ToDateTime(Convert.ToString(dr["VACANCY_DATE"])),
+
+                             //StayPeriod = Convert.ToString(dr["STAY_PERIOD"]),
+                             //NoOfDays = (dr["NO_OF_DAYS"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["NO_OF_DAYS"]),
+                             //NoOfYears = (dr["NO_OF_YEARS"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["NO_OF_YEARS"]),
+                             // Status = Convert.ToString(dr["Status"]),
+
+
+
+
+                         }).ToList();
+            return DTL_VALUE;
+        }
+
+
     }
 }

@@ -113,9 +113,10 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
 
 
         [HttpPost]
-        public ActionResult Compute(DateTime? FromDate, DateTime? ToDate, string AllotmentNo, string TimePeriod, string rentCode)
+        public ActionResult Compute(DateTime? FromDate, DateTime? ToDate, string AllotmentNo, string TimePeriod, int elecRate, int electricityCount)
         {
-            try
+           
+                try
             {
 
                 if (!FromDate.HasValue || !ToDate.HasValue)
@@ -123,19 +124,6 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                     return Json(new { success = false, error = "From date and To date are required." });
                 }
 
-
-                var rentMst = _context.MRentMsts.FirstOrDefault(m => m.RentCode == rentCode);
-
-                if (rentMst == null)
-                {
-                    return Json(new { success = false, error = "Rent code not found in database." });
-                }
-
-
-                if (rentMst.MonthDayType != TimePeriod)
-                {
-                    return Json(new { success = false, error = "Select correct Monthly/Daily data in dropdown." });
-                }
 
 
                 if (!int.TryParse(AllotmentNo, out int allotmentNoInt))
@@ -162,7 +150,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                 TimeSpan allotmentPeriod = (TimeSpan)(allotmentDetails.VacancyDate - allotmentStartDate);
 
 
-                if (rentMst.MonthDayType == "M")
+                if (TimePeriod == "M")
                 {
 
                     if (FromDate.Value.Month != ToDate.Value.Month || FromDate.Value.Year != ToDate.Value.Year)
@@ -176,7 +164,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                         return Json(new { success = false, error = $"From date and To date must cover the entire month. For {FromDate.Value.ToString("MMMM")}, it should be from 1 to {daysInMonth}." });
                     }
                 }
-                else if (rentMst.MonthDayType == "D")
+                else if (TimePeriod == "D")
                 {
 
                     if (selectedPeriod.Days > 31)
@@ -186,10 +174,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                 }
 
 
-                if (selectedPeriod > allotmentPeriod)
-                {
-                    return Json(new { success = false, error = "Please add electricity charges." });
-                }
+               
 
                 // Perform the procedure execution
                 int EMP_ID = Convert.ToInt32(HttpContext.Session.GetInt32("EmpID"));
@@ -210,6 +195,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
         }
 
         private double ExecuteProcedure(DateTime fromDate, DateTime toDate, int allotmentNo, string timePeriod, int empId)
+       // private double ExecuteProcedure(DateTime fromDate, DateTime toDate, int allotmentNo, string timePeriod, int empId, int elecRate, int electricityCount)
         {
             try
             {
@@ -234,9 +220,9 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                     new OracleParameter { ParameterName = "p_allotment_id", OracleDbType = OracleDbType.Int64, Value = allotmentNo },
                     new OracleParameter { ParameterName = "p_personal_number", OracleDbType = OracleDbType.Int64, Value = empId },
                     new OracleParameter { ParameterName = "p_computation_type", OracleDbType = OracleDbType.VarChar, Value = timePeriod },
-                    new OracleParameter { ParameterName = "p_electricity_count", OracleDbType = OracleDbType.Int64, Value = timePeriod },
-                    new OracleParameter { ParameterName = "p_electricity_rate", OracleDbType = OracleDbType.Int64, Value = timePeriod },
-                    new OracleParameter { ParameterName = "p_no_of_beds", OracleDbType = OracleDbType.Int64, Value = timePeriod },
+                   // new OracleParameter { ParameterName = "p_electricity_count", OracleDbType = OracleDbType.Int64, Value = electricityCount },
+                    //new OracleParameter { ParameterName = "p_electricity_rate", OracleDbType = OracleDbType.Int64, Value = elecRate },
+                    new OracleParameter { ParameterName = "p_no_of_beds", OracleDbType = OracleDbType.Int64, Value = 1 },
                     new OracleParameter { ParameterName = "o_total_amount", OracleDbType = OracleDbType.Double, Size = 2000, Direction = ParameterDirection.Output }
                 };
 

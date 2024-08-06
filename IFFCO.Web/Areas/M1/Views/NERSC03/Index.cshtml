@@ -9,7 +9,7 @@
 <script>
     function fnGet_Data() {
         debugger;
-        //var OccupantList = $('#OccupantList option:selected').val();
+        //var QuarterCode = $('#QuarterCode option:selected').val();
         var OccupantCode = $('#OccupantCode option:selected').val();
         var PlantCD = $('#PlantCD').val();
 
@@ -17,10 +17,13 @@
             CommonAlert("Alert", "Select Plant CD", null, null, "Warning");
             return false;
         } else if (OccupantCode == "") {
-            CommonAlert("Alert", "Select Occupant type", null, null, "Warning");
+            CommonAlert("Alert", "Select Quarter", null, null, "Warning");
             return false;
+        
         } else {
-            PageNotLoad('@Url.Action("Index", "NERSC03", new { area = "M1" })?PlantCD=' + PlantCD + '&OccupantCode=' + OccupantCode, this);   /*+ '&OccupantType=' + OccupantList*/
+            PageNotLoad('@Url.Action("Index", "NERSC03", new { area = "M1" })?PlantCD=' + PlantCD +  '&OccupantCode=' + OccupantCode, this);
+           
+       
         }
     }
 
@@ -29,7 +32,7 @@
             CommonAlert("Alert", "Select Plant CD", null, null, "Warning");
             return false;
         } else if ($('#OccupantCode').val() == "") {
-            CommonAlert("Alert", "Select Occupant type", null, null, "Warning");
+            CommonAlert("Alert", "Select Quarter type", null, null, "Warning");
             return false;
         } else {
             return true;
@@ -193,12 +196,20 @@
                                                 <div class="col-sm-2 col-md-2">
                                                     <select id="PlantCD" name="PlantCD" class="form-control" asp-items="@(new SelectList(Model.UnitLOVBind, "Value", "Text", Model.PlantCD))"></select>
                                                 </div>
-                                                <div class="col-sm-2 col-md-2">
+                                                @*<div class="col-sm-2 col-md-2">
                                                     <label class="m-lbl1 m-lbl2">Occupant List</label>
                                                 </div>
                                                 <div class="col-sm-2 col-sm-2">
                                                     <select id="OccupantCode" name="OccupantCode" asp-for="@Model.OccupantCode" class="form-control">
                                                         <option value="C">Shutdown</option>
+                                                    </select>
+                                                </div>*@
+                                                <div class="col-sm-2 col-md-2">
+                                                    <label class="m-lbl1 m-lbl2">Quarter List</label>
+                                                </div>
+                                                <div class="col-sm-2 col-md-2">
+                                                    <select id="OccupantCode" name="OccupantCode" class="form-control" asp-items="@(new SelectList(Model.QuarterLOVBind, "Value", "Text", Model.OccupantCode))">
+                                                        <option value="">--SELECT--</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -224,7 +235,6 @@
                                     <tr>
                                         <th>SNo</th>
                                         <th>Personal No/Name</th>
-                                        
                                         <th>Quarter Type</th>
                                         <th>Quarter No</th>
                                         <th>Allotment No</th>
