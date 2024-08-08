@@ -1,10 +1,9 @@
-﻿using IFFCO.HRMS.Repository.Pattern;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace IFFCO.NERRS.Web.Models
 {
-    public partial class AdmEmpUnitAccess : Entity
+    public partial class AdmEmpUnitAccess
     {
         public int Empid { get; set; }
         public string Moduleid { get; set; }

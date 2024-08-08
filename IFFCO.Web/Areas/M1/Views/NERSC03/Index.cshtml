@@ -58,13 +58,23 @@
 
                 $("#HrmsHrdGrid tbody tr").each(function (index, e) {
                     var row = $(this);
-                    var isChecked = row.find("td:eq(11) input[type='checkbox']").is(":checked");
-                    var slno = row.find("td:eq(0)").val();
+                    var isChecked = row.find("td:eq(10) input[type='checkbox']").is(":checked");
+                    //var slno = row.find("td:eq(3)").val();
+                   var slno = row.find("td:eq(3)").text().trim();
+                    if (slno === "") {
+                        slno = 1; // Set to 1 if it's empty or undefined
+                    } else {
+                        slno = parseInt(slno) + 1; // Increment the existing SlNo
+                    }
+
+                    var vendorCode = row.find("td:eq(2) select option:selected").val();
                     var occupantType = row.find("td:eq(8) select option:selected").val();
                     var rentType = row.find("td:eq(9) select option:selected").val();
 
                     if (isChecked && occupantType && rentType) {
                         hasValidData = true;
+                       
+                        formData.append('nERSC03ViewModel.listVwAonlaNonEmpAllotStatus[' + cnt + '].VendorCode', vendorCode);
                         formData.append('nERSC03ViewModel.listVwAonlaNonEmpAllotStatus[' + cnt + '].SlNo', slno);
                         formData.append('nERSC03ViewModel.listVwAonlaNonEmpAllotStatus[' + cnt + '].AllotmentNo', row.find("td:eq(4)").text().trim());
                         formData.append('nERSC03ViewModel.listVwAonlaNonEmpAllotStatus[' + cnt + '].OccupantType', occupantType);
@@ -133,41 +143,46 @@
         $("#addnew").attr("href", "M1/NERSC03/Create/" + PlantCD);
     }
 
-     function RentLOV_pop() {
-        debugger;
-        $(".modalLoader").css("display", "block");
-        setTimeout(function () {
-            CommonAjax('/M1/NERSC01/RentLOVBindJSON', "GET", false, "application/json", false, BindDropDownWithSelectAsNull, "#OccupantCode", { OccupantType: $('#OccupantList').val() });
-            $(".modalLoader").hide();
-        }, 10);
-    }
+    // function RentLOV_pop() {
+    //    debugger;
+    //    $(".modalLoader").css("display", "block");
+    //    setTimeout(function () {
+    //        CommonAjax('/M1/NERSC01/RentLOVBindJSON', "GET", false, "application/json", false, BindDropDownWithSelectAsNull, "#OccupantCode", { OccupantType: $('#OccupantList').val() });
+    //        $(".modalLoader").hide();
+    //    }, 10);
+    //}
 
-    function addRow() {
-        var newRow = `<tr>
-                            <td><input type="text" class="form-control" /></td>
-                            <td><input type="text" class="form-control" /></td>
-                            <td><input type="text" class="form-control" /></td>
-                            <td><input type="text" class="form-control" /></td>
-                            <td><input type="text" class="form-control" /></td>
-                            <td><input type="date" class="form-control" /></td>
-                            <td><input type="date" class="form-control" /></td>
-                            <td><input type="date" class="form-control" /></td>
-                            <td>
-                                   <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.RentTypeLOVBind, "Value", "Text"))">
-                                                            <option value="">--SELECT--</option>
-                                                        </select>
-                            </td>
-                            <td>
-                                    <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.RentTypeLOVBind, "Value", "Text"))">
-                                                            <option value="">--SELECT--</option>
-                                                        </select>
-                            </td>
-                            <td><button type="button" class="btn btn-danger" onclick="removeRow(this)">Remove</button></td>
-                            <td><input type="checkbox" class="save-checkbox" /></td>
-                          </tr>`;
-       // $('#HrmsHrdGrid tbody').append(newRow);
-                    $('#HrmsHrdGrid tbody').prepend(newRow);
-    }
+    function addRow(button) {
+   
+    var currentRow = $(button).closest('tr');
+    
+    // Clone the current row
+    var newRow = currentRow.clone();
+
+     // Reset the values of input fields in the new row
+    newRow.find('input[type="text"]').val('');      // Clear text inputs
+    newRow.find('input[type="date"]').val('');      // Clear date inputs
+    newRow.find('select').prop('selectedIndex', 0); // Reset select boxes to the first option
+    newRow.find('input[type="checkbox"]').prop('checked', false); // Uncheck checkboxes
+
+    // Find the current highest SlNo
+    var highestSlNo = 1;
+    $("#HrmsHrdGrid tbody tr").each(function () {
+        var slNo = parseInt($(this).find("td:eq(3)").text().trim());
+        if (!isNaN(slNo) && slNo > highestSlNo) {
+            highestSlNo = slNo;
+        }
+    });
+
+    // Increment the SlNo for the new row
+    var newSlNo = highestSlNo + 1;
+    newRow.find("td:eq(3)").text(newSlNo);
+
+
+    // Insert the new row right after the current row
+    newRow.insertAfter(currentRow);
+}
+
 
     function removeRow(button) {
         $(button).closest('tr').remove();
@@ -228,15 +243,17 @@
                         <div class="pd-form-area">
                             <div class="btn-area-tbl">
                                
-                                <button type="button" class="btn btn-primary" onclick="addRow()">Add Row</button>
+                               @* <button type="button" class="btn btn-primary" onclick="addRow()">Add Row</button>*@
+                               
+
                             </div>
                             <table class="table table-striped table-hover" id="HrmsHrdGrid">
                                 <thead>
                                     <tr>
-                                        <th>SNo</th>
-                                        <th>Personal No/Name</th>
                                         <th>Quarter Type</th>
                                         <th>Quarter No</th>
+                                        <th>Vendor Name</th>
+                                        <th>SNo</th>
                                         <th>Allotment No</th>
                                         <th>Allotment Date</th>
                                         <th>Occupany Date</th>
@@ -244,18 +261,23 @@
                                         <th>Occupant</th>
                                         <th>Quarter Rent</th>
                                         <th> </th>
+                                        <th> </th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody id="nonEmpData">
                                     @foreach (var item in Model.listVwAonlaNonEmpAllotStatus)
                                     {
-                                        <tr id="tr_@(item.UnitCode)_@(item.AllotmentNo)" data-ischange="0" style="@(!string.IsNullOrEmpty(item.RentType) ? "background-color:#e1ad01;" : "")">
-                                            <td>@Html.EditorFor(modelItem => item.SlNo)</td>
-                                           
-                                            <td>@Html.DisplayFor(modelItem => item.QuarterNameFor)</td>
+                                        <tr id="tr_@(item.UnitCode)_@(item.AllotmentNo)" data-ischange="0" onclick="changeRowColor(this)">
                                             <td>@Html.DisplayFor(modelItem => item.QuarterCategory)</td>
                                             <td>@Html.DisplayFor(modelItem => item.QuarterNo)</td>
+                                            <td>
+                                                <select id="VendorTypeLOV" class="form-control" asp-items="@(new SelectList(Model.VendorLOVBind, "Value", "Text"))">
+                                                    <option value="">--SELECT--</option>
+                                                   
+                                                </select>
+                                            </td>
+                                            <td>@Html.EditorFor(modelItem => item.SlNo)</td>
                                             <td>@Html.DisplayFor(modelItem => item.AllotmentNo)</td>
                                             <td>@Html.DisplayFor(modelItem => item.ApprovedDate)</td>
                                             <td id="td_Rent_@(item.UnitCode)_@(item.AllotmentNo)">@Html.DisplayFor(modelItem => item.OccupancyDate)</td>
@@ -264,27 +286,33 @@
                                                 <input type="date" id="vacancyDateId" class="form-control" asp-for="@Model.VacancyDate" value="@Model.VacancyDate.ToString("dd-MM-yyyy")">
                                             </td>
                                             <td>
-                                                <select id="OccupantTypeLOV" class="form-control" asp-items="@(new SelectList(Model.ConOccupantLOVBind, "Value", "Text", Model.OccupantCode))" >
+                                                <select id="OccupantTypeLOV" class="form-control" asp-items="@(new SelectList(Model.ShutDownOccupantLOVBind, "Value", "Text", Model.OccupantCode))">
                                                     <option value="">--SELECT--</option>
                                                 </select>
                                             </td>
                                             <td>
                                                 @if (!string.IsNullOrEmpty(item.RentType))
                                                 {
-                                                    <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.RentTypeLOVBind, "Value", "Text", item.RentType))" disabled>
+                                                    <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.ShutDownRentTypeLOVBind, "Value", "Text", item.RentType))" disabled>
                                                         <option value="">--SELECT--</option>
                                                     </select>
                                                 }
                                                 else
                                                 {
-                                                    <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.RentTypeLOVBind, "Value", "Text", item.RentType))">
+                                                    <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.ShutDownRentTypeLOVBind, "Value", "Text", item.RentType))">
                                                         <option value="">--SELECT--</option>
                                                     </select>
                                                 }
                                             </td>
-                                            <td><button type="button" class="btn btn-danger" onclick="removeRow(this)">Remove</button></td>
+                                            
                                             <td>
                                                 <input type="checkbox" class="save-checkbox" data-id="@item.AllotmentNo" />
+                                            </td>
+                                            <td><button type="button" class="btn btn-danger" onclick="removeRow(this)">Remove</button></td>
+                                            <td>
+                                                <button type="button" class="btn btn-primary" onclick="addRow(this)">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
                                             </td>
                                         </tr>
                                     }
@@ -302,3 +330,17 @@
 </div>
 
 <div id="commonModalbinder" class="modal" style="display:none!important;z-index:99999999 !important;"></div>
+
+
+<script>
+    function changeRowColor(row) {
+        // Remove the background color from all rows
+        var rows = document.getElementById('nonEmpData').getElementsByTagName('tr');
+        for (var i = 0; i < rows.length; i++) {
+            rows[i].style.backgroundColor = '';
+        }
+
+        // Set the background color of the clicked row
+        row.style.backgroundColor = '#c0c0c0'; // Change this color to whatever you prefer
+    }
+</script>

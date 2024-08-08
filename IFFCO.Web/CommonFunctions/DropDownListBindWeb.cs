@@ -271,6 +271,24 @@ namespace IFFCO.NERRS.Web.CommonFunctions
 
         }
 
+        public List<SelectListItem> ShutDownRentTypeLOVBind()
+        {
+            string sqlquery = "SELECT UNIT_CODE,RENT_CODE,TYPE_RESI_ACCOM,RATES,MONTH_DAY_TYPE FROM M_RENT_MSTS WHERE STATUS = 'A' AND MONTH_DAY_TYPE = 'D' ";
+            DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
+            List<SelectListItem> DRP_VALUE = new List<SelectListItem>();
+            DRP_VALUE = (from DataRow dr in dtDRP_VALUE.Rows
+                         select new SelectListItem()
+                         {
+                             Text = Convert.ToString(dr["TYPE_RESI_ACCOM"]) + " - " + Convert.ToString(dr["RENT_CODE"]) + " -Rates " + Convert.ToString(dr["RATES"]) + " - " + Convert.ToString(dr["MONTH_DAY_TYPE"]),
+                             Value = Convert.ToString(dr["RENT_CODE"])
+
+
+                         }).ToList();
+
+            return DRP_VALUE;
+
+        }
+
         public List<SelectListItem_Custom> RentTypeLOVBindnew()
         {
             //string sqlquery = "select UNIT_CODE,RENT_CODE,TYPE_RESI_ACCOM,RATES,MONTH_DAY_TYPE from M_RENT_MSTS where Status = 'A' ";
@@ -292,9 +310,9 @@ namespace IFFCO.NERRS.Web.CommonFunctions
 
         }
 
-        public List<SelectListItem> ConOccupantLOVBind()
+        public List<SelectListItem> ShutDownOccupantLOVBind()
         {
-            string sqlquery = "select UNIT_CODE,OCCUPANT_CODE,OCCUPANT_TYPE from M_OCCUPANT_MSTS where OCCUPANT_CODE NOT IN('1001','1002','1016','1005','1006','1007') and  Status = 'A' ";
+            string sqlquery = "select UNIT_CODE,OCCUPANT_CODE,OCCUPANT_TYPE from M_OCCUPANT_MSTS where OCCUPANT_CODE = '1010' and  Status = 'A' ";
             DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
             List<SelectListItem> DRP_VALUE = new List<SelectListItem>();
             DRP_VALUE = (from DataRow dr in dtDRP_VALUE.Rows
@@ -302,6 +320,24 @@ namespace IFFCO.NERRS.Web.CommonFunctions
                          {
                              Text = Convert.ToString(dr["OCCUPANT_TYPE"]) + " - " + Convert.ToString(dr["OCCUPANT_CODE"]),
                              Value = Convert.ToString(dr["OCCUPANT_CODE"])
+
+
+                         }).ToList();
+
+            return DRP_VALUE;
+
+        }
+
+        public List<SelectListItem> VendorLOVBind()
+        {
+            string sqlquery = "select UNIT_CODE,VENDOR_CODE,VENDOR_NAME,VENDOR_SITE_CODE,VENDOR_SITE_ID,HRMS_UNIT_CD from M_VENDOR_MSTS";
+            DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
+            List<SelectListItem> DRP_VALUE = new List<SelectListItem>();
+            DRP_VALUE = (from DataRow dr in dtDRP_VALUE.Rows
+                         select new SelectListItem()
+                         {
+                             Text = Convert.ToString(dr["VENDOR_CODE"]) + " - " + Convert.ToString(dr["VENDOR_NAME"]) + " - " + Convert.ToString(dr["VENDOR_SITE_CODE"]),
+                             Value = Convert.ToString(dr["VENDOR_CODE"])
 
 
                          }).ToList();

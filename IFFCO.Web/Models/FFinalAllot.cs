@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace IFFCO.NERRS.Web.Models
 {
-    public partial class FIntCompute : Entity
+    public partial class FFinalAllot : Entity
     {
         public int UnitCode { get; set; }
         public string QuarterCategory { get; set; }
@@ -30,14 +30,5 @@ namespace IFFCO.NERRS.Web.Models
         public DateTime? DatetimeModified { get; set; }
         public decimal? DaysRemaining { get; set; }
         public decimal ComputationRun { get; set; }
-        public DateTime? FromDate { get; set; }
-        public DateTime? ToDate { get; set; }
-        public DateTime? NxtFromDate { get; set; }
-        public DateTime? NxtToDate { get; set; }
-        public string MonthDayType { get; set; }
-        public decimal? ElectRate { get; set; }
-        public decimal? ElectUnit { get; set; }
-        public decimal? ElectAmt { get; set; }
-        public decimal? CurrentComputeAmount { get; set; }
     }
 }

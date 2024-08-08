@@ -10,7 +10,7 @@ namespace IFFCO.NERRS.Web.Models
         public string QuarterCategory { get; set; }
         public int QuarterNo { get; set; }
         public int SlNo { get; set; }
-        public int? PersonalNo { get; set; }
+        public int PersonalNo { get; set; }
         public int AllotmentNo { get; set; }
         public DateTime AllotmentDate { get; set; }
         public DateTime? OccupancyDate { get; set; }

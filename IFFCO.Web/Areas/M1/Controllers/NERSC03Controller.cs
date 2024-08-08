@@ -52,8 +52,9 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
 
             CommonViewModel.UnitLOVBind = dropDownListBindWeb.GetUnitWithSecurity(Convert.ToString(EMP_ID), moduleid);
             CommonViewModel.QuarterLOVBind = dropDownListBindWeb.QuarterLOVBind();
-            CommonViewModel.ConOccupantLOVBind = dropDownListBindWeb.ConOccupantLOVBind();
-            CommonViewModel.RentTypeLOVBind = dropDownListBindWeb.RentTypeLOVBind();
+            CommonViewModel.ShutDownOccupantLOVBind = dropDownListBindWeb.ShutDownOccupantLOVBind();
+            CommonViewModel.ShutDownRentTypeLOVBind = dropDownListBindWeb.ShutDownRentTypeLOVBind();
+            CommonViewModel.VendorLOVBind = dropDownListBindWeb.VendorLOVBind();
             CommonViewModel.listFAllotmentRentDtls = new List<FAllotmentRentDtls>();
             CommonViewModel.listVwAonlaNonEmpAllotStatus = new List<VwAonlaNonEmpAllotStatus>();
             CommonViewModel = GetRentList(CommonViewModel, PlantCD, OccupantCode);
@@ -167,13 +168,14 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                 {
                                     y.UnitCode = Convert.ToInt32(xy.UnitCode);
                                     y.AllotmentNo = xy.AllotmentNo;
-                                    //y.PersonalNo = Convert.ToInt32(x.PersonalNo);
+                                    y.VendorCode = value.VendorCode;
                                     y.QuarterCategory = xy.QuarterCategory;
                                     y.QuarterNo = Convert.ToInt32(xy.QuarterNo);
                                     y.OccupantCode = value.OccupantType;
                                     y.RentCode = value.RentType;
                                     y.VacancyDate = (DateTime)value.VacancyDate;
                                     y.MonthDayType = (filteredRows != null && filteredRows.Length > 0 ? Convert.ToString(filteredRows[0]["MONTH_DAY_TYPE"]) : "");
+                                    y.SlNo = value.SlNo;    
                                     y.ModifiedBy = personnelNumber;
                                     y.DatetimeModified = DateTime.Now;
 
@@ -185,20 +187,19 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                 {
                                     fAllotmentRentDtls = new FAllotmentRentDtls
                                     {
-                                        //UnitCode = Convert.ToInt32(x.UnitCode),
+                                        
                                         UnitCode = Convert.ToInt32(nERSC03ViewModel.PlantCD),
-                                        //AllotmentNo = x.AllotmentNo,
                                         AllotmentNo = alt,
-                                        PersonalNo = Convert.ToInt32("123456"),
+                                        VendorCode = value.VendorCode,
                                         QuarterCategory = xy.QuarterCategory,
                                         QuarterNo = Convert.ToInt32(xy.QuarterNo),
                                         AllotmentDate = (DateTime)xy.ApprovedDate,
-                                        //VacancyDate = (DateTime)value.VacancyDate,
                                         VacancyDate = nERSC03ViewModel.VacancyDate,
                                         OccupantCode = value.OccupantType,
                                         RentCode = value.RentType,
                                         MonthDayType = (filteredRows != null && filteredRows.Length > 0 ? Convert.ToString(filteredRows[0]["MONTH_DAY_TYPE"]) : ""),
-                                        SlNo = Convert.ToInt32("1"),
+                                       // SlNo = Convert.ToInt32("1"),
+                                        SlNo = value.SlNo,
                                         Status = "A",
                                         CreatedBy = personnelNumber,
                                         DatetimeCreated = DateTime.Now

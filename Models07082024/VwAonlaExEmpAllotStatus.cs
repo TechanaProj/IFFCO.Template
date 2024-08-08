@@ -1,17 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System;
-using IFFCO.HRMS.Repository.Pattern.Core;
+using IFFCO.HRMS.Repository.Pattern;
 using System.ComponentModel.DataAnnotations.Schema;
-using NPOI.SS.Formula.Functions;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Collections.Generic;
 
 namespace IFFCO.NERRS.Web.Models
 {
-    public class VwAonlaNonEmpAllotStatus : Entity
-
+    public class VwAonlaExEmpAllotStatus : Entity
     {
-        public List<SelectListItem> RentTypeLOVBind { get; set; }
+        
         [Display(Name = "Unit Code")]
         public string UnitCode { get; set; }
 
@@ -29,6 +25,12 @@ namespace IFFCO.NERRS.Web.Models
 
         [Display(Name = "Issued To")]
         public string IssuedTo { get; set; }
+
+        [Display(Name = "Personal Number")]
+        public string PersonalNo { get; set; }
+
+        [Display(Name = "Name")]
+        public string Name { get; set; }
 
         [Display(Name = "Quarter Name For")]
         public string QuarterNameFor { get; set; }
@@ -51,13 +53,18 @@ namespace IFFCO.NERRS.Web.Models
         [DataType(DataType.Date)]
         public DateTime? OccupancyDate { get; set; }
 
-        //[Display(Name = "Vacancy Date")]
-        
+        [Display(Name = "Effective From")]
+        [DataType(DataType.Date)]
+        public DateTime? EffectiveFrom { get; set; }
+
+        [Display(Name = "Effective To")]
+        [DataType(DataType.Date)]
+        public DateTime? EffectiveTo { get; set; }
+
+        [Display(Name = "Vacancy Date")]
         [DataType(DataType.Date)]
         public DateTime? VacancyDate { get; set; }
         [NotMapped] public string VacancyDate_Text { get; set; }
-
-
 
         [Display(Name = "Stay Period")]
         public string StayPeriod { get; set; }
@@ -70,21 +77,10 @@ namespace IFFCO.NERRS.Web.Models
 
         [Display(Name = "Status")]
         public string Status { get; set; }
+
         [NotMapped]
         public string OccupantType { get; set; }
         [NotMapped]
         public string RentType { get; set; }
-
-        [NotMapped]
-        [Display(Name = "Personal Number")]
-        public string PersonalNo { get; set; }
-
-        [NotMapped]
-
-        public int SlNo { get; set; }
-        [NotMapped]
-
-        public string VendorCode { get; set; }
-
     }
 }

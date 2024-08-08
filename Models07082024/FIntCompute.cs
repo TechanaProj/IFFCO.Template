@@ -1,10 +1,12 @@
 ﻿using IFFCO.HRMS.Repository.Pattern;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace IFFCO.NERRS.Web.Models
 {
-    public partial class FIntCompute : Entity
+    public class FIntCompute: Entity
     {
         public int UnitCode { get; set; }
         public string QuarterCategory { get; set; }
@@ -35,9 +37,5 @@ namespace IFFCO.NERRS.Web.Models
         public DateTime? NxtFromDate { get; set; }
         public DateTime? NxtToDate { get; set; }
         public string MonthDayType { get; set; }
-        public decimal? ElectRate { get; set; }
-        public decimal? ElectUnit { get; set; }
-        public decimal? ElectAmt { get; set; }
-        public decimal? CurrentComputeAmount { get; set; }
     }
 }

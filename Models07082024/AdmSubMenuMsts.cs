@@ -1,10 +1,9 @@
-﻿using IFFCO.HRMS.Repository.Pattern;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace IFFCO.NERRS.Web.Models
 {
-    public partial class AdmSubMenuMsts : Entity
+    public partial class AdmSubMenuMsts
     {
         public string Moduleid { get; set; }
         public string SubMenuId { get; set; }

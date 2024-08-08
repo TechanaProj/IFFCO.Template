@@ -6,14 +6,21 @@ namespace IFFCO.NERRS.Web.Models
 {
     public partial class MVendorMsts : Entity
     {
-        public int UnitCode { get; set; }
+        public string UnitCode { get; set; }
+        public decimal? VendorId { get; set; }
         public string VendorCode { get; set; }
-        public string Description { get; set; }
-        public string Remarks { get; set; }
-        public string Status { get; set; }
+        public string VendorName { get; set; }
+        public decimal VendorSiteId { get; set; }
+        public string VendorSiteCode { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string Country { get; set; }
+        public string EmployeeNo { get; set; }
+        public string FullName { get; set; }
         public DateTime? DatetimeCreated { get; set; }
         public string CreatedBy { get; set; }
         public DateTime? DatetimeModified { get; set; }
         public string ModifiedBy { get; set; }
+        public int? HrmsUnitCd { get; set; }
     }
 }

@@ -1,15 +1,16 @@
 ﻿using System;
+using Devart.Data.Oracle;
+using IFFCO.HRMS.Repository.Pattern.Infrastructure;
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
-using Devart.Data.Oracle;
-using IFFCO.HRMS.Repository.Pattern.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using IFFCO.HRMS.Entities.AppConfig;
 using IFFCO.HRMS.Repository.Pattern;
+using IFFCO.NERRS.Web.Models;
 
 namespace IFFCO.NERRS.Web.Models
 {
@@ -31,15 +32,22 @@ namespace IFFCO.NERRS.Web.Models
         public virtual DbSet<AdmEmpUnitAccess> AdmEmpUnitAccess { get; set; }
         public virtual DbSet<AdmPrgMaster> AdmPrgMaster { get; set; }
         public virtual DbSet<AdmProjmodMaster> AdmProjmodMaster { get; set; }
-        public virtual DbSet<AdmSubMenuMsts> AdmSubMenuMsts { get; set; }
-        public virtual DbSet<FAllotmentRentDtls> FAllotmentRentDtls { get; set; }
-        public virtual DbSet<FFinalAllot> FFinalAllot { get; set; }
-        public virtual DbSet<FIntCompute> FIntCompute { get; set; }
         public virtual DbSet<MOccupantMsts> MOccupantMsts { get; set; }
         public virtual DbSet<MQuarterTypeMsts> MQuarterTypeMsts { get; set; }
         public virtual DbSet<MRentMsts> MRentMsts { get; set; }
         public virtual DbSet<MVendorMsts> MVendorMsts { get; set; }
+        public virtual DbSet<AdmSubMenuMsts> AdmSubMenuMsts { get; set; }
+        public virtual DbSet<FAllotmentRentDtls> FAllotmentRentDtls { get; set; }
+        public virtual DbSet<FIntCompute> FIntCompute { get; set; }
 
+
+
+        // Unable to generate entity type for table 'NERRS.AC_ALLOTMENT_DTLS'. Please see the warning messages.
+        // Unable to generate entity type for table 'NERRS.AC_COLONY_MSTS'. Please see the warning messages.
+        // Unable to generate entity type for table 'NERRS.AC_QUARTER_APPL'. Please see the warning messages.
+        // Unable to generate entity type for table 'NERRS.AC_QUARTER_MSTS'. Please see the warning messages.
+        // Unable to generate entity type for table 'NERRS.F_ALLOTMENT_RENT_DTLS'. Please see the warning messages.
+        // Unable to generate entity type for table 'NERRS.LOGIN_LOG'. Please see the warning messages.
 
         public DataTable GetSQLQuery(string sqlquery)
         {
@@ -237,6 +245,7 @@ namespace IFFCO.NERRS.Web.Models
                 dbEntityEntry.State = StateHelper.ConvertState(((IObjectState)dbEntityEntry.Entity).ObjectState);
             }
         }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -629,11 +638,11 @@ namespace IFFCO.NERRS.Web.Models
 
             modelBuilder.Entity<FAllotmentRentDtls>(entity =>
             {
-                entity.HasKey(e => new { e.UnitCode, e.QuarterNo, e.SlNo, e.AllotmentNo, e.RentCode });
+                entity.HasKey(e => new { e.UnitCode, e.QuarterNo, e.SlNo, e.PersonalNo, e.AllotmentNo, e.RentCode });
 
                 entity.ToTable("F_ALLOTMENT_RENT_DTLS", "NERRS");
 
-                entity.HasIndex(e => new { e.QuarterNo, e.SlNo, e.AllotmentNo, e.RentCode, e.UnitCode })
+                entity.HasIndex(e => new { e.UnitCode, e.QuarterNo, e.SlNo, e.PersonalNo, e.AllotmentNo, e.RentCode })
                     .HasName("F_ALLOTMENT_RENT_DTLS_PK")
                     .IsUnique();
 
@@ -642,6 +651,8 @@ namespace IFFCO.NERRS.Web.Models
                 entity.Property(e => e.QuarterNo).HasColumnName("QUARTER_NO");
 
                 entity.Property(e => e.SlNo).HasColumnName("SL_NO");
+
+                entity.Property(e => e.PersonalNo).HasColumnName("PERSONAL_NO");
 
                 entity.Property(e => e.AllotmentNo).HasColumnName("ALLOTMENT_NO");
 
@@ -777,8 +788,6 @@ namespace IFFCO.NERRS.Web.Models
                     .HasColumnName("PENAL_HRR_TO_DATE")
                     .HasColumnType("date");
 
-                entity.Property(e => e.PersonalNo).HasColumnName("PERSONAL_NO");
-
                 entity.Property(e => e.QuarterCategory)
                     .IsRequired()
                     .HasColumnName("QUARTER_CATEGORY")
@@ -800,112 +809,6 @@ namespace IFFCO.NERRS.Web.Models
                     .HasColumnName("STATUS")
                     .HasColumnType("varchar2")
                     .HasMaxLength(1);
-
-                entity.Property(e => e.VacancyDate)
-                    .HasColumnName("VACANCY_DATE")
-                    .HasColumnType("date");
-
-                entity.Property(e => e.VendorCode)
-                    .HasColumnName("VENDOR_CODE")
-                    .HasColumnType("varchar2")
-                    .HasMaxLength(6);
-            });
-
-            modelBuilder.Entity<FFinalAllot>(entity =>
-            {
-                entity.HasKey(e => new { e.UnitCode, e.AllotmentNo, e.ComputationRun });
-
-                entity.ToTable("F_FINAL_ALLOT", "NERRS");
-
-                entity.HasIndex(e => new { e.UnitCode, e.AllotmentNo, e.ComputationRun })
-                    .HasName("FM_ALLOT_RENT_DTLS_PK")
-                    .IsUnique();
-
-                entity.Property(e => e.UnitCode).HasColumnName("UNIT_CODE");
-
-                entity.Property(e => e.AllotmentNo).HasColumnName("ALLOTMENT_NO");
-
-                entity.Property(e => e.ComputationRun).HasColumnName("COMPUTATION_RUN");
-
-                entity.Property(e => e.AllotmentDate)
-                    .HasColumnName("ALLOTMENT_DATE")
-                    .HasColumnType("date");
-
-                entity.Property(e => e.CreatedBy)
-                    .IsRequired()
-                    .HasColumnName("CREATED_BY")
-                    .HasColumnType("varchar2")
-                    .HasMaxLength(30);
-
-                entity.Property(e => e.DatetimeCreated)
-                    .HasColumnName("DATETIME_CREATED")
-                    .HasColumnType("date");
-
-                entity.Property(e => e.DatetimeModified)
-                    .HasColumnName("DATETIME_MODIFIED")
-                    .HasColumnType("date");
-
-                entity.Property(e => e.DaysRemaining).HasColumnName("DAYS_REMAINING");
-
-                entity.Property(e => e.Flag)
-                    .HasColumnName("FLAG")
-                    .HasColumnType("varchar2")
-                    .HasMaxLength(1);
-
-                entity.Property(e => e.ModifiedBy)
-                    .HasColumnName("MODIFIED_BY")
-                    .HasColumnType("varchar2")
-                    .HasMaxLength(30);
-
-                entity.Property(e => e.NoOfAcs)
-                    .HasColumnName("NO_OF_ACS")
-                    .HasColumnType("double");
-
-                entity.Property(e => e.OccupancyDate)
-                    .HasColumnName("OCCUPANCY_DATE")
-                    .HasColumnType("date");
-
-                entity.Property(e => e.OccupantCode)
-                    .HasColumnName("OCCUPANT_CODE")
-                    .HasColumnType("varchar2")
-                    .HasMaxLength(10);
-
-                entity.Property(e => e.PersonalNo).HasColumnName("PERSONAL_NO");
-
-                entity.Property(e => e.QuarterCategory)
-                    .IsRequired()
-                    .HasColumnName("QUARTER_CATEGORY")
-                    .HasColumnType("varchar2")
-                    .HasMaxLength(3);
-
-                entity.Property(e => e.QuarterNo).HasColumnName("QUARTER_NO");
-
-                entity.Property(e => e.Remarks)
-                    .HasColumnName("REMARKS")
-                    .HasColumnType("varchar2")
-                    .HasMaxLength(60);
-
-                entity.Property(e => e.RentCode)
-                    .HasColumnName("RENT_CODE")
-                    .HasColumnType("varchar2")
-                    .HasMaxLength(10);
-
-                entity.Property(e => e.RepUnit)
-                    .HasColumnName("REP_UNIT")
-                    .HasColumnType("varchar2")
-                    .HasMaxLength(200);
-
-                entity.Property(e => e.SlNo).HasColumnName("SL_NO");
-
-                entity.Property(e => e.Status)
-                    .IsRequired()
-                    .HasColumnName("STATUS")
-                    .HasColumnType("varchar2")
-                    .HasMaxLength(1);
-
-                entity.Property(e => e.TotalAmt)
-                    .HasColumnName("TOTAL_AMT")
-                    .HasColumnType("double");
 
                 entity.Property(e => e.VacancyDate)
                     .HasColumnName("VACANCY_DATE")
@@ -943,8 +846,6 @@ namespace IFFCO.NERRS.Web.Models
                     .HasColumnType("varchar2")
                     .HasMaxLength(30);
 
-                entity.Property(e => e.CurrentComputeAmount).HasColumnName("CURRENT_COMPUTE_AMOUNT");
-
                 entity.Property(e => e.DatetimeCreated)
                     .HasColumnName("DATETIME_CREATED")
                     .HasColumnType("date");
@@ -954,12 +855,6 @@ namespace IFFCO.NERRS.Web.Models
                     .HasColumnType("date");
 
                 entity.Property(e => e.DaysRemaining).HasColumnName("DAYS_REMAINING");
-
-                entity.Property(e => e.ElectAmt).HasColumnName("ELECT_AMT");
-
-                entity.Property(e => e.ElectRate).HasColumnName("ELECT_RATE");
-
-                entity.Property(e => e.ElectUnit).HasColumnName("ELECT_UNIT");
 
                 entity.Property(e => e.Flag)
                     .HasColumnName("FLAG")
@@ -1249,38 +1144,20 @@ namespace IFFCO.NERRS.Web.Models
 
             modelBuilder.Entity<MVendorMsts>(entity =>
             {
-                entity.HasKey(e => new { e.VendorCode, e.VendorSiteId, e.VendorSiteCode });
+                entity.HasKey(e => new { e.UnitCode, e.VendorCode });
 
                 entity.ToTable("M_VENDOR_MSTS", "NERRS");
 
-                entity.HasIndex(e => new { e.VendorCode, e.VendorSiteId, e.VendorSiteCode })
+                entity.HasIndex(e => new { e.UnitCode, e.VendorCode })
                     .HasName("M_VENDOR_MSTS_PK")
                     .IsUnique();
+
+                entity.Property(e => e.UnitCode).HasColumnName("UNIT_CODE");
 
                 entity.Property(e => e.VendorCode)
                     .HasColumnName("VENDOR_CODE")
                     .HasColumnType("varchar2")
-                    .HasMaxLength(30);
-
-                entity.Property(e => e.VendorSiteId)
-                    .HasColumnName("VENDOR_SITE_ID")
-                    .HasAnnotation("Precision", 20)
-                    .HasAnnotation("Scale", 0);
-
-                entity.Property(e => e.VendorSiteCode)
-                    .HasColumnName("VENDOR_SITE_CODE")
-                    .HasColumnType("varchar2")
-                    .HasMaxLength(320);
-
-                entity.Property(e => e.City)
-                    .HasColumnName("CITY")
-                    .HasColumnType("varchar2")
-                    .HasMaxLength(60);
-
-                entity.Property(e => e.Country)
-                    .HasColumnName("COUNTRY")
-                    .HasColumnType("varchar2")
-                    .HasMaxLength(60);
+                    .HasMaxLength(6);
 
                 entity.Property(e => e.CreatedBy)
                     .HasColumnName("CREATED_BY")
@@ -1295,48 +1172,27 @@ namespace IFFCO.NERRS.Web.Models
                     .HasColumnName("DATETIME_MODIFIED")
                     .HasColumnType("date");
 
-                entity.Property(e => e.EmployeeNo)
-                    .HasColumnName("EMPLOYEE_NO")
+                entity.Property(e => e.Description)
+                    .IsRequired()
+                    .HasColumnName("DESCRIPTION")
                     .HasColumnType("varchar2")
-                    .HasMaxLength(30);
-
-                entity.Property(e => e.FullName)
-                    .HasColumnName("FULL_NAME")
-                    .HasColumnType("varchar2")
-                    .HasMaxLength(240);
-
-                entity.Property(e => e.HrmsUnitCd).HasColumnName("HRMS_UNIT_CD");
+                    .HasMaxLength(100);
 
                 entity.Property(e => e.ModifiedBy)
                     .HasColumnName("MODIFIED_BY")
                     .HasColumnType("varchar2")
                     .HasMaxLength(30);
 
-                entity.Property(e => e.State)
-                    .HasColumnName("STATE")
+                entity.Property(e => e.Remarks)
+                    .HasColumnName("REMARKS")
                     .HasColumnType("varchar2")
-                    .HasMaxLength(150);
+                    .HasMaxLength(60);
 
-                entity.Property(e => e.UnitCode)
-                    .HasColumnName("UNIT_CODE")
+                entity.Property(e => e.Status)
+                    .HasColumnName("STATUS")
                     .HasColumnType("varchar2")
-                    .HasMaxLength(4000);
-
-                entity.Property(e => e.VendorId)
-                    .HasColumnName("VENDOR_ID")
-                    .HasAnnotation("Precision", 20)
-                    .HasAnnotation("Scale", 0);
-
-                entity.Property(e => e.VendorName)
-                    .HasColumnName("VENDOR_NAME")
-                    .HasColumnType("varchar2")
-                    .HasMaxLength(320);
+                    .HasMaxLength(1);
             });
-        }
-
-        internal void ExecuteProcedure(string v, List<OracleParameter> oracleParameterCollection)
-        {
-            throw new NotImplementedException();
         }
     }
 }
