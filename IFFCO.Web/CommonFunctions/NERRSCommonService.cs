@@ -204,7 +204,8 @@ namespace IFFCO.NERRS.Web.CommonFunctions
         public List<VwAonlaNonEmpAllotStatus> VwAonlaNonEmpAllotStatus(string PlantCD, string OccupantCode)   /*For Non-Employees */
         {
             string sqlquery = $@"select X.UNIT_CODE, X.ALLOTMENT_NO,X.QUARTER_FOR,X.ALLOTMENT_TYPE,X.QUARTER_ISSUED_TO,X.ISSUSE_TO,X.QUARTER_NAME_FOR,X.APPLICATION_DATE, X.APPROVED_DATE, X.QUARTER_CATEGORY, X.QUARTER_NO,X.OCCUPANCY_DATE, X.VACANCY_DATE, 
-                              X.STAY_PERIOD, X.NO_OF_DAYS, X.NO_OF_YEARS, X.STATUS 
+                              X.STAY_PERIOD, X.NO_OF_DAYS, X.NO_OF_YEARS, X.STATUS,
+                                Z.QUARTER_CATEGORY, Z.SL_NO, Z.PERSONAL_NO, Z.OCCUPANCY_DATE, Z.VACANCY_DATE, Z.STATUS, Z.CREATED_BY, Z.RENT_CODE, Z.OCCUPANT_CODE  
                                 from VW_AONLA_NON_EMP_ALLOT_STATUS X  
                                 LEFT JOIN F_ALLOTMENT_RENT_DTLS Z ON Z.ALLOTMENT_NO = X.ALLOTMENT_NO AND Z.UNIT_CODE = X.UNIT_CODE 
                                 where X.UNIT_CODE = '{PlantCD}' and X.QUARTER_ISSUED_TO = '{OccupantCode}'
@@ -237,7 +238,8 @@ namespace IFFCO.NERRS.Web.CommonFunctions
                              //EffectiveTo = Convert.ToDateTime(dr["EFFECTIVE_TO"]),
                              //VacancyDate = Convert.ToDateTime(dr["VACANCY_DATE"]),
                               VacancyDate = string.IsNullOrEmpty(Convert.ToString(dr["VACANCY_DATE"])) ? vacay : Convert.ToDateTime(Convert.ToString(dr["VACANCY_DATE"])),
-
+                             RentType = Convert.ToString(dr["RENT_CODE"]),
+                             OccupantType = Convert.ToString(dr["OCCUPANT_CODE"]),
                              //StayPeriod = Convert.ToString(dr["STAY_PERIOD"]),
                              //NoOfDays = (dr["NO_OF_DAYS"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["NO_OF_DAYS"]),
                              //NoOfYears = (dr["NO_OF_YEARS"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["NO_OF_YEARS"]),
@@ -255,7 +257,8 @@ namespace IFFCO.NERRS.Web.CommonFunctions
         public List<VwAonlaNonEmpAllotStatus> VwAonlaNonEmpShutDown(string PlantCD, string OccupantCode, string QuarterCode)   /*For ShutDown */
         {
             string sqlquery = $@"select X.UNIT_CODE, X.ALLOTMENT_NO,X.QUARTER_FOR,X.ALLOTMENT_TYPE,X.QUARTER_ISSUED_TO,X.ISSUSE_TO,X.QUARTER_NAME_FOR,X.APPLICATION_DATE, X.APPROVED_DATE, X.QUARTER_CATEGORY, X.QUARTER_NO,X.OCCUPANCY_DATE, X.VACANCY_DATE, 
-                              X.STAY_PERIOD, X.NO_OF_DAYS, X.NO_OF_YEARS, X.STATUS 
+                              X.STAY_PERIOD, X.NO_OF_DAYS, X.NO_OF_YEARS, X.STATUS,
+                                Z.QUARTER_CATEGORY, Z.SL_NO, Z.PERSONAL_NO, Z.OCCUPANCY_DATE, Z.VACANCY_DATE, Z.STATUS, Z.CREATED_BY, Z.RENT_CODE, Z.OCCUPANT_CODE
                                 from VW_AONLA_NON_EMP_ALLOT_STATUS X  
                                 LEFT JOIN F_ALLOTMENT_RENT_DTLS Z ON Z.ALLOTMENT_NO = X.ALLOTMENT_NO AND Z.UNIT_CODE = X.UNIT_CODE 
                                 where X.UNIT_CODE = '{PlantCD}' and X.QUARTER_ISSUED_TO = '{OccupantCode}'
@@ -288,7 +291,8 @@ namespace IFFCO.NERRS.Web.CommonFunctions
                              //EffectiveTo = Convert.ToDateTime(dr["EFFECTIVE_TO"]),
                              //VacancyDate = Convert.ToDateTime(dr["VACANCY_DATE"]),
                              VacancyDate = string.IsNullOrEmpty(Convert.ToString(dr["VACANCY_DATE"])) ? vacay : Convert.ToDateTime(Convert.ToString(dr["VACANCY_DATE"])),
-
+                             RentType = Convert.ToString(dr["RENT_CODE"]),
+                             OccupantType = Convert.ToString(dr["OCCUPANT_CODE"]),
                              //StayPeriod = Convert.ToString(dr["STAY_PERIOD"]),
                              //NoOfDays = (dr["NO_OF_DAYS"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["NO_OF_DAYS"]),
                              //NoOfYears = (dr["NO_OF_YEARS"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["NO_OF_YEARS"]),

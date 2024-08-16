@@ -87,7 +87,7 @@
                                                 <span id="rentCode"  style="display:none;"></span>
 
                                                 <br />
-
+@*
                                                 <div class="col-sm-2 col-md-1">
                                                     <label class="m-lbl1 m-lbl2">Monthly/Daily</label>
                                                 </div>
@@ -98,7 +98,7 @@
                                                         <option value="D">Daily</option>
                                                     </select>
                                                 </div>
-
+*@
 
                                             </div>
                                         </div>
@@ -129,6 +129,7 @@
                                 <thead>
                                     <tr>
                                         <th>UNIT CODE</th>
+                                        <th>SLNo</th>
                                         <th>ALLOTMENT NO</th>
                                         <th>PNO</th>
                                         <th>QUARTER CATEGORY</th>
@@ -177,6 +178,7 @@ $(document).ready(function () {
                     $.each(response.data, function (index, item) {
                         var row = "<tr>" +
                             "<td>" + (item.unitCode || '') + "</td>" +
+                            "<td>" + (item.slno || '') + "</td>" +
                             "<td>" + (item.allotmentNo || '') + "</td>" +
                             "<td>" + (item.personalNo || '') + "</td>" +
                             "<td>" + (item.quarterCategory || '') + "</td>" +
@@ -235,13 +237,13 @@ $(document).ready(function () {
             var row = $(this).closest('tr');
 
             // Get the values from the row and form
-            var allotmentNo = row.find('td:eq(1)').text(); // Allotment No is in the second column (index 1)
+            var allotmentNo = row.find('td:eq(2)').text(); // Allotment No is in the second column (index 1)
             var fromDate = $("#FromDate").val();
             var toDate = $("#ToDate").val();
-            var timePeriod = $("#timePeriod").val();
-            var personalNo = row.find('td:eq(2)').text(); // Personal No is in the third column (index 2)
-            var quarterCategory = row.find('td:eq(3)').text(); // Quarter Category in fourth column (index 3)
-            var quarterNo = row.find('td:eq(4)').text(); // Quarter No in fifth column (index 4)
+            var slno = row.find('td:eq(1)').text();
+            var personalNo = row.find('td:eq(3)').text(); // Personal No is in the third column (index 2)
+            var quarterCategory = row.find('td:eq(4)').text(); // Quarter Category in fourth column (index 3)
+            var quarterNo = row.find('td:eq(5)').text(); // Quarter No in fifth column (index 4)
             var elecRate = row.find('.elecRate').val(); // Getting the value of the input in the row
             var electricityCount = row.find('.electricityCount').val(); // Getting the value of the input in the row
 
@@ -258,10 +260,7 @@ $(document).ready(function () {
                 showAlert('Allotment number is required.');
                 return;
             }
-            if (!timePeriod) {
-                showAlert('Select Monthly/Daily Dropdowmlist.');
-                return;
-            }
+           
 
             console.log("All validations passed. Proceeding to AJAX.");
             
@@ -274,7 +273,9 @@ $(document).ready(function () {
                     FromDate: fromDate,
                     ToDate: toDate,
                     AllotmentNo: allotmentNo,
-                    TimePeriod: timePeriod,
+                    Slno: slno,
+                    electricityCount: electricityCount,
+                    elecRate: elecRate,
                    // rentCode: rentCode,
                 },
                 success: function (response) {

@@ -113,7 +113,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
 
 
         [HttpPost]
-        public ActionResult Compute(DateTime? FromDate, DateTime? ToDate, string AllotmentNo, string TimePeriod, int elecRate, int electricityCount)
+        public ActionResult Compute(DateTime? FromDate, DateTime? ToDate, string AllotmentNo, int slNo, int elecRate, int electricityCount)
         {
            
                 try
@@ -150,35 +150,35 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                 TimeSpan allotmentPeriod = (TimeSpan)(allotmentDetails.VacancyDate - allotmentStartDate);
 
 
-                if (TimePeriod == "M")
-                {
+                //if (TimePeriod == "M")
+                //{
 
-                    if (FromDate.Value.Month != ToDate.Value.Month || FromDate.Value.Year != ToDate.Value.Year)
-                    {
-                        return Json(new { success = false, error = "From date and To date must be within the same month." });
-                    }
+                //    if (FromDate.Value.Month != ToDate.Value.Month || FromDate.Value.Year != ToDate.Value.Year)
+                //    {
+                //        return Json(new { success = false, error = "From date and To date must be within the same month." });
+                //    }
 
-                    int daysInMonth = DateTime.DaysInMonth(FromDate.Value.Year, FromDate.Value.Month);
-                    if (FromDate.Value.Day != 1 || ToDate.Value.Day != daysInMonth)
-                    {
-                        return Json(new { success = false, error = $"From date and To date must cover the entire month. For {FromDate.Value.ToString("MMMM")}, it should be from 1 to {daysInMonth}." });
-                    }
-                }
-                else if (TimePeriod == "D")
-                {
+                   int daysInMonth = DateTime.DaysInMonth(FromDate.Value.Year, FromDate.Value.Month);
+                //    if (FromDate.Value.Day != 1 || ToDate.Value.Day != daysInMonth)
+                //    {
+                //        return Json(new { success = false, error = $"From date and To date must cover the entire month. For {FromDate.Value.ToString("MMMM")}, it should be from 1 to {daysInMonth}." });
+                //    }
+                //}
+                //else if (TimePeriod == "D")
+                //{
 
-                    if (selectedPeriod.Days > 31)
-                    {
-                        return Json(new { success = false, error = "The selected period cannot exceed 31 days." });
-                    }
-                }
+                //    if (selectedPeriod.Days > 31)
+                //    {
+                //        return Json(new { success = false, error = "The selected period cannot exceed 31 days." });
+                //    }
+                //}
 
 
                
 
                 // Perform the procedure execution
                 int EMP_ID = Convert.ToInt32(HttpContext.Session.GetInt32("EmpID"));
-                var result = ExecuteProcedure(FromDate.Value, ToDate.Value, allotmentNoInt, TimePeriod, EMP_ID);
+                var result = ExecuteProcedure(FromDate.Value, ToDate.Value, allotmentNoInt, slNo, EMP_ID, electricityCount, elecRate);
 
                 // Return success with the result from the procedure
                 return Json(new { success = true, data = result });
@@ -189,71 +189,52 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                 Console.WriteLine("An error occurred in Compute method: " + ex.Message);
                 Console.WriteLine("Stack trace: " + ex.StackTrace);
 
-                // Return error response
+              
                 return Json(new { sucess = false, error = "An error occurred while processing the request. Details: " + ex.Message });
             }
         }
 
-        private double ExecuteProcedure(DateTime fromDate, DateTime toDate, int allotmentNo, string timePeriod, int empId)
-       // private double ExecuteProcedure(DateTime fromDate, DateTime toDate, int allotmentNo, string timePeriod, int empId, int elecRate, int electricityCount)
+        private double ExecuteProcedure(DateTime fromDate, DateTime toDate, int allotmentNo, int slNo, int empId, int elecRate, int electricityCount)
         {
+            var fdt = fromDate.ToString("yyyy/MM/dd");
+            var tdt = toDate.ToString("yyyy/MM/dd");
             try
             {
-
-                /*--New Method Start--*/
-
-                //string OutputStat = string.Empty;
-                //OracleParameter O1 = new OracleParameter("p_from_date", fromDate.Date);
-                //OracleParameter O2 = new OracleParameter("p_to_date", toDate.Date);
-                //OracleParameter O3 = new OracleParameter("p_allotment_id", allotmentNo);
-                //OracleParameter O4 = new OracleParameter("p_computation_type", timePeriod);
-                //OracleParameter O5 = new OracleParameter("p_personal_number", empId);
-                //OracleParameter O6 = new OracleParameter("o_total_amount", OracleDbType.Char, ParameterDirection.Output);
-                //string smt1 = "BEGIN CALCULATE_TOTAL_AMOUNT(:p_from_date,:p_to_date,:p_allotment_id,:p_computation_type,:p_personal_number,:o_total_amount); END;";
-                //var exec = _context.Database.ExecuteSqlCommand(smt1, O1, O2, O3, O4, O5, O6);
-                //OutputStat = O6.OracleValue.ToString();
-
                 List<OracleParameter> oracleParameterCollection = new List<OracleParameter>
-                {
-                    new OracleParameter { ParameterName = "p_from_date", OracleDbType = OracleDbType.Date, Value = fromDate.Date },
-                    new OracleParameter { ParameterName = "p_to_date", OracleDbType = OracleDbType.Date, Value = toDate.Date },
-                    new OracleParameter { ParameterName = "p_allotment_id", OracleDbType = OracleDbType.Int64, Value = allotmentNo },
-                    new OracleParameter { ParameterName = "p_personal_number", OracleDbType = OracleDbType.Int64, Value = empId },
-                    new OracleParameter { ParameterName = "p_computation_type", OracleDbType = OracleDbType.VarChar, Value = timePeriod },
-                   // new OracleParameter { ParameterName = "p_electricity_count", OracleDbType = OracleDbType.Int64, Value = electricityCount },
-                    //new OracleParameter { ParameterName = "p_electricity_rate", OracleDbType = OracleDbType.Int64, Value = elecRate },
-                    new OracleParameter { ParameterName = "p_no_of_beds", OracleDbType = OracleDbType.Int64, Value = 1 },
-                    new OracleParameter { ParameterName = "o_total_amount", OracleDbType = OracleDbType.Double, Size = 2000, Direction = ParameterDirection.Output }
-                };
+        {
+            new OracleParameter { ParameterName = "p_allotment_id", OracleDbType = OracleDbType.Int64, Value = allotmentNo },
+            new OracleParameter { ParameterName = "p_from_date", OracleDbType = OracleDbType.Date, Value = fromDate.Date },
+            new OracleParameter { ParameterName = "p_to_date", OracleDbType = OracleDbType.Date, Value = toDate.Date },
+            new OracleParameter { ParameterName = "p_personal_number", OracleDbType = OracleDbType.Int64, Value = empId },
+            new OracleParameter { ParameterName = "p_sl_no", OracleDbType = OracleDbType.Int64, Value = slNo },
+            new OracleParameter { ParameterName = "p_electricity_count", OracleDbType = OracleDbType.Int64, Value = electricityCount },
+            new OracleParameter { ParameterName = "p_electricity_rate", OracleDbType = OracleDbType.Int64, Value = elecRate },
+            new OracleParameter { ParameterName = "o_total_amount", OracleDbType = OracleDbType.Double, Direction = ParameterDirection.Output }
+        };
 
-                _context.ExecuteProcedure("CALCULATE_TOTAL_AMOUNT", oracleParameterCollection);
+                // Convert the List<OracleParameter> to an object array as required by the ExecuteProcedure method
+                object[] parameters = new object[] { oracleParameterCollection };
 
+                // Call the ExecuteProcedure method to run the stored procedure
+                _context.ExecuteProcedure("PROCESS_ALLOTMENT", parameters);
 
-
-                /*--New Method End--*/
-
-                //int rowsAffected = _context.Database.ExecuteSqlCommand(sqlQuery, O1, O2, O3, O4, O5, O6);
-
-
-                // string totalAmount = O6.Value.ToString();
-
-
-                // float toatalmount = Convert.ToSingle(oracleParameterCollection.FirstOrDefault(x => x.ParameterName == "o_total_amount").Value;
-                double totalAmount = Convert.ToDouble(oracleParameterCollection.Find(p => p.ParameterName == "o_total_amount").Value);
+                // Check if the output parameter is DBNull before casting
+                var totalAmountParameter = oracleParameterCollection.Find(p => p.ParameterName == "o_total_amount");
+                double totalAmount = (totalAmountParameter.Value != DBNull.Value)
+                    ? Convert.ToDouble(totalAmountParameter.Value)
+                    : 0.0; // Set a default value (e.g., 0.0) if DBNull
 
                 return totalAmount;
             }
             catch (Exception ex)
             {
-
                 Console.WriteLine("An error occurred while executing the procedure: " + ex.Message);
                 throw;
             }
-
-
         }
 
 
+      
 
 
 
