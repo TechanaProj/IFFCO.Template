@@ -268,7 +268,7 @@
                                 <tbody id="nonEmpData">
                                     @foreach (var item in Model.listVwAonlaNonEmpAllotStatus)
                                     {
-                                        <tr id="tr_@(item.UnitCode)_@(item.AllotmentNo)" data-ischange="0" onclick="changeRowColor(this)">
+                                        <tr id="tr_@(item.UnitCode)_@(item.AllotmentNo)" data-ischange="0" style="@(!string.IsNullOrEmpty(item.RentType) ? "background-color:#e1ad01;" : "")">
                                             <td>@Html.DisplayFor(modelItem => item.QuarterCategory)</td>
                                             <td>@Html.DisplayFor(modelItem => item.QuarterNo)</td>
                                             <td>
@@ -286,8 +286,11 @@
                                                 <input type="date" id="vacancyDateId" class="form-control" asp-for="@Model.VacancyDate" value="@Model.VacancyDate.ToString("dd-MM-yyyy")">
                                             </td>
                                             <td>
+@*
                                                 <select id="OccupantTypeLOV" class="form-control" asp-items="@(new SelectList(Model.ShutDownOccupantLOVBind, "Value", "Text", Model.OccupantCode))">
-                                                    <option value="">--SELECT--</option>
+                                               *@
+                                                <select id="OccupantTypeLOV" class="form-control" disabled>
+                                                    <option value="1010">ShutDown</option>
                                                 </select>
                                             </td>
                                             <td>

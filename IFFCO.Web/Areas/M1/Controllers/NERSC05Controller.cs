@@ -96,7 +96,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
             //CommonViewModel.listFIntCompute = new List<FIntCompute>();
             
 
-          //  CommonViewModel.listFIntCompute = nERRSCommonService.FinalIntCompute(PlantCD, FromDate.Value, ToDate.Value);
+           CommonViewModel.listFIntCompute = nERRSCommonService.FinalIntCompute(PlantCD, FromDate.Value, ToDate.Value);
            
 
             CommonViewModel.AreaName = this.ControllerContext.RouteData.Values["area"].ToString();

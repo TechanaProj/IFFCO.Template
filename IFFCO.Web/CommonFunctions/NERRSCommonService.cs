@@ -305,6 +305,63 @@ namespace IFFCO.NERRS.Web.CommonFunctions
             return DTL_VALUE;
         }
 
+        public List<FIntCompute> FinalIntCompute(string PlantCD, DateTime FromDate, DateTime ToDate)   /*For ShutDown */
+        {
+            string sqlquery = "SELECT ";
+            sqlquery += "A.UNIT_CODE, A.QUARTER_CATEGORY, A.QUARTER_NO, A.SL_NO, EMP.EMP_NAME, A.ALLOTMENT_NO, ";
+            sqlquery += "A.ALLOTMENT_DATE, A.OCCUPANCY_DATE, A.VACANCY_DATE, A.TOTAL_AMT, R.TYPE_RESI_ACCOM,R.RATES, ";
+            sqlquery += "A.VENDOR_CODE, MAX(V.VENDOR_NAME) AS VENDOR_NAME, O.OCCUPANT_TYPE, A.DAYS_REMAINING, ";
+            sqlquery += "A.COMPUTATION_RUN, A.FROM_DATE, A.TO_DATE, A.NXT_FROM_DATE, A.NXT_TO_DATE, ";
+            sqlquery += "A.MONTH_DAY_TYPE, A.ELECT_RATE, A.ELECT_UNIT, A.ELECT_AMT, A.CURRENT_COMPUTE_AMOUNT, ";
+            sqlquery += "A.DAYS_COMPUTED, A.RENT_RATE ";
+            sqlquery += "FROM F_INT_COMPUTE A ";
+            sqlquery += "LEFT JOIN M_OCCUPANT_MSTS O ON A.OCCUPANT_CODE = O.OCCUPANT_CODE ";
+            sqlquery += "LEFT JOIN M_RENT_MSTS R ON A.RENT_CODE = R.RENT_CODE ";
+            sqlquery += "LEFT JOIN V_EB_EMPLOYEE_COMPLETE_DTLS EMP ON A.PERSONAL_NO = EMP.PERSONAL_NO ";
+            sqlquery += "LEFT JOIN M_VENDOR_MSTS V ON A.VENDOR_CODE = V.VENDOR_CODE ";
+            sqlquery += "AND A.UNIT_CODE = '" + PlantCD + "' AND A.FROM_DATE =  '" + FromDate.ToString("dd/MM/yyyy") + "' AND A.TO_DATE =  '" + ToDate.ToString("dd/MM/yyyy") + "'  ";
+            sqlquery += "GROUP BY ";
+            sqlquery += "A.UNIT_CODE, A.QUARTER_CATEGORY, A.QUARTER_NO, A.SL_NO, EMP.EMP_NAME, A.ALLOTMENT_NO, ";
+            sqlquery += "A.ALLOTMENT_DATE, A.OCCUPANCY_DATE, A.VACANCY_DATE, A.TOTAL_AMT, R.TYPE_RESI_ACCOM,R.RATES, ";
+            sqlquery += "A.VENDOR_CODE, O.OCCUPANT_TYPE, A.DAYS_REMAINING, A.COMPUTATION_RUN, A.FROM_DATE, ";
+            sqlquery += "A.TO_DATE, A.NXT_FROM_DATE, A.NXT_TO_DATE, A.MONTH_DAY_TYPE, A.ELECT_RATE, ";
+            sqlquery += "A.ELECT_UNIT, A.ELECT_AMT, A.CURRENT_COMPUTE_AMOUNT, A.DAYS_COMPUTED, A.RENT_RATE ";
+            sqlquery += " ORDER BY A.COMPUTATION_RUN DESC ";
+
+
+
+            DateTime? vacay = null;
+            DataTable dtDTL_VALUE = new DataTable();
+            dtDTL_VALUE = _context.GetSQLQuery(sqlquery);
+            List<FIntCompute> DTL_VALUE = new List<FIntCompute>();
+            DTL_VALUE = (from DataRow dr in dtDTL_VALUE.Rows
+                         select new FIntCompute()
+                         {
+
+                             UnitCode = Convert.ToInt32(dr["UNIT_CODE"]),
+                             PersonalNo = Convert.ToInt32(dr["PERSONAL_NO"]),
+                             VendorCode = Convert.ToString(dr["VENDOR_NAME"]),
+                             ComputationRun = Convert.ToInt32(dr["COMPUTATION_RUN"]),
+                             AllotmentNo = (dr["ALLOTMENT_NO"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["ALLOTMENT_NO"]),
+                             QuarterCategory = Convert.ToString(dr["QUARTER_CATEGORY"]),
+                             QuarterNo = Convert.ToInt32(dr["QUARTER_NO"]),
+                             AllotmentDate = Convert.ToDateTime(dr["ALLOTMENT_DATE"]),
+                             OccupancyDate = string.IsNullOrEmpty(Convert.ToString(dr["OCCUPANCY_DATE"])) ? vacay : Convert.ToDateTime(Convert.ToString(dr["OCCUPANCY_DATE"])),
+                             VacancyDate = string.IsNullOrEmpty(Convert.ToString(dr["VACANCY_DATE"])) ? vacay : Convert.ToDateTime(Convert.ToString(dr["VACANCY_DATE"])),
+                             RentCode = Convert.ToString(dr["RATES"]),
+                             OccupantCode = Convert.ToString(dr["OCCUPANT_TYPE"]),
+                             ElectRate = Convert.ToInt32(dr["ELECT_RATE"]),
+                             ElectAmt = Convert.ToInt32(dr["ELECT_AMT"]),
+                             ElectUnit = Convert.ToInt32(dr["ELECT_UNIT"]),
+                             DaysRemaining = Convert.ToInt32(dr["DAYS_REMAINING"]),
+                             CurrentComputeAmount = Convert.ToInt32(dr["CURRENT_COMPUTE_AMOUNT"]),
+
+                          
+
+                         }).ToList();
+            return DTL_VALUE;
+        }
+
 
     }
 }
