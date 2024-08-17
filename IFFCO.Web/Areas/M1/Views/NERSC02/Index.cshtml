@@ -83,22 +83,22 @@
                                                 <div class="col-sm-2 col-md-2">
                                                     <select id="AllotmentNo" name="AllotmentNo" class="form-control" onchange="fetchRentCode()" asp-items="@(new SelectList(Model.AllotementNoLOVBind, "Value", "Text"))"></select>
                                                 </div>
-                                               
-                                                <span id="rentCode"  style="display:none;"></span>
+
+                                                <span id="rentCode" style="display:none;"></span>
 
                                                 <br />
-@*
+                                                @*
                                                 <div class="col-sm-2 col-md-1">
-                                                    <label class="m-lbl1 m-lbl2">Monthly/Daily</label>
+                                                <label class="m-lbl1 m-lbl2">Monthly/Daily</label>
                                                 </div>
                                                 <div class="col-sm-2 col-md-2">
-                                                    <select class="form-control" id="timePeriod">
-                                                        <option value="">Select For Compute</option>
-                                                        <option value="M">Monthly</option>
-                                                        <option value="D">Daily</option>
-                                                    </select>
+                                                <select class="form-control" id="timePeriod">
+                                                <option value="">Select For Compute</option>
+                                                <option value="M">Monthly</option>
+                                                <option value="D">Daily</option>
+                                                </select>
                                                 </div>
-*@
+                                                *@
 
                                             </div>
                                         </div>
@@ -112,9 +112,9 @@
                                     </div>
                                 </form>
                                 <div style="text-align: center;">
-                                  @*  <button id="sendMailButton">
-                                        <i class="fas fa-calculator" style="margin-right: 5px;"></i>
-                                        Compute
+                                    @*  <button id="sendMailButton">
+                                    <i class="fas fa-calculator" style="margin-right: 5px;"></i>
+                                    Compute
                                     </button>*@
 
                                 </div>
@@ -138,10 +138,10 @@
                                         <th>OCCUPANCY DATE</th>
                                         <th>EXPECTED VACANCY DATE</th>
                                         <th>VACANCY DATE</th>
-                                       <th>ELECTRICITY RATE</th>
-                                       <th>ELECTRICITY COUNT</th>
+                                        <th>ELECTRICITY RATE</th>
+                                        <th>ELECTRICITY COUNT</th>
                                         <th>ACTION</th>
-                                        
+
                                     </tr>
                                 </thead>
                                 <tbody id="tableBody">
@@ -164,75 +164,75 @@
 
 
 <script>
-$(document).ready(function () {
-    $("#queryForm").on("submit", function (event) {
-        event.preventDefault();
-        $.ajax({
-            url: '@Url.Action("Query", "NERSC02", new { area = "M1" })',
-            type: 'POST',
-            data: $(this).serialize(),
-            success: function (response) {
-                if (response.success) {
-                    var tableBody = $("#tableBody");
-                    tableBody.empty();
-                    $.each(response.data, function (index, item) {
-                        var row = "<tr>" +
-                            "<td>" + (item.unitCode || '') + "</td>" +
-                            "<td>" + (item.slno || '') + "</td>" +
-                            "<td>" + (item.allotmentNo || '') + "</td>" +
-                            "<td>" + (item.personalNo || '') + "</td>" +
-                            "<td>" + (item.quarterCategory || '') + "</td>" +
-                            "<td>" + (item.quarterNo || '') + "</td>" +
-                            "<td>" + formatDate(item.allotmentDate) + "</td>" +
-                            "<td>" + formatDate(item.occupancyDate) + "</td>" +
-                            "<td>" + formatDate(item.expectedVacancyDate) + "</td>" +
-                            "<td>" + formatDate(item.vacancyDate) + "</td>" +
-                            "<td><input type='text' class='form-control elecRate' value='" + (item.elecRate || '') + "' /></td>" +
-                            "<td><input type='text' class='form-control electricityCount' value='" + (item.electricityCount || '') + "' /></td>" +
+    $(document).ready(function () {
+        $("#queryForm").on("submit", function (event) {
+            event.preventDefault();
+            $.ajax({
+                url: '@Url.Action("Query", "NERSC02", new { area = "M1" })',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function (response) {
+                    if (response.success) {
+                        var tableBody = $("#tableBody");
+                        tableBody.empty();
+                        $.each(response.data, function (index, item) {
+                            var row = "<tr>" +
+                                "<td>" + (item.unitCode || '') + "</td>" +
+                                "<td>" + (item.slNo || '') + "</td>" +
+                                "<td>" + (item.allotmentNo || '') + "</td>" +
+                                "<td>" + (item.personalNo || '') + "</td>" +
+                                "<td>" + (item.quarterCategory || '') + "</td>" +
+                                "<td>" + (item.quarterNo || '') + "</td>" +
+                                "<td>" + formatDate(item.allotmentDate) + "</td>" +
+                                "<td>" + formatDate(item.occupancyDate) + "</td>" +
+                                "<td>" + formatDate(item.expectedVacancyDate) + "</td>" +
+                                "<td>" + formatDate(item.vacancyDate) + "</td>" +
+                                "<td><input type='text' class='form-control elecRate' value='" + (item.elecRate || '') + "' /></td>" +
+                                "<td><input type='text' class='form-control electricityCount' value='" + (item.electricityCount || '') + "' /></td>" +
 
                                 // "<td>" + formatDate(item.elecRate) + "</td>" +
-                           // "<td>" + formatDate(item.electricityCount) + "</td>" +
-                           // "<td><button class='actionButton' data-unitCode='" + (item.unitCode || '') + "' data-allotmentNo='" + (item.allotmentNo || '') + "'>Action</button></td>" +
-                            "<td><button class='sendMailButton' data-unitCode='" + (item.unitCode || '') + "' data-allotmentNo='" + (item.allotmentNo || '') + "'>Action</button></td>" +
-              
-                           "</tr>";
-                        tableBody.append(row);
-                    });
-                } else {
-                    alert("Error: " + response.error); // Show alert for specific error message
+                                // "<td>" + formatDate(item.electricityCount) + "</td>" +
+                                // "<td><button class='actionButton' data-unitCode='" + (item.unitCode || '') + "' data-allotmentNo='" + (item.allotmentNo || '') + "'>Action</button></td>" +
+                                "<td><button class='sendMailButton' data-unitCode='" + (item.unitCode || '') + "' data-allotmentNo='" + (item.allotmentNo || '') + "'>Action</button></td>" +
+
+                                "</tr>";
+                            tableBody.append(row);
+                        });
+                    } else {
+                        alert("Error: " + response.error); 
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX Error: " + status + " " + error);
+                    alert("AJAX Error: " + status + " " + error); 
                 }
-            },
-            error: function (xhr, status, error) {
-                console.error("AJAX Error: " + status + " " + error);
-                alert("AJAX Error: " + status + " " + error); // Show alert for generic AJAX error
-            }
+            });
         });
+
+
+
+        function formatDate(dateString) {
+            if (!dateString) {
+                return ''; // Return empty string for null or undefined dates
+            }
+            var date = new Date(dateString);
+            if (isNaN(date.getTime())) {
+                return ''; // Return empty string for invalid dates
+            }
+            var day = ('0' + date.getDate()).slice(-2);
+            var month = ('0' + (date.getMonth() + 1)).slice(-2);
+            var year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
     });
-
-      
-
-    function formatDate(dateString) {
-        if (!dateString) {
-            return ''; // Return empty string for null or undefined dates
-        }
-        var date = new Date(dateString);
-        if (isNaN(date.getTime())) {
-            return ''; // Return empty string for invalid dates
-        }
-        var day = ('0' + date.getDate()).slice(-2);
-        var month = ('0' + (date.getMonth() + 1)).slice(-2);
-        var year = date.getFullYear();
-        return `${day}/${month}/${year}`;
-    }
-});
 
     $(document).ready(function () {
         $(document).on('click', '.sendMailButton', function (event) {
             event.preventDefault(); // Prevent the default form submission
-             debugger;
+            debugger;
             console.log("Action/Compute button clicked");
 
-             // Get the values from the form
+            // Get the values from the form
 
             var row = $(this).closest('tr');
 
@@ -240,7 +240,7 @@ $(document).ready(function () {
             var allotmentNo = row.find('td:eq(2)').text(); // Allotment No is in the second column (index 1)
             var fromDate = $("#FromDate").val();
             var toDate = $("#ToDate").val();
-            var slno = row.find('td:eq(1)').text();
+            var slNo = row.find('td:eq(1)').text();
             var personalNo = row.find('td:eq(3)').text(); // Personal No is in the third column (index 2)
             var quarterCategory = row.find('td:eq(4)').text(); // Quarter Category in fourth column (index 3)
             var quarterNo = row.find('td:eq(5)').text(); // Quarter No in fifth column (index 4)
@@ -260,12 +260,12 @@ $(document).ready(function () {
                 showAlert('Allotment number is required.');
                 return;
             }
-           
+
 
             console.log("All validations passed. Proceeding to AJAX.");
-            
+
             $.ajax({
-                debugger;
+                // debugger;
                 url: '/M1/NERSC02/Compute',
                 //url: '@Url.Action("Compute", "NERSC02", new { area = "M1" })',
                 type: 'POST',
@@ -273,10 +273,10 @@ $(document).ready(function () {
                     FromDate: fromDate,
                     ToDate: toDate,
                     AllotmentNo: allotmentNo,
-                    Slno: slno,
+                    SlNo: slNo,
                     electricityCount: electricityCount,
                     elecRate: elecRate,
-                   // rentCode: rentCode,
+                    // rentCode: rentCode,
                 },
                 success: function (response) {
                     if (response.success) {
@@ -320,12 +320,12 @@ $(document).ready(function () {
         debugger;
         var allotmentNo = $("#AllotmentNo").val();
         $.ajax({
-            url: '/M1/NERSC02/GetRentCode', 
+            url: '/M1/NERSC02/GetRentCode',
             type: 'GET',
             data: { allotmentNo: allotmentNo },
             success: function (response) {
                 debugger;
-               
+
                 $("#rentCode").text(response.rentCode);
             },
             error: function (xhr, status, error) {
@@ -338,7 +338,3 @@ $(document).ready(function () {
 
 
 </script>
-
-
-
-

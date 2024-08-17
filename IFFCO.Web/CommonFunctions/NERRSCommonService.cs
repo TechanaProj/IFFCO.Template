@@ -339,7 +339,7 @@ namespace IFFCO.NERRS.Web.CommonFunctions
                          {
 
                              UnitCode = Convert.ToInt32(dr["UNIT_CODE"]),
-                             PersonalNo = Convert.ToInt32(dr["PERSONAL_NO"]),
+                             //PersonalNo = Convert.ToInt32(dr["PERSONAL_NO"]),
                              VendorCode = Convert.ToString(dr["VENDOR_NAME"]),
                              ComputationRun = Convert.ToInt32(dr["COMPUTATION_RUN"]),
                              AllotmentNo = (dr["ALLOTMENT_NO"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["ALLOTMENT_NO"]),

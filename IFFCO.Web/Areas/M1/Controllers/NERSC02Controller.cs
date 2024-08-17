@@ -196,23 +196,43 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
 
         private double ExecuteProcedure(DateTime fromDate, DateTime toDate, int allotmentNo, int slNo, int empId, int elecRate, int electricityCount)
         {
-            var fdt = fromDate.ToString("yyyy-MM-dd");
-            var tdt = toDate.ToString("yyyy-MM-dd");
+            DateTime FromDate = DateTime.Parse(Request.Form["fromDate"]); // or whatever source you are using
+            DateTime ToDate = DateTime.Parse(Request.Form["toDate"]);
+
+            //var fdt = fromDate.ToString("yyyy-MM-dd");
+            //var tdt = toDate.ToString("yyyy-MM-dd");
             try
             {
-                List<OracleParameter> oracleParameterCollection = new List<OracleParameter>
-        {
-            new OracleParameter { ParameterName = "p_allotment_id", OracleDbType = OracleDbType.Int64, Value = allotmentNo },
-           // new OracleParameter { ParameterName = "p_from_date", OracleDbType = OracleDbType.Date, Value = fromDate.Date },
-            new OracleParameter { ParameterName = "p_from_date", OracleDbType = OracleDbType.VarChar, Value = fdt },
-            new OracleParameter { ParameterName = "p_to_date", OracleDbType = OracleDbType.VarChar, Value = tdt },
-            //new OracleParameter { ParameterName = "p_to_date", OracleDbType = OracleDbType.Date, Value = toDate.Date },
-            new OracleParameter { ParameterName = "p_personal_number", OracleDbType = OracleDbType.Int64, Value = empId },
-            new OracleParameter { ParameterName = "p_sl_no", OracleDbType = OracleDbType.Int64, Value = slNo },
-            new OracleParameter { ParameterName = "p_electricity_count", OracleDbType = OracleDbType.Int64, Value = electricityCount },
-            new OracleParameter { ParameterName = "p_electricity_rate", OracleDbType = OracleDbType.Int64, Value = elecRate },
-            new OracleParameter { ParameterName = "o_total_amount", OracleDbType = OracleDbType.Double, Direction = ParameterDirection.Output }
-        };
+                //        List<OracleParameter> oracleParameterCollection = new List<OracleParameter>
+                //{
+                //    new OracleParameter { ParameterName = "p_allotment_id", OracleDbType = OracleDbType.Int64, Value = allotmentNo },
+                //   // new OracleParameter { ParameterName = "p_from_date", OracleDbType = OracleDbType.Date, Value = fromDate.Date },
+                //    new OracleParameter { ParameterName = "p_from_date", OracleDbType = OracleDbType.VarChar, Value = fdt },
+                //    new OracleParameter { ParameterName = "p_to_date", OracleDbType = OracleDbType.VarChar, Value = tdt },
+                //    //new OracleParameter { ParameterName = "p_to_date", OracleDbType = OracleDbType.Date, Value = toDate.Date },
+                //    new OracleParameter { ParameterName = "p_personal_number", OracleDbType = OracleDbType.Int64, Value = empId },
+                //    new OracleParameter { ParameterName = "p_sl_no", OracleDbType = OracleDbType.Int64, Value = slNo },
+                //    new OracleParameter { ParameterName = "p_electricity_count", OracleDbType = OracleDbType.Int64, Value = electricityCount },
+                //    new OracleParameter { ParameterName = "p_electricity_rate", OracleDbType = OracleDbType.Int64, Value = elecRate },
+                //    new OracleParameter { ParameterName = "o_total_amount", OracleDbType = OracleDbType.Double, Direction = ParameterDirection.Output }
+                //};
+
+                    List<OracleParameter> oracleParameterCollection = new List<OracleParameter>
+                        {
+                            new OracleParameter { ParameterName = "p_allotment_id", OracleDbType = OracleDbType.Int64, Value = allotmentNo },
+                            new OracleParameter { ParameterName = "p_from_date", OracleDbType = OracleDbType.Date, Value = FromDate },
+                            new OracleParameter { ParameterName = "p_to_date", OracleDbType = OracleDbType.Date, Value = ToDate },
+                            new OracleParameter { ParameterName = "p_personal_number", OracleDbType = OracleDbType.Int64, Value = empId },
+                            new OracleParameter { ParameterName = "p_sl_no", OracleDbType = OracleDbType.Int64, Value = slNo },
+                            new OracleParameter { ParameterName = "p_electricity_count", OracleDbType = OracleDbType.Int64, Value = electricityCount },
+                            new OracleParameter { ParameterName = "p_electricity_rate", OracleDbType = OracleDbType.Int64, Value = elecRate },
+                            new OracleParameter { ParameterName = "o_total_amount", OracleDbType = OracleDbType.Double, Direction = ParameterDirection.Output }
+                        };
+
+
+
+
+
 
                 // Convert the List<OracleParameter> to an object array as required by the ExecuteProcedure method
                 object[] parameters = new object[] { oracleParameterCollection };
