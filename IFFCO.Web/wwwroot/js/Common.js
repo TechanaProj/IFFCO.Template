@@ -1,7 +1,9 @@
 ﻿function CommonAjax(Url, Type, Async, ContentType, Cache, fn, Id, content) {
     if (Url != "") {
         $.ajax({
-            url: Url,
+           url: "https://appsaonla.iffco.coop/nerss/"+ Url,
+            //url: Url, 
+         
             type: Type,
             async: Async,
             data: content,

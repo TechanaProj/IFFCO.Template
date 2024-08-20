@@ -125,10 +125,12 @@
         //function GetModules() {
         $("#PersonalNo").change(function () {
             CommonAjax("/Account/GetMouldeResultForAccount?PersonalNo=" + $("#PersonalNo").val(), "GET", false, "application/json", false, BindDdlModule, "#ModuleHidden");
-        })
+            //  CommonAjax("@Url.Content("~")/Account/GetMouldeResultForAccount ? PersonalNo = " + $("#PersonalNo").val(), "GET", false, "application / json", false, BindDdlModule, "#ModuleHidden");
+        })  
 
         //}ddlModules
         $("#login").click(function () {
+            debugger;
             var DropDownValue = $("#ddlModules").val();
             if (DropDownValue == 0) {
                 $('#ddlModules').css('border-color', 'red');
@@ -147,6 +149,7 @@
         //    $(".modalLoader").show();
         //});
         function BindDdlModule(data, id) {
+            debugger;
             var strHtml = "<option value='0'>Select Modules</option>"
             $.each(data, function (index, Module) {
                 strHtml += "<option value=" + Module.value + ">" + Module.text + "</option>"

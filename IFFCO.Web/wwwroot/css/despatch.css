@@ -1,0 +1,44 @@
+﻿input[type=number] {
+    text-align: right;
+}
+
+.QtyAlignRight {
+    text-align: right;
+}
+
+.UpperText {
+    text-transform: uppercase;
+}
+
+.TitleText {
+    text-transform: capitalize;
+}
+
+input[type="checkbox"][readonly] {
+    pointer-events: none;
+}
+
+.scrollit {
+    overflow: scroll;
+    height: 600px;
+}
+
+.btn-area-fixed {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.user-img-edit {
+    width: 240px;
+    display: inline-block;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 0px solid #b7b7b7;
+    position: relative;
+}
+
+.bootbox.modal {
+    z-index: 99999999 !important;
+}

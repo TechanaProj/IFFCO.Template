@@ -126,10 +126,11 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                     {
 
                         var alt = value.AllotmentNo;
-
+                    var slno = value.SlNo;
+                   
 
                         // Check if the record already exists
-                        if (!_context.FAllotmentRentDtls.Any(x => x.UnitCode == Convert.ToInt32(nERSC03ViewModel.PlantCD) && x.AllotmentNo == alt))
+                        if (!_context.FAllotmentRentDtls.Any(x => x.UnitCode == Convert.ToInt32(nERSC03ViewModel.PlantCD) && x.AllotmentNo == alt && x.SlNo == slno))
                         {
 
                             DateTime? Dtime = null;
@@ -163,7 +164,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                             {
                                 DataRow[] filteredRows = dtDRP_VALUE.Select("RENT_CODE = '" + value.RentType + "'");
 
-                                var y = _context.FAllotmentRentDtls.Where(z => z.AllotmentNo == xy.AllotmentNo).FirstOrDefault();
+                                var y = _context.FAllotmentRentDtls.Where(z => z.AllotmentNo == xy.AllotmentNo && value.SlNo == xy.SlNo).FirstOrDefault();
                                 if (y != null)
                                 {
                                     y.UnitCode = Convert.ToInt32(xy.UnitCode);

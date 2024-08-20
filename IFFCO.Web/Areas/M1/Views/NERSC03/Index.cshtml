@@ -165,6 +165,13 @@
     newRow.find('select').prop('selectedIndex', 0); // Reset select boxes to the first option
     newRow.find('input[type="checkbox"]').prop('checked', false); // Uncheck checkboxes
 
+     // Specifically clear the Occupancy Date and Quarter Rent fields
+    newRow.find("td:eq(6)").text(''); // Assuming Occupancy Date is in the 7th column (index 6)
+    newRow.find("td:eq(9) select").prop('selectedIndex', 0); // Assuming Quarter Rent is in the 10th column (index 9)
+
+     // Remove the disabled attribute from the Quarter Rent field in the new row
+     newRow.find("td:eq(9) select").prop('disabled', false);
+
     // Find the current highest SlNo
     var highestSlNo = 1;
     $("#HrmsHrdGrid tbody tr").each(function () {
@@ -272,15 +279,21 @@
                                             <td>@Html.DisplayFor(modelItem => item.QuarterCategory)</td>
                                             <td>@Html.DisplayFor(modelItem => item.QuarterNo)</td>
                                             <td>
-                                                <select id="VendorTypeLOV" class="form-control" asp-items="@(new SelectList(Model.VendorLOVBind, "Value", "Text"))">
+                                                <select id="VendorTypeLOV" class="form-control" asp-items="@(new SelectList(Model.VendorLOVBind, "Value", "Text", item.VendorCode))">
                                                     <option value="">--SELECT--</option>
                                                    
                                                 </select>
                                             </td>
-                                            <td>@Html.EditorFor(modelItem => item.SlNo)</td>
+                                          
+                                            <td>
+                                                <input type="text" style="width:30px;" value="@Html.DisplayFor(modelItem => item.SlNo)" />
+                                            </td>
+
                                             <td>@Html.DisplayFor(modelItem => item.AllotmentNo)</td>
                                             <td>@Html.DisplayFor(modelItem => item.ApprovedDate)</td>
-                                            <td id="td_Rent_@(item.UnitCode)_@(item.AllotmentNo)">@Html.DisplayFor(modelItem => item.OccupancyDate)</td>
+                                            <td id="td_Rent_@(item.UnitCode)_@(item.AllotmentNo)">
+                                                <input type="date" class="form-control" value="type@Html.DisplayFor(modelItem => item.OccupancyDate)" />
+                                                </td>
                                             <td>
                                                
                                                 <input type="date" id="vacancyDateId" class="form-control" asp-for="@Model.VacancyDate" value="@Model.VacancyDate.ToString("dd-MM-yyyy")">
