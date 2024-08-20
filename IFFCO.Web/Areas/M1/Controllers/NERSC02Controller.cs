@@ -133,10 +133,6 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
 
 
                 var allotmentCompute = _context.FIntCompute.Where(c => c.AllotmentNo == Int32.Parse(AllotmentNo));
-
-
-
-
                 var allotmentDetails = _context.FAllotmentRentDtls.FirstOrDefault(m => m.AllotmentNo == allotmentNoInt);
 
                 if (allotmentDetails == null)
@@ -148,33 +144,9 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                 TimeSpan selectedPeriod = ToDate.Value - FromDate.Value;
                 DateTime allotmentStartDate = new DateTime(allotmentDetails.AllotmentDate.Year, allotmentDetails.AllotmentDate.Month, 1);
                 TimeSpan allotmentPeriod = (TimeSpan)(allotmentDetails.VacancyDate - allotmentStartDate);
+                 int daysInMonth = DateTime.DaysInMonth(FromDate.Value.Year, FromDate.Value.Month);
+              
 
-
-                //if (TimePeriod == "M")
-                //{
-
-                //    if (FromDate.Value.Month != ToDate.Value.Month || FromDate.Value.Year != ToDate.Value.Year)
-                //    {
-                //        return Json(new { success = false, error = "From date and To date must be within the same month." });
-                //    }
-
-                   int daysInMonth = DateTime.DaysInMonth(FromDate.Value.Year, FromDate.Value.Month);
-                //    if (FromDate.Value.Day != 1 || ToDate.Value.Day != daysInMonth)
-                //    {
-                //        return Json(new { success = false, error = $"From date and To date must cover the entire month. For {FromDate.Value.ToString("MMMM")}, it should be from 1 to {daysInMonth}." });
-                //    }
-                //}
-                //else if (TimePeriod == "D")
-                //{
-
-                //    if (selectedPeriod.Days > 31)
-                //    {
-                //        return Json(new { success = false, error = "The selected period cannot exceed 31 days." });
-                //    }
-                //}
-
-
-               
 
                 // Perform the procedure execution
                 int EMP_ID = Convert.ToInt32(HttpContext.Session.GetInt32("EmpID"));
@@ -182,6 +154,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
 
                 // Return success with the result from the procedure
                 return Json(new { success = true, data = result });
+            
             }
             catch (Exception ex)
             {
@@ -196,7 +169,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
 
         private double ExecuteProcedure(DateTime fromDate, DateTime toDate, int allotmentNo, int slNo, int empId, int elecRate, int electricityCount)
         {
-            DateTime FromDate = DateTime.Parse(Request.Form["fromDate"]); // or whatever source you are using
+            DateTime FromDate = DateTime.Parse(Request.Form["fromDate"]); 
             DateTime ToDate = DateTime.Parse(Request.Form["toDate"]);
 
             //var fdt = fromDate.ToString("yyyy-MM-dd");
@@ -231,13 +204,10 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
 
 
 
-
-
-
                 // Convert the List<OracleParameter> to an object array as required by the ExecuteProcedure method
                 object[] parameters = new object[] { oracleParameterCollection };
 
-                // Call the ExecuteProcedure method to run the stored procedure
+              
                 _context.ExecuteProcedure("PROCESS_ALLOTMENT", parameters);
 
                 // Check if the output parameter is DBNull before casting

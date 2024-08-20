@@ -102,9 +102,9 @@ namespace IFFCO.NERRS.Web.Controllers
 
         public JsonResult GetMouldeResultForAccount(int PersonalNo)
         {
-            var connectionString = configuration.GetSection("ConnectionString:DataConnection").Value.ToString();
-            OracleConnection connection = new OracleConnection(connectionString);
-            connection.Open();
+          //  var connectionString = configuration.GetSection("ConnectionString:DataConnection").Value.ToString();
+         //   OracleConnection connection = new OracleConnection(connectionString);
+         //   connection.Open();
             return Json(commonService.GetModules(PersonalNo));
         }
         public JsonResult ChangePassword([FromBody] LoginModel loginViewModel)

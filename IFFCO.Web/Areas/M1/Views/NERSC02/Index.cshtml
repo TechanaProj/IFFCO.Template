@@ -280,12 +280,18 @@
                 },
                 success: function (response) {
                     if (response.success) {
-                        $("#tableBody").html(response.data);
+                         var amount = response.data; // This should be the computed amount returned by the server
                         Swal.fire({
                             icon: 'success',
-                            title: 'Success',
-                            text: 'Data processed successfully!'
+                            title: 'Computation Successful',
+                            text: 'Allotment ID: ' + allotmentNo + '\nAmount: ' + amount.toFixed(2),
                         });
+                      //  $("#tableBody").html(response.data);
+                        //Swal.fire({
+                        //    icon: 'success',
+                        //    title: 'Success',
+                        //    text: 'Data processed successfully!'
+                        //});
                     } else {
                         Swal.fire({
                             icon: 'error',
@@ -320,7 +326,9 @@
         debugger;
         var allotmentNo = $("#AllotmentNo").val();
         $.ajax({
-            url: '/M1/NERSC02/GetRentCode',
+           // url: '/M1/NERSC02/GetRentCode',
+            url: "@Url.Content("~")/M1/NERSC02/GetRentCode",
+           
             type: 'GET',
             data: { allotmentNo: allotmentNo },
             success: function (response) {
