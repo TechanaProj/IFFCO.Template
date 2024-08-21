@@ -399,6 +399,7 @@ namespace IFFCO.NERRS.Web.CommonFunctions
 
         }
 
+       
         public List<SelectListItem> AllotementNoLOVBind()
         {
 
@@ -418,11 +419,14 @@ namespace IFFCO.NERRS.Web.CommonFunctions
             return AllotmentNoLOV;
         }
 
-        
-        public List<FAllotmentRentDtls> GetFilteredAllotmentRentDetails(DateTime fromDate, DateTime toDate, int? allotmentNo = null)
+        public List<FAllotmentRentDtls> GetFilteredAllotmentRentDetails(DateTime? fromDate, DateTime? toDate, int? allotmentNo = null)
         {
-            var query = _context.FAllotmentRentDtls
-                .Where(d => d.AllotmentDate >= fromDate && d.AllotmentDate <= toDate);
+            var query = _context.FAllotmentRentDtls.AsQueryable();
+
+            if (fromDate.HasValue && toDate.HasValue)
+            {
+                query = query.Where(d => d.AllotmentDate >= fromDate.Value && d.AllotmentDate <= toDate.Value);
+            }
 
             if (allotmentNo.HasValue)
             {
@@ -431,6 +435,20 @@ namespace IFFCO.NERRS.Web.CommonFunctions
 
             return query.ToList();
         }
+
+
+        //public List<FAllotmentRentDtls> GetFilteredAllotmentRentDetails(DateTime fromDate, DateTime toDate, int? allotmentNo = null)
+        //{
+        //    var query = _context.FAllotmentRentDtls
+        //        .Where(d => d.AllotmentDate >= fromDate && d.AllotmentDate <= toDate) ;
+
+        //    if (allotmentNo.HasValue)
+        //    {
+        //        query = query.Where(d => d.AllotmentNo == allotmentNo.Value);
+        //    }
+
+        //    return query.ToList();
+        //}
 
         public List<FAllotmentRentDtls> FetchRentCodeFromDatabase(int allotmentno)
         {

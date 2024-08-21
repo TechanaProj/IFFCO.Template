@@ -308,7 +308,7 @@ namespace IFFCO.NERRS.Web.CommonFunctions
             return DTL_VALUE;
         }
 
-        public List<FIntCompute> FinalIntCompute(string PlantCD, DateTime FromDate, DateTime ToDate)   /*For ShutDown */
+        public List<FIntCompute> FinalIntCompute(string PlantCD, DateTime FromDate, DateTime ToDate)   /*For Final computation details NERSC05*/
         {
             string sqlquery = "SELECT ";
             sqlquery += "A.UNIT_CODE, A.QUARTER_CATEGORY, A.QUARTER_NO, A.SL_NO, EMP.EMP_NAME, A.ALLOTMENT_NO, ";
@@ -343,12 +343,16 @@ namespace IFFCO.NERRS.Web.CommonFunctions
 
                              UnitCode = Convert.ToInt32(dr["UNIT_CODE"]),
                              //PersonalNo = Convert.ToInt32(dr["PERSONAL_NO"]),
+                             EmpName = Convert.ToString(dr["EMP_NAME"]),
                              VendorCode = Convert.ToString(dr["VENDOR_NAME"]),
                              ComputationRun = Convert.ToInt32(dr["COMPUTATION_RUN"]),
                              AllotmentNo = (dr["ALLOTMENT_NO"] == DBNull.Value) ? 0 : Convert.ToInt32(dr["ALLOTMENT_NO"]),
                              QuarterCategory = Convert.ToString(dr["QUARTER_CATEGORY"]),
                              QuarterNo = Convert.ToInt32(dr["QUARTER_NO"]),
                              AllotmentDate = Convert.ToDateTime(dr["ALLOTMENT_DATE"]),
+                             ToDate = Convert.ToDateTime(dr["TO_DATE"]),
+                             FromDate = Convert.ToDateTime(dr["FROM_DATE"]),
+                         
                              OccupancyDate = string.IsNullOrEmpty(Convert.ToString(dr["OCCUPANCY_DATE"])) ? vacay : Convert.ToDateTime(Convert.ToString(dr["OCCUPANCY_DATE"])),
                              VacancyDate = string.IsNullOrEmpty(Convert.ToString(dr["VACANCY_DATE"])) ? vacay : Convert.ToDateTime(Convert.ToString(dr["VACANCY_DATE"])),
                              RentCode = Convert.ToString(dr["RATES"]),

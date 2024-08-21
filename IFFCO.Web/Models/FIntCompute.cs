@@ -1,11 +1,14 @@
 ﻿using IFFCO.HRMS.Repository.Pattern;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace IFFCO.NERRS.Web.Models
 {
     public partial class FIntCompute : Entity
     {
+        [NotMapped]
+        public string EmpName { get; set; }
         public int UnitCode { get; set; }
         public string QuarterCategory { get; set; }
         public int QuarterNo { get; set; }

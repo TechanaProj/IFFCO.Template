@@ -138,18 +138,20 @@
                                 <thead>
                                     <tr>
                                         <th>Personal No/Name/Vendor</th>
-                                        <th>Quarter Type</th>
+                                        <th>Occupant</th>
                                         <th>Quarter No</th>
+                                       
                                         <th>Allotment No</th>
-                                        <th>Allotment Date</th>
+                                      
                                         <th>Occupany Date</th>
                                         <th>Vacancy Date</th>
                                         <th>Rent</th>
-                                        <th>Occupant</th>
-                                        <th>Elec rate</th>
+                                        <th>Rent From Dt</th>
+                                        <th>Rent To Dt</th>
+                                        <th>Elec Rate</th>
                                         <th>Elec Unit</th>
                                         <th>Elec Amount</th>
-                                        <th>Days remaining</th>
+                                        <th>Days remaining For Rent</th>
                                         <th>No of Comp Run</th>
                                         <th>Compute Amt</th>
                                         
@@ -161,13 +163,12 @@
                                     @foreach (var item in Model.listFIntCompute)
                                     {
                                         <tr>
-                                            <td>@Html.DisplayFor(modelItem => item.PersonalNo)-@Html.DisplayFor(modelItem => item.VendorCode) </td>
-                                            <td>@Html.DisplayFor(modelItem => item.QuarterCategory)</td>
-                                            <td>@Html.DisplayFor(modelItem => item.QuarterNo)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.EmpName)-@Html.DisplayFor(modelItem => item.VendorCode) </td>
+                                            <td>@Html.DisplayFor(modelItem => item.OccupantCode)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.QuarterCategory) @Html.DisplayFor(modelItem => item.QuarterNo)</td>
+                                         
                                             <td>@Html.DisplayFor(modelItem => item.AllotmentNo)</td>
-                                            <td>
-                                                    @item.AllotmentDate.ToString("dd/MM/yyyy").Replace("-","/") 
-                                            </td>
+                                          
                                             <td>
                                                     @item.OccupancyDate?.ToString("dd/MM/yyyy").Replace("-","/") 
                                             </td>
@@ -175,7 +176,9 @@
                                                     @item.VacancyDate?.ToString("dd/MM/yyyy").Replace("-","/") 
                                             </td>
                                             <td>@Html.DisplayFor(modelItem => item.RentCode)</td>
-                                            <td>@Html.DisplayFor(modelItem => item.OccupantCode)</td>
+                                            <td>  @item.FromDate?.ToString("dd/MM/yyyy").Replace("-","/") </td>
+                                            <td>  @item.ToDate?.ToString("dd/MM/yyyy").Replace("-","/") </td>
+                                           
                                             <td>@Html.DisplayFor(modelItem => item.ElectRate)</td>
                                             <td>@Html.DisplayFor(modelItem => item.ElectUnit)</td>
                                             <td>@Html.DisplayFor(modelItem => item.ElectAmt)</td>

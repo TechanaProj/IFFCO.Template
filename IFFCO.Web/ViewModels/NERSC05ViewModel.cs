@@ -8,6 +8,8 @@ namespace IFFCO.NERRS.Web.ViewModels
 {
     public class NERSC05ViewModel : BaseModel
     {
+
+      
         public string PlantCD { get; set; }
         public DateTime? FromDate { get; set; }
 

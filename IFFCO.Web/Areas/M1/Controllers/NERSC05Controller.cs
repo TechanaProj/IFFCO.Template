@@ -50,9 +50,17 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
             CommonViewModel.UnitLOVBind = dropDownListBindWeb.GetUnitWithSecurity(Convert.ToString(EMP_ID), moduleid);
             CommonViewModel.OccupantLOVBind = dropDownListBindWeb.OccupantLOVBind();
             CommonViewModel.listFIntCompute = new List<FIntCompute>();
+            if (FromDate == null)
+            {
+                CommonViewModel.FromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+                CommonViewModel.ToDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month));
+            }
+            else
+            {
+                CommonViewModel.FromDate = FromDate;
+                CommonViewModel.ToDate = ToDate;
+            }
 
-            CommonViewModel.FromDate = FromDate;
-            CommonViewModel.ToDate = ToDate;
             CommonViewModel.PlantCD = PlantCD;
             CommonViewModel = GetRentList(CommonViewModel, CommonViewModel.FromDate, CommonViewModel.ToDate, CommonViewModel.PlantCD);
             CommonViewModel.AreaName = this.ControllerContext.RouteData.Values["area"].ToString();
@@ -93,12 +101,8 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
             int PersonnelNumber = Convert.ToInt32(HttpContext.Session.GetInt32("EmpID"));
             if (FromDate == null) { var first = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1); FromDate = first; }
             if (ToDate == null) { ToDate = DateTime.Today; }
-            //CommonViewModel.listFIntCompute = new List<FIntCompute>();
-            
-
-           CommonViewModel.listFIntCompute = nERRSCommonService.FinalIntCompute(PlantCD, FromDate.Value, ToDate.Value);
            
-
+            CommonViewModel.listFIntCompute = nERRSCommonService.FinalIntCompute(PlantCD, FromDate.Value, ToDate.Value);
             CommonViewModel.AreaName = this.ControllerContext.RouteData.Values["area"].ToString();
             CommonViewModel.SelectedMenu = this.ControllerContext.RouteData.Values["controller"].ToString();
             return CommonViewModel;

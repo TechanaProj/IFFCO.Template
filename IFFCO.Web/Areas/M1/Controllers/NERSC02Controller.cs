@@ -57,8 +57,10 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
 
             CommonViewModel.listFAllotmentRentDtls = new List<FAllotmentRentDtls>();
             CommonViewModel.UnitLOVBind = dropDownListBindWeb.GetUnitWithSecurity(Convert.ToString(EMP_ID), moduleid) ?? new List<SelectListItem>();
-            CommonViewModel.FromDate = new DateTime(DateTime.Today.AddYears(-3).Year, DateTime.Today.AddYears(-3).Month, 1);
-            CommonViewModel.ToDate = DateTime.Today;
+            CommonViewModel.FromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
+            CommonViewModel.ToDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.DaysInMonth(DateTime.Today.Year, DateTime.Today.Month));
+
+            //CommonViewModel.ToDate = DateTime.Today;
 
             return View(CommonViewModel);
         }
