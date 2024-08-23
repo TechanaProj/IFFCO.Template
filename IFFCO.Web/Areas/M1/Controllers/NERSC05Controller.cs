@@ -50,6 +50,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
             CommonViewModel.UnitLOVBind = dropDownListBindWeb.GetUnitWithSecurity(Convert.ToString(EMP_ID), moduleid);
             CommonViewModel.OccupantLOVBind = dropDownListBindWeb.OccupantLOVBind();
             CommonViewModel.listFIntCompute = new List<FIntCompute>();
+
             if (FromDate == null)
             {
                 CommonViewModel.FromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);

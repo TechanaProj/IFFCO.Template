@@ -14,6 +14,8 @@ namespace IFFCO.NERRS.Web.Models
         public int AllotmentNo { get; set; }
         public DateTime AllotmentDate { get; set; }
         public DateTime? OccupancyDate { get; set; }
+        public DateTime? RentFromDate { get; set; }
+        public DateTime? RentToDate { get; set; }
         public DateTime? ExpectedVacancyDate { get; set; }
         public DateTime? VacancyDate { get; set; }
         public int? ExtensionApprovedBy { get; set; }
@@ -51,5 +53,6 @@ namespace IFFCO.NERRS.Web.Models
         public decimal? ElectricityCount { get; set; }
         public string MonthDayType { get; set; }
         public long? NoOfBeds { get; set; }
+        public int? NoOfDays { get; set; }
     }
 }

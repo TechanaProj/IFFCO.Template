@@ -203,16 +203,17 @@
     function PopOccupantLOV() {
         $(".modalLoader").css("display", "block");
         setTimeout(function () {
-            CommonAjax('/M1/NERSC01/OccupantLOVBindJSON', "GET", false, "application/json", false, BindDropDownWithSelectAsNull, "#OccupantCode", { OccupantType: $('#OccupantList').val() });
+            CommonAjax('@Url.Content("~/")M1/NERSC01/OccupantLOVBindJSON', "GET", false, "application/json", false, BindDropDownWithSelectAsNull, "#OccupantCode", { OccupantType: $('#OccupantList').val() });
+            //CommonAjax('/M1/NERSC01/OccupantLOVBindJSON', "GET", false, "application/json", false, BindDropDownWithSelectAsNull, "#OccupantCode", { OccupantType: $('#OccupantList').val() });
             $(".modalLoader").hide();
         }, 10);
     }
-
+    
     function RentLOV_pop() {
         debugger;
         $(".modalLoader").css("display", "block");
         setTimeout(function () {
-            CommonAjax('/M1/NERSC01/RentLOVBindJSON', "GET", false, "application/json", false, BindDropDownWithSelectAsNull, "#OccupantCode", { OccupantType: $('#OccupantList').val() });
+            CommonAjax('@Url.Content("~/")M1/NERSC01/RentLOVBindJSON', "GET", false, "application/json", false, BindDropDownWithSelectAsNull, "#OccupantCode", { OccupantType: $('#OccupantList').val() });
             $(".modalLoader").hide();
         }, 10);
     }

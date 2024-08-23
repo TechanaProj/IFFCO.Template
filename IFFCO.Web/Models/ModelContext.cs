@@ -662,6 +662,14 @@ namespace IFFCO.NERRS.Web.Models
                     .HasColumnName("ALLOTMENT_DATE")
                     .HasColumnType("date");
 
+                entity.Property(e => e.RentFromDate)
+                   .HasColumnName("RENT_FROM_DATE")
+                   .HasColumnType("date");
+
+                entity.Property(e => e.RentToDate)
+                   .HasColumnName("RENT_TO_DATE")
+                   .HasColumnType("date");
+
                 entity.Property(e => e.ColonyCode).HasColumnName("COLONY_CODE");
 
                 entity.Property(e => e.CreatedBy)
@@ -734,6 +742,10 @@ namespace IFFCO.NERRS.Web.Models
                 entity.Property(e => e.NoOfAcs)
                     .HasColumnName("NO_OF_ACS")
                     .HasColumnType("double");
+
+                entity.Property(e => e.NoOfDays)
+                   .HasColumnName("NO_OF_DAYS")
+                   .HasColumnType("double");
 
                 entity.Property(e => e.NoOfBeds).HasColumnName("NO_OF_BEDS");
 

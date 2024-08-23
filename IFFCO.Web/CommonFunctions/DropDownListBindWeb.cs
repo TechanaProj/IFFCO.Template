@@ -203,7 +203,10 @@ namespace IFFCO.NERRS.Web.CommonFunctions
                          select new SelectListItem()
                          {
                              Text = Convert.ToString(dr["QUARTER_CATEGORY"]) + " - " + Convert.ToString(dr["QUARTER_NO"]),
-                             Value = Convert.ToString(dr["QUARTER_ISSUED_TO"])
+                             //Value = Convert.ToString(dr["QUARTER_CATEGORY"]) + " - " + Convert.ToString(dr["QUARTER_NO"]),
+                             Value = $"{Convert.ToString(dr["QUARTER_CATEGORY"])}-{Convert.ToString(dr["QUARTER_NO"])}",
+
+                             //Value = Convert.ToString(dr["QUARTER_ISSUED_TO"])
 
 
                          }).ToList();
@@ -330,13 +333,13 @@ namespace IFFCO.NERRS.Web.CommonFunctions
 
         public List<SelectListItem> VendorLOVBind()
         {
-            string sqlquery = "select UNIT_CODE,VENDOR_CODE,VENDOR_NAME,VENDOR_SITE_CODE,VENDOR_SITE_ID,HRMS_UNIT_CD from M_VENDOR_MSTS";
+            string sqlquery = "select UNIT_CODE,VENDOR_CODE,VENDOR_NAME,VENDOR_SITE_CODE,VENDOR_SITE_ID,HRMS_UNIT_CD from M_VENDOR_MSTS ORDER BY VENDOR_NAME";
             DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
             List<SelectListItem> DRP_VALUE = new List<SelectListItem>();
             DRP_VALUE = (from DataRow dr in dtDRP_VALUE.Rows
                          select new SelectListItem()
                          {
-                             Text = Convert.ToString(dr["VENDOR_CODE"]) + " - " + Convert.ToString(dr["VENDOR_NAME"]) + " - " + Convert.ToString(dr["VENDOR_SITE_CODE"]),
+                             Text = Convert.ToString(dr["VENDOR_NAME"]) + " - " + Convert.ToString(dr["VENDOR_SITE_CODE"]) + " - " + Convert.ToString(dr["VENDOR_CODE"]),
                              Value = Convert.ToString(dr["VENDOR_CODE"])
 
 
@@ -398,40 +401,59 @@ namespace IFFCO.NERRS.Web.CommonFunctions
             return DRP_VALUE;
 
         }
-
-       
         public List<SelectListItem> AllotementNoLOVBind()
         {
+            string sqlquery = "SELECT A.QUARTER_CATEGORY, A.QUARTER_NO, A.ALLOTMENT_NO, A.PERSONAL_NO, B.EMP_NAME FROM F_ALLOTMENT_RENT_DTLS A JOIN V_EB_EMPLOYEE_COMPLETE_DTLS B ON A.PERSONAL_NO = B.PERSONAL_NO WHERE A.Status = 'A'ORDER BY A.ALLOTMENT_NO ASC";
+            DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
+            List<SelectListItem> DRP_VALUE = new List<SelectListItem>();
+            DRP_VALUE = (from DataRow dr in dtDRP_VALUE.Rows
+                         select new SelectListItem()
+                         {
+                             Text = Convert.ToString(dr["EMP_NAME"]) + " | " + Convert.ToString(dr["QUARTER_CATEGORY"]) + " - " + Convert.ToString(dr["QUARTER_NO"]) + " | " + Convert.ToString(dr["ALLOTMENT_NO"]),
+                             Value = Convert.ToString(dr["ALLOTMENT_NO"])
 
-            var AllotmentNoLOV = _context.FAllotmentRentDtls
-                                        .Where(x => x.Status == "A")
-                                        .OrderBy(x => x.AllotmentNo)
-                                        .Select(x => new SelectListItem
-                                        {
-                                            Text = x.AllotmentNo.ToString() + " || " + x.QuarterCategory + " - " + x.QuarterNo,
-                                            Value = x.AllotmentNo.ToString()
-                                        })
-                                        .ToList();
 
-            // Prepend a default option (optional)
-            AllotmentNoLOV.Insert(0, new SelectListItem { Text = "Select Allotment No", Value = "" });
+                         }).ToList();
 
-            return AllotmentNoLOV;
+            return DRP_VALUE;
+
         }
+
+
+
+        //public List<SelectListItem> AllotementNoLOVBind()
+        //{
+
+        //    var AllotmentNoLOV = _context.FAllotmentRentDtls
+        //                                .Where(x => x.Status == "A")
+        //                                .OrderBy(x => x.AllotmentNo)
+        //                                .Select(x => new SelectListItem
+        //                                {
+        //                                    Text = x.AllotmentNo.ToString() + " || " + x.AllotmentNo.ToString() + " || " + x.QuarterCategory + " - " + x.QuarterNo,
+        //                                    Value = x.AllotmentNo.ToString()
+        //                                })
+        //                                .ToList();
+
+        //    // Prepend a default option (optional)
+        //    AllotmentNoLOV.Insert(0, new SelectListItem { Text = "Select Allotment No", Value = "" });
+
+        //    return AllotmentNoLOV;
+        //}
 
         public List<FAllotmentRentDtls> GetFilteredAllotmentRentDetails(DateTime? fromDate, DateTime? toDate, int? allotmentNo = null)
         {
             var query = _context.FAllotmentRentDtls.AsQueryable();
-
-            if (fromDate.HasValue && toDate.HasValue)
-            {
-                query = query.Where(d => d.AllotmentDate >= fromDate.Value && d.AllotmentDate <= toDate.Value);
-            }
-
             if (allotmentNo.HasValue)
             {
                 query = query.Where(d => d.AllotmentNo == allotmentNo.Value);
             }
+            else if (fromDate.HasValue && toDate.HasValue)
+           
+            {
+                query = query.Where(d => d.AllotmentDate >= fromDate.Value && d.AllotmentDate <= toDate.Value);
+            }
+
+           
 
             return query.ToList();
         }

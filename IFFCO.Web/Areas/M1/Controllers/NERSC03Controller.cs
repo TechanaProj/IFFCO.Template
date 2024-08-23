@@ -40,6 +40,8 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
 
         public IActionResult Index(string PlantCD = null,  string OccupantCode = null)
         {
+            Console.WriteLine($"Received PlantCD: {PlantCD}");
+            Console.WriteLine($"Received OccupantCode: {OccupantCode}");
             int EMP_ID = Convert.ToInt32(HttpContext.Session.GetInt32("EmpID"));
             string moduleid = Convert.ToString(HttpContext.Session.GetString("ModuleID"));
 
@@ -57,6 +59,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
             CommonViewModel.VendorLOVBind = dropDownListBindWeb.VendorLOVBind();
             CommonViewModel.listFAllotmentRentDtls = new List<FAllotmentRentDtls>();
             CommonViewModel.listVwAonlaNonEmpAllotStatus = new List<VwAonlaNonEmpAllotStatus>();
+           // CommonViewModel = GetRentList(CommonViewModel, PlantCD, OccupantCode, QuarterCode);
             CommonViewModel = GetRentList(CommonViewModel, PlantCD, OccupantCode);
             CommonViewModel.AreaName = this.ControllerContext.RouteData.Values["area"].ToString();
             CommonViewModel.SelectedMenu = this.ControllerContext.RouteData.Values["controller"].ToString();
@@ -73,6 +76,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
         {
             try
             {
+               // CommonViewModel = GetRentList(nERSC03ViewModel, nERSC03ViewModel.PlantCD, nERSC03ViewModel.OccupantCode, nERSC03ViewModel.QuarterCode);
                 CommonViewModel = GetRentList(nERSC03ViewModel, nERSC03ViewModel.PlantCD, nERSC03ViewModel.OccupantCode);
                 TempData["CommonViewModel"] = JsonConvert.SerializeObject(CommonViewModel);
                 CommonViewModel.IsAlertBox = false;
@@ -96,7 +100,9 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
             CommonViewModel = nERSC03ViewModel;
             int PersonnelNumber = Convert.ToInt32(HttpContext.Session.GetInt32("EmpID"));
             CommonViewModel.listVwAonlaNonEmpAllotStatus = new List<VwAonlaNonEmpAllotStatus>();
-            CommonViewModel.listVwAonlaNonEmpAllotStatus = nERRSCommonService.VwAonlaNonEmpAllotStatus(PlantCD, OccupantCode);
+           // CommonViewModel.listVwAonlaNonEmpAllotStatus = nERRSCommonService.VwAonlaNonEmpAllotStatus(PlantCD, OccupantCode);
+            CommonViewModel.listVwAonlaNonEmpAllotStatusShutdown = nERRSCommonService.VwAonlaNonEmpShutDown(PlantCD, OccupantCode);
+          //  CommonViewModel.listVwAonlaNonEmpAllotStatusShutdown = nERRSCommonService.VwAonlaNonEmpShutDown(PlantCD, OccupantCode,QuarterCode);
             
             CommonViewModel.AreaName = this.ControllerContext.RouteData.Values["area"].ToString();
             CommonViewModel.SelectedMenu = this.ControllerContext.RouteData.Values["controller"].ToString();

@@ -19,6 +19,8 @@ namespace IFFCO.NERRS.Web.ViewModels
         public string QuarterCode { get; set; }
         public string Occupant { get; set; }
 
+        public DateTime RentFromDate { get; set; }
+        public DateTime RentToDate { get; set; }
         public DateTime AllotmentDate { get; set; }
         public DateTime VacancyDate { get; set; }
         public DateTime FromDate { get; set; }
@@ -36,6 +38,7 @@ namespace IFFCO.NERRS.Web.ViewModels
             public List<FAllotmentRentDtls> listFAllotmentRentDtls { get; set; }
            
             public List<VwAonlaNonEmpAllotStatus> listVwAonlaNonEmpAllotStatus { get; set; }
+            public List<VwAonlaNonEmpAllotStatus> listVwAonlaNonEmpAllotStatusShutdown { get; set; }
 
 
 

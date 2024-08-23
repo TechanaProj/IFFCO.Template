@@ -83,7 +83,9 @@
                                                     <label class="m-lbl1 m-lbl2">Allotment No</label>
                                                 </div>
                                                 <div class="col-sm-2 col-md-2">
-                                                    <select id="AllotmentNo" name="AllotmentNo" class="form-control" onchange="fetchRentCode()" asp-items="@(new SelectList(Model.AllotementNoLOVBind, "Value", "Text"))"></select>
+                                                    <select id="AllotmentNo" name="AllotmentNo" class="form-control" onchange="fetchRentCode()" asp-items="@(new SelectList(Model.AllotementNoLOVBind, "Value", "Text"))">
+                                                        <option value="">--SELECT--</option>
+                                                    </select>
                                                 </div>
 
                                                 <span id="rentCode" style="display:none;"></span>
@@ -166,6 +168,7 @@
 
 
 <script>
+
     $(document).ready(function () {
         $('#AllotmentNo').select2({
             placeholder: 'Select an Allotment No',
@@ -206,6 +209,8 @@
                                 "</tr>";
                             tableBody.append(row);
                         });
+                       
+
                     } else {
                         alert("Error: " + response.error); 
                     }
@@ -245,13 +250,13 @@
             var row = $(this).closest('tr');
 
             // Get the values from the row and form
-            var allotmentNo = row.find('td:eq(2)').text(); // Allotment No is in the second column (index 1)
+            var allotmentNo = row.find('td:eq(4)').text(); // Allotment No is in the second column (index 1)
             var fromDate = $("#FromDate").val();
             var toDate = $("#ToDate").val();
             var slNo = row.find('td:eq(1)').text();
-            var personalNo = row.find('td:eq(3)').text(); // Personal No is in the third column (index 2)
-            var quarterCategory = row.find('td:eq(4)').text(); // Quarter Category in fourth column (index 3)
-            var quarterNo = row.find('td:eq(5)').text(); // Quarter No in fifth column (index 4)
+            var personalNo = row.find('td:eq(0)').text(); // Personal No is in the third column (index 2)
+            var quarterCategory = row.find('td:eq(2)').text(); // Quarter Category in fourth column (index 3)
+            var quarterNo = row.find('td:eq(3)').text(); // Quarter No in fifth column (index 4)
             var elecRate = row.find('.elecRate').val(); // Getting the value of the input in the row
             var electricityCount = row.find('.electricityCount').val(); // Getting the value of the input in the row
 
@@ -273,10 +278,7 @@
             console.log("All validations passed. Proceeding to AJAX.");
 
             $.ajax({
-                // debugger;
-              //  url: '/M1/NERSC02/Compute',
-                url: '@Url.Content("~")/M1/NERSC02/Compute',
-                //url: '@Url.Action("Compute", "NERSC02", new { area = "M1" })',
+                url: '@Url.Content("~/")M1/NERSC02/Compute',
                 type: 'POST',
                 data: {
                     FromDate: fromDate,
@@ -335,9 +337,7 @@
         debugger;
         var allotmentNo = $("#AllotmentNo").val();
         $.ajax({
-           // url: '/M1/NERSC02/GetRentCode',
-            url: "@Url.Content("~")/M1/NERSC02/GetRentCode",
-           
+            url: '@Url.Content("~/")M1/NERSC02/GetRentCode',
             type: 'GET',
             data: { allotmentNo: allotmentNo },
             success: function (response) {

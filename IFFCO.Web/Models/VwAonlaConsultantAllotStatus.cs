@@ -88,6 +88,10 @@ namespace IFFCO.NERRS.Web.Models
         public string OccupantType { get; set; }
         [NotMapped]
         public string RentType { get; set; }
+        [NotMapped]
+        public DateTime? RentFromDate { get; set; }
+        [NotMapped]
+        public DateTime? RentToDate { get; set; }
 
     }
 }

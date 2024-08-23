@@ -124,8 +124,8 @@
 
         //function GetModules() {
         $("#PersonalNo").change(function () {
-            CommonAjax("/Account/GetMouldeResultForAccount?PersonalNo=" + $("#PersonalNo").val(), "GET", false, "application/json", false, BindDdlModule, "#ModuleHidden");
-            //  CommonAjax("@Url.Content("~")/Account/GetMouldeResultForAccount ? PersonalNo = " + $("#PersonalNo").val(), "GET", false, "application / json", false, BindDdlModule, "#ModuleHidden");
+            //CommonAjax("/Account/GetMouldeResultForAccount?PersonalNo=" + $("#PersonalNo").val(), "GET", false, "application/json", false, BindDdlModule, "#ModuleHidden");
+            CommonAjax("@Url.Content("~/")Account/GetMouldeResultForAccount?PersonalNo=" + $("#PersonalNo").val(), "GET", false, "application / json", false, BindDdlModule, "#ModuleHidden");
         })  
 
         //}ddlModules

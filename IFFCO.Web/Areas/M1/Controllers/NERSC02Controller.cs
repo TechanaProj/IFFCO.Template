@@ -127,7 +127,6 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                 }
 
 
-
                 if (!int.TryParse(AllotmentNo, out int allotmentNoInt))
                 {
                     return Json(new { success = false, error = "Invalid Allotment No." });
