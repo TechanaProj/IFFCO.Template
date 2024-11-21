@@ -348,6 +348,32 @@ namespace IFFCO.NERRS.Web.CommonFunctions
             return DRP_VALUE;
 
         }
+
+        public List<SelectListItem> FilteredVendorLOVBind()
+        {
+            string sqlquery = @"
+        SELECT 
+            UNIT_CODE, VENDOR_CODE, VENDOR_NAME, VENDOR_SITE_CODE, VENDOR_SITE_ID, HRMS_UNIT_CD 
+        FROM 
+            M_VENDOR_MSTS 
+        ORDER BY 
+            VENDOR_NAME";
+
+            DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
+
+            List<SelectListItem> DRP_VALUE = (from DataRow dr in dtDRP_VALUE.Rows
+                                              select new SelectListItem()
+                                              {
+                                                  Text = Convert.ToString(dr["VENDOR_NAME"]) + " - " +
+                                                         Convert.ToString(dr["VENDOR_SITE_CODE"]) + " - " +
+                                                         Convert.ToString(dr["VENDOR_CODE"]),
+                                                  Value = Convert.ToString(dr["VENDOR_CODE"])
+                                              }).ToList();
+
+            return DRP_VALUE;
+        }
+
+
         public List<SelectListItem> IOBRentTypeLOVBind()
         {
             string sqlquery = "select UNIT_CODE,RENT_CODE,TYPE_RESI_ACCOM,RATES,MONTH_DAY_TYPE from M_RENT_MSTS where RENT_CODE like 'IB%' and Status = 'A' ";
@@ -420,6 +446,24 @@ namespace IFFCO.NERRS.Web.CommonFunctions
         }
 
 
+        public List<SelectListItem> AllotementNoLOVBindnew()
+        {
+            string sqlquery = "SELECT A.QUARTER_CATEGORY, A.QUARTER_NO, A.ALLOTMENT_NO, A.PERSONAL_NO, B.EMP_NAME FROM F_ALLOTMENT_RENT_DTLS A JOIN V_EB_EMPLOYEE_COMPLETE_DTLS B ON A.PERSONAL_NO = B.PERSONAL_NO ORDER BY A.ALLOTMENT_NO ASC";
+            DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
+            List<SelectListItem> DRP_VALUE = new List<SelectListItem>();
+            DRP_VALUE = (from DataRow dr in dtDRP_VALUE.Rows
+                         select new SelectListItem()
+                         {
+                             Text = Convert.ToString(dr["EMP_NAME"]) + " | " + Convert.ToString(dr["QUARTER_CATEGORY"]) + " - " + Convert.ToString(dr["QUARTER_NO"]) + " | " + Convert.ToString(dr["ALLOTMENT_NO"]),
+                             Value = Convert.ToString(dr["ALLOTMENT_NO"])
+
+
+                         }).ToList();
+
+            return DRP_VALUE;
+
+        }
+
 
         //public List<SelectListItem> AllotementNoLOVBind()
         //{
@@ -447,11 +491,11 @@ namespace IFFCO.NERRS.Web.CommonFunctions
             {
                 query = query.Where(d => d.AllotmentNo == allotmentNo.Value);
             }
-            else if (fromDate.HasValue && toDate.HasValue)
+            //else if (fromDate.HasValue && toDate.HasValue)
            
-            {
-                query = query.Where(d => d.AllotmentDate >= fromDate.Value && d.AllotmentDate <= toDate.Value);
-            }
+            //{
+            //    query = query.Where(d => d.AllotmentDate >= fromDate.Value && d.AllotmentDate <= toDate.Value);
+            //}
 
            
 

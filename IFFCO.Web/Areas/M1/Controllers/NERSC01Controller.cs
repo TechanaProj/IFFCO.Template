@@ -140,7 +140,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
             {
                 CommonViewModel.listVwAonlaDeathCaseAllotStatus = nERRSCommonService.VwAonlaDeathCaseAllotStatus(PlantCD);
             }
-            else if (OccupantCode == "1016")
+            else if (OccupantCode == "1016") 
             {
                 CommonViewModel.listVwAonlaExEmpAllotStatus = nERRSCommonService.VwAonlaExEmpAllotStatusDtls(PlantCD);
             }
@@ -181,7 +181,14 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                     {
                         // Check if the record already exists
                         //if (!_context.FAllotmentRentDtls.Any(x => x.UnitCode == Convert.ToInt32(value.UnitCode) && x.AllotmentNo == value.AllotmentNo))
-                        if (!_context.FAllotmentRentDtls.Any(x => x.UnitCode == Convert.ToInt32(nERSC01ViewModel.PlantCD) && x.AllotmentNo == value.AllotmentNo))
+                        var s1no = value.SlNo; //New Change
+                        var allotmentRentDetail = _context.FAllotmentRentDtls.SingleOrDefault(x => x.UnitCode == Convert.ToInt32(nERSC01ViewModel.PlantCD) && x.AllotmentNo == value.AllotmentNo && x.SlNo == s1no);
+                        int sno = allotmentRentDetail?.SlNo ?? 0;
+                        DateTime? v_date = allotmentRentDetail?.VacancyDate;
+                        DateTime? v_date_model = string.IsNullOrEmpty(value.VacancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.VacancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                        
+
+                        if (!_context.FAllotmentRentDtls.Any(x => x.UnitCode == Convert.ToInt32(nERSC01ViewModel.PlantCD) && x.AllotmentNo == value.AllotmentNo && x.SlNo == s1no && v_date == v_date_model))
                         {
                             DateTime? Dtime = null;
                             DataTable dt = _context.GetSQLQuery("select UNIT_CODE,ALLOTMENT_NO,PERSONAL_NO,APPROVED_DATE,QUARTER_CATEGORY, QUARTER_NO,APPROVED_DATE, OCCUPANCY_DATE, VACANCY_DATE " +
@@ -200,6 +207,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                              //VacancyDate = string.IsNullOrEmpty(Convert.ToString(dr["VACANCY_DATE"])) ? Dtime : Convert.ToDateTime(Convert.ToString(dr["VACANCY_DATE"])),
                                              QuarterCategory = Convert.ToString(dr["QUARTER_CATEGORY"]),
                                              OccupancyDate = Convert.ToDateTime(dr["OCCUPANCY_DATE"]),
+                                             VacancyDate = string.IsNullOrEmpty(Convert.ToString(dr["VACANCY_DATE"])) ? Dtime : Convert.ToDateTime(Convert.ToString(dr["VACANCY_DATE"])),
 
 
                                          }).ToList();
@@ -222,14 +230,25 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                     y.QuarterNo = Convert.ToInt32(x.QuarterNo);
                                     y.OccupantCode = value.OccupantType;
                                     y.RentCode = value.RentType;
-                                    y.VacancyDate = (DateTime)value.VacancyDate;
+                                    y.MarketHrrFromDate = (DateTime)value.MarketHrrFromDate;
+                                    y.RentFromDate =  (DateTime)value.MarketHrrFromDate;
+                                    y.VacancyDate = string.IsNullOrEmpty(value.VacancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.VacancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture);
                                     y.MonthDayType = (filteredRows != null && filteredRows.Length > 0 ? Convert.ToString(filteredRows[0]["MONTH_DAY_TYPE"]) : "");
                                     y.ModifiedBy = personnelNumber;
                                     y.DatetimeModified = DateTime.Now;
 
+                                    y.SlNo = value.SlNo;
+                                    y.MarketHrrFromDate = string.IsNullOrEmpty(value.OccupancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.OccupancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
                                     _context.Update(y);
                                     _context.SaveChanges();
+
+                                    CommonViewModel.Alert = "Update";
+                                    CommonViewModel.Status = "Update";
+                                    CommonViewModel.Message = "Record Updated successfully";
+
+                                    CommonViewModel.ErrorMessage = "";
+
                                 }
                                 else
                                 {
@@ -242,10 +261,14 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                         QuarterNo = Convert.ToInt32(x.QuarterNo),
                                         AllotmentDate = (DateTime)x.ApprovedDate,
                                         VacancyDate = string.IsNullOrEmpty(value.VacancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.VacancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture),
+                                        RentFromDate = string.IsNullOrEmpty(value.OccupancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.OccupancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture),
+                                        MarketHrrFromDate = string.IsNullOrEmpty(value.OccupancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.OccupancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture),
                                         OccupantCode = value.OccupantType,
                                         RentCode = value.RentType,
                                         MonthDayType = (filteredRows != null && filteredRows.Length > 0 ? Convert.ToString(filteredRows[0]["MONTH_DAY_TYPE"]) : ""),
-                                        SlNo = Convert.ToInt32("1"),
+                                        
+                                        //SlNo = Convert.ToInt32("1"),
+                                        SlNo = value.SlNo,
                                         Status = "A",
                                         CreatedBy = personnelNumber,
                                         DatetimeCreated = DateTime.Now
@@ -255,16 +278,16 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                     _context.Add(fAllotmentRentDtls);
                                     await _context.SaveChangesAsync();
 
+                                    CommonViewModel.Alert = "success";
+                                    CommonViewModel.Status = "Create";
+                                    CommonViewModel.Message = "Record created successfully";
 
+                                    CommonViewModel.ErrorMessage = "";
 
                                 }
 
                             }
-                            CommonViewModel.Alert = "success";
-                            CommonViewModel.Status = "Create";
-                            CommonViewModel.Message = "Record created successfully";
-
-                            CommonViewModel.ErrorMessage = "";
+                        
 
 
                         }
@@ -281,8 +304,14 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                 {
                     foreach (var value in nERSC01ViewModel.listVwAonlaDeathCaseAllotStatus)
                     {
+                        var s1no = value.SlNo; //New Change
+                        var allotmentRentDetail = _context.FAllotmentRentDtls.SingleOrDefault(x => x.UnitCode == Convert.ToInt32(nERSC01ViewModel.PlantCD) && x.AllotmentNo == value.AllotmentNo && x.SlNo == s1no);//New Change
+                        int sno = allotmentRentDetail?.SlNo ?? 0;//New Change
+                        DateTime? v_date = allotmentRentDetail?.VacancyDate;//New Change
+                        DateTime? v_date_model = string.IsNullOrEmpty(value.VacancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.VacancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture);//New Change
+
                         // Check if the record already exists
-                        if (!_context.FAllotmentRentDtls.Any(x => x.UnitCode == Convert.ToInt32(nERSC01ViewModel.PlantCD) && x.AllotmentNo == value.AllotmentNo))
+                        if (!_context.FAllotmentRentDtls.Any(x => x.UnitCode == Convert.ToInt32(nERSC01ViewModel.PlantCD) && x.AllotmentNo == value.AllotmentNo && x.SlNo == s1no && v_date == v_date_model))
                         {
                             DateTime? Dtime = null;
                             DataTable dt = _context.GetSQLQuery("select UNIT_CODE,ALLOTMENT_NO,PERSONAL_NO,APPROVED_DATE,QUARTER_CATEGORY, QUARTER_NO,APPROVED_DATE, OCCUPANCY_DATE, VACANCY_DATE " +
@@ -323,14 +352,21 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                     y.QuarterNo = Convert.ToInt32(x.QuarterNo);
                                     y.OccupantCode = value.OccupantType;
                                     y.RentCode = value.RentType;
-                                    y.VacancyDate = (DateTime)value.VacancyDate;
+                                    y.MarketHrrFromDate = (DateTime)value.MarketHrrFromDate;
+                                    y.RentFromDate = (DateTime)value.MarketHrrFromDate;
+                                    y.VacancyDate = string.IsNullOrEmpty(value.VacancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.VacancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture);
                                     y.MonthDayType = (filteredRows != null && filteredRows.Length > 0 ? Convert.ToString(filteredRows[0]["MONTH_DAY_TYPE"]) : "");
                                     y.ModifiedBy = personnelNumber;
                                     y.DatetimeModified = DateTime.Now;
-
+                                    y.SlNo = value.SlNo;
+                                    y.MarketHrrFromDate = string.IsNullOrEmpty(value.OccupancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.OccupancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
                                     _context.Update(y);
                                     _context.SaveChanges();
+
+                                    CommonViewModel.Alert = "Update";
+                                    CommonViewModel.Status = "Update";
+                                    CommonViewModel.Message = "Record Updated successfully";
                                 }
                                 else
                                 {
@@ -343,12 +379,14 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                         QuarterNo = Convert.ToInt32(x.QuarterNo),
                                         AllotmentDate = (DateTime)x.ApprovedDate,
                                         VacancyDate = string.IsNullOrEmpty(value.VacancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.VacancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture),
-
+                                        MarketHrrFromDate = string.IsNullOrEmpty(value.OccupancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.OccupancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture),
+                                        RentFromDate = string.IsNullOrEmpty(value.OccupancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.OccupancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture),
                                         //VacancyDate = nERSC01ViewModel.VacancyDate,
                                         OccupantCode = value.OccupantType,
                                         RentCode = value.RentType,
                                         MonthDayType = (filteredRows != null && filteredRows.Length > 0 ? Convert.ToString(filteredRows[0]["MONTH_DAY_TYPE"]) : ""),
-                                        SlNo = Convert.ToInt32("1"),
+                                        //SlNo = Convert.ToInt32("1"),
+                                        SlNo = value.SlNo,
                                         Status = "A",
                                         CreatedBy = personnelNumber,
                                         DatetimeCreated = DateTime.Now
@@ -358,16 +396,17 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                     _context.Add(fAllotmentRentDtls);
                                     await _context.SaveChangesAsync();
 
+                                    CommonViewModel.Alert = "success";
+                                    CommonViewModel.Status = "Create";
+                                    CommonViewModel.Message = "Record created successfully";
+
+                                    CommonViewModel.ErrorMessage = "";
 
 
                                 }
 
                             }
-                            CommonViewModel.Alert = "success";
-                            CommonViewModel.Status = "Create";
-                            CommonViewModel.Message = "Record created successfully";
-
-                            CommonViewModel.ErrorMessage = "";
+                           
 
 
                         }
@@ -384,8 +423,14 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                 {
                     foreach (var value in nERSC01ViewModel.listVwAonlaExEmpAllotStatus)
                     {
+                        var s1no = value.SlNo; //New Change
+                        var allotmentRentDetail = _context.FAllotmentRentDtls.SingleOrDefault(x => x.UnitCode == Convert.ToInt32(nERSC01ViewModel.PlantCD) && x.AllotmentNo == value.AllotmentNo && x.SlNo == s1no);
+                        int sno = allotmentRentDetail?.SlNo ?? 0;
+                        DateTime? v_date = allotmentRentDetail?.VacancyDate;
+                        DateTime? v_date_model = string.IsNullOrEmpty(value.VacancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.VacancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
                         // Check if the record already exists
-                        if (!_context.FAllotmentRentDtls.Any(x => x.UnitCode == Convert.ToInt32(nERSC01ViewModel.PlantCD) && x.AllotmentNo == value.AllotmentNo))
+                        if (!_context.FAllotmentRentDtls.Any(x => x.UnitCode == Convert.ToInt32(nERSC01ViewModel.PlantCD) && x.AllotmentNo == value.AllotmentNo && x.SlNo==s1no && v_date== v_date_model)) //New Change
                         {
                             DateTime? Dtime = null;
                             DataTable dt = _context.GetSQLQuery("select UNIT_CODE,ALLOTMENT_NO,PERSONAL_NO,APPROVED_DATE,QUARTER_CATEGORY, QUARTER_NO,APPROVED_DATE, OCCUPANCY_DATE, VACANCY_DATE " +
@@ -404,8 +449,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                              QuarterCategory = Convert.ToString(dr["QUARTER_CATEGORY"]),
                                              OccupancyDate = Convert.ToDateTime(dr["OCCUPANCY_DATE"]),
                                              VacancyDate = string.IsNullOrEmpty(Convert.ToString(dr["VACANCY_DATE"])) ? Dtime : Convert.ToDateTime(Convert.ToString(dr["VACANCY_DATE"])),
-
-
+                                             //MarketHrrFromDate = string.IsNullOrEmpty(Convert.ToString(dr["MARKET_HRR_FROM_DATE"])) ? Dtime : Convert.ToDateTime(Convert.ToString(dr["MARKET_HRR_FROM_DATE"]))
                                          }).ToList();
 
 
@@ -416,7 +460,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                             {
                                 DataRow[] filteredRows = dtDRP_VALUE.Select("RENT_CODE = '" + value.RentType + "'");
 
-                                var y = _context.FAllotmentRentDtls.Where(z => z.AllotmentNo == x.AllotmentNo).FirstOrDefault();
+                                var y = _context.FAllotmentRentDtls.Where(z => z.AllotmentNo == x.AllotmentNo && value.SlNo == sno).FirstOrDefault();
                                 if (y != null)
                                 {
                                     y.UnitCode = Convert.ToInt32(x.UnitCode);
@@ -425,15 +469,25 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                     y.QuarterCategory = x.QuarterCategory;
                                     y.QuarterNo = Convert.ToInt32(x.QuarterNo);
                                     y.OccupantCode = value.OccupantType;
+                                    y.MarketHrrFromDate = (DateTime)value.MarketHrrFromDate;
+                                    y.RentFromDate = (DateTime)value.MarketHrrFromDate;
                                     y.RentCode = value.RentType;
-                                    y.VacancyDate = (DateTime)value.VacancyDate;
+                                    y.VacancyDate = string.IsNullOrEmpty(value.VacancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.VacancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture);
                                     y.MonthDayType = (filteredRows != null && filteredRows.Length > 0 ? Convert.ToString(filteredRows[0]["MONTH_DAY_TYPE"]) : "");
                                     y.ModifiedBy = personnelNumber;
                                     y.DatetimeModified = DateTime.Now;
+                                    y.SlNo = value.SlNo;
+                                    y.MarketHrrFromDate = string.IsNullOrEmpty(value.OccupancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.OccupancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
 
                                     _context.Update(y);
                                     _context.SaveChanges();
+
+                                    CommonViewModel.Alert = "Update";
+                                    CommonViewModel.Status = "Update";
+                                    CommonViewModel.Message = "Record Updated successfully";
+
+                                    CommonViewModel.ErrorMessage = "";
                                 }
                                 else
                                 {
@@ -446,12 +500,14 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                         QuarterNo = Convert.ToInt32(x.QuarterNo),
                                         AllotmentDate = (DateTime)x.ApprovedDate,
                                         VacancyDate = string.IsNullOrEmpty(value.VacancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.VacancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture),
-
+                                        MarketHrrFromDate = string.IsNullOrEmpty(value.OccupancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.OccupancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture),
+                                        RentFromDate = string.IsNullOrEmpty(value.OccupancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.OccupancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture),
                                         //VacancyDate = nERSC01ViewModel.VacancyDate,
                                         OccupantCode = value.OccupantType,
                                         RentCode = value.RentType,
                                         MonthDayType = (filteredRows != null && filteredRows.Length > 0 ? Convert.ToString(filteredRows[0]["MONTH_DAY_TYPE"]) : ""),
-                                        SlNo = Convert.ToInt32("1"),
+                                        //SlNo = Convert.ToInt32("1"),
+                                        SlNo = value.SlNo,
                                         Status = "A",
                                         CreatedBy = personnelNumber,
                                         DatetimeCreated = DateTime.Now
@@ -461,16 +517,14 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                     _context.Add(fAllotmentRentDtls);
                                     await _context.SaveChangesAsync();
 
+                                    CommonViewModel.Alert = "success";
+                                    CommonViewModel.Status = "Create";
+                                    CommonViewModel.Message = "Record created successfully";
 
-
+                                    CommonViewModel.ErrorMessage = "";
                                 }
-
                             }
-                            CommonViewModel.Alert = "success";
-                            CommonViewModel.Status = "Create";
-                            CommonViewModel.Message = "Record created successfully";
-
-                            CommonViewModel.ErrorMessage = "";
+                       
 
 
                         }
@@ -489,11 +543,15 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
 
                         var alt = value.AllotmentNo;
                         var dtt = nERSC01ViewModel.VacancyDate;
-
+                        var s1no = value.SlNo; //New Change
+                        var allotmentRentDetail = _context.FAllotmentRentDtls.SingleOrDefault(x => x.UnitCode == Convert.ToInt32(nERSC01ViewModel.PlantCD) && x.AllotmentNo == value.AllotmentNo && x.SlNo == s1no);
+                        int sno = allotmentRentDetail?.SlNo ?? 0;
+                        DateTime? v_date = allotmentRentDetail?.VacancyDate;
+                        DateTime? v_date_model = string.IsNullOrEmpty(value.VacancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.VacancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
 
                         // Check if the record already exists
-                        if (!_context.FAllotmentRentDtls.Any(x => x.UnitCode == Convert.ToInt32(nERSC01ViewModel.PlantCD) && x.AllotmentNo == alt))
+                        if (!_context.FAllotmentRentDtls.Any(x => x.UnitCode == Convert.ToInt32(nERSC01ViewModel.PlantCD) && x.AllotmentNo == alt && x.SlNo == s1no && v_date == v_date_model))
                         {
 
                             DateTime? Dtime = null;
@@ -537,15 +595,27 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                     y.QuarterNo = Convert.ToInt32(xy.QuarterNo);
                                     y.OccupantCode = value.OccupantType;
                                     y.RentCode = value.RentType;
-                                    y.VacancyDate = nERSC01ViewModel.VacancyDate;
+                                    y.MarketHrrFromDate = (DateTime)value.MarketHrrFromDate;
+                                    y.RentFromDate = (DateTime)value.MarketHrrFromDate;
+                                    y.VacancyDate = string.IsNullOrEmpty(value.VacancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.VacancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture);
                                     // y.VacancyDate = (DateTime)value.VacancyDate;
                                     y.MonthDayType = (filteredRows != null && filteredRows.Length > 0 ? Convert.ToString(filteredRows[0]["MONTH_DAY_TYPE"]) : "");
                                     y.ModifiedBy = personnelNumber;
                                     y.DatetimeModified = DateTime.Now;
+                                    y.SlNo = value.SlNo;
+                                    y.MarketHrrFromDate = string.IsNullOrEmpty(value.OccupancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.OccupancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
 
 
                                     _context.Update(y);
                                     _context.SaveChanges();
+
+                                    CommonViewModel.Alert = "Update";
+                                    CommonViewModel.Status = "Update";
+                                    CommonViewModel.Message = "Record Updated successfully";
+
+                                    CommonViewModel.ErrorMessage = "";
+
                                 }
                                 else
                                 {
@@ -560,13 +630,15 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                         QuarterNo = Convert.ToInt32(xy.QuarterNo),
                                         AllotmentDate = (DateTime)xy.ApprovedDate,
                                         VacancyDate = string.IsNullOrEmpty(value.VacancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.VacancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture),
-
+                                        MarketHrrFromDate = string.IsNullOrEmpty(value.OccupancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.OccupancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture),
+                                        RentFromDate = string.IsNullOrEmpty(value.OccupancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.OccupancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture),
                                         // VacancyDate = nERSC01ViewModel.VacancyDate,
                                         // VacancyDate = dtt,
                                         OccupantCode = value.OccupantType,
                                         RentCode = value.RentType,
                                         MonthDayType = (filteredRows != null && filteredRows.Length > 0 ? Convert.ToString(filteredRows[0]["MONTH_DAY_TYPE"]) : ""),
-                                        SlNo = Convert.ToInt32("1"),
+                                        //SlNo = Convert.ToInt32("1"),
+                                        SlNo = value.SlNo,
                                         Status = "A",
                                         CreatedBy = personnelNumber,
                                         DatetimeCreated = DateTime.Now
@@ -576,16 +648,18 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                     _context.Add(fAllotmentRentDtls);
                                     await _context.SaveChangesAsync();
 
+                                    CommonViewModel.Alert = "success";
+                                    CommonViewModel.Status = "Create";
+                                    CommonViewModel.Message = "Record created successfully";
+
+                                    CommonViewModel.ErrorMessage = "";
+
 
 
                                 }
 
                             }
-                            CommonViewModel.Alert = "success";
-                            CommonViewModel.Status = "Create";
-                            CommonViewModel.Message = "Record created successfully";
-
-                            CommonViewModel.ErrorMessage = "";
+                      
 
 
                         }
@@ -619,12 +693,5 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
 
             return Json(CommonViewModel);
         }
-
-
-
-
-
-
-
     }
 }

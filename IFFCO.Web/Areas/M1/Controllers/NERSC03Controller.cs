@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
 using System.Data;
 using AspNetCore;
+using System.Globalization;
 
 namespace IFFCO.NERRS.Web.Areas.M1.Controllers
 {
@@ -59,6 +60,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
             CommonViewModel.VendorLOVBind = dropDownListBindWeb.VendorLOVBind();
             CommonViewModel.listFAllotmentRentDtls = new List<FAllotmentRentDtls>();
             CommonViewModel.listVwAonlaNonEmpAllotStatus = new List<VwAonlaNonEmpAllotStatus>();
+
            // CommonViewModel = GetRentList(CommonViewModel, PlantCD, OccupantCode, QuarterCode);
             CommonViewModel = GetRentList(CommonViewModel, PlantCD, OccupantCode);
             CommonViewModel.AreaName = this.ControllerContext.RouteData.Values["area"].ToString();
@@ -78,6 +80,13 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
             {
                // CommonViewModel = GetRentList(nERSC03ViewModel, nERSC03ViewModel.PlantCD, nERSC03ViewModel.OccupantCode, nERSC03ViewModel.QuarterCode);
                 CommonViewModel = GetRentList(nERSC03ViewModel, nERSC03ViewModel.PlantCD, nERSC03ViewModel.OccupantCode);
+
+                foreach (var item in nERSC03ViewModel.listVwAonlaNonEmpAllotStatusShutdown)
+                {
+                    item.IsVendorDropdownDisabled = !string.IsNullOrEmpty(item.VendorCode);
+                    item.VendorSelectList = new SelectList(nERSC03ViewModel.VendorLOVBind, "Value", "Text", item.VendorCode);
+                }
+
                 TempData["CommonViewModel"] = JsonConvert.SerializeObject(CommonViewModel);
                 CommonViewModel.IsAlertBox = false;
                 CommonViewModel.SelectedAction = "GetListSearch";
@@ -128,11 +137,11 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
             {
 
             
-                    foreach (var value in nERSC03ViewModel.listVwAonlaNonEmpAllotStatus)
+                    foreach (var value in nERSC03ViewModel.listVwAonlaNonEmpAllotStatusShutdown)
                     {
 
                         var alt = value.AllotmentNo;
-                    var slno = value.SlNo;
+                        var slno = value.SlNo;
                    
 
                         // Check if the record already exists
@@ -165,12 +174,14 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
 
                             string sqlquery = "select UNIT_CODE,RENT_CODE,TYPE_RESI_ACCOM,RATES,MONTH_DAY_TYPE from M_RENT_MSTS where Status = 'A' ";
                             DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
+                         
 
                             foreach (var xy in DTL_VALUE)
                             {
                                 DataRow[] filteredRows = dtDRP_VALUE.Select("RENT_CODE = '" + value.RentType + "'");
+                                
 
-                                var y = _context.FAllotmentRentDtls.Where(z => z.AllotmentNo == xy.AllotmentNo && value.SlNo == xy.SlNo).FirstOrDefault();
+                            var y = _context.FAllotmentRentDtls.Where(z => z.AllotmentNo == xy.AllotmentNo && value.SlNo == xy.SlNo).FirstOrDefault();
                                 if (y != null)
                                 {
                                     y.UnitCode = Convert.ToInt32(xy.UnitCode);
@@ -178,9 +189,11 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                     y.VendorCode = value.VendorCode;
                                     y.QuarterCategory = xy.QuarterCategory;
                                     y.QuarterNo = Convert.ToInt32(xy.QuarterNo);
-                                    y.OccupantCode = value.OccupantType;
+                                    y.OccupantCode =  Convert.ToString(1010);
                                     y.RentCode = value.RentType;
                                     y.VacancyDate = (DateTime)value.VacancyDate;
+                                    y.MarketHrrFromDate = (DateTime)value.MarketHrrFromDate;
+                                    y.RentFromDate = (DateTime)value.MarketHrrFromDate;
                                     y.MonthDayType = (filteredRows != null && filteredRows.Length > 0 ? Convert.ToString(filteredRows[0]["MONTH_DAY_TYPE"]) : "");
                                     y.SlNo = value.SlNo;    
                                     y.ModifiedBy = personnelNumber;
@@ -201,8 +214,10 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                         QuarterCategory = xy.QuarterCategory,
                                         QuarterNo = Convert.ToInt32(xy.QuarterNo),
                                         AllotmentDate = (DateTime)xy.ApprovedDate,
-                                        VacancyDate = nERSC03ViewModel.VacancyDate,
-                                        OccupantCode = value.OccupantType,
+                                        VacancyDate = string.IsNullOrEmpty(value.VacancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.VacancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture),
+                                        MarketHrrFromDate = string.IsNullOrEmpty(value.OccupancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.OccupancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture),
+                                        RentFromDate = string.IsNullOrEmpty(value.OccupancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.OccupancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture),
+                                        OccupantCode = Convert.ToString(1010),
                                         RentCode = value.RentType,
                                         MonthDayType = (filteredRows != null && filteredRows.Length > 0 ? Convert.ToString(filteredRows[0]["MONTH_DAY_TYPE"]) : ""),
                                        // SlNo = Convert.ToInt32("1"),
@@ -238,7 +253,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                     }
                 
 
-                if (nERSC03ViewModel.listVwAonlaNonEmpAllotStatus.Count == 0)
+                if (nERSC03ViewModel.listVwAonlaNonEmpAllotStatusShutdown.Count == 0)
                 {
                     CommonViewModel.Message = "No data to save";
                     CommonViewModel.Alert = "Warning";

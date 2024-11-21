@@ -88,8 +88,16 @@ namespace IFFCO.NERRS.Web.Models
         [NotMapped]
         public DateTime? RentFromDate { get; set; }
         [NotMapped]
-        public DateTime? RentToDate { get; set; } 
-       
+        public DateTime? RentToDate { get; set; }
 
+        [NotMapped]
+        public DateTime? MarketHrrFromDate { get; set; }
+
+        [NotMapped] public string MarketHrrFromDate_Text { get; set; }
+
+        [NotMapped] public string OccupancyDate_Text { get; set; }
+        [NotMapped] public string IsSelected { get; set; }
+        public bool IsVendorDropdownDisabled { get; internal set; }
+        public SelectList VendorSelectList { get; internal set; }
     }
 }

@@ -117,56 +117,66 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
         [HttpPost]
         public ActionResult Compute(DateTime? FromDate, DateTime? ToDate, string AllotmentNo, int slNo, int elecRate, int electricityCount)
         {
-           
-                try
-            {
-
-                if (!FromDate.HasValue || !ToDate.HasValue)
-                {
-                    return Json(new { success = false, error = "From date and To date are required." });
-                }
-
-
-                if (!int.TryParse(AllotmentNo, out int allotmentNoInt))
-                {
-                    return Json(new { success = false, error = "Invalid Allotment No." });
-                }
-
-
-                var allotmentCompute = _context.FIntCompute.Where(c => c.AllotmentNo == Int32.Parse(AllotmentNo));
-                var allotmentDetails = _context.FAllotmentRentDtls.FirstOrDefault(m => m.AllotmentNo == allotmentNoInt);
-
-                if (allotmentDetails == null)
-                {
-                    return Json(new { success = false, error = "Allotment details not found in database." });
-                }
-
-
-                TimeSpan selectedPeriod = ToDate.Value - FromDate.Value;
-                DateTime allotmentStartDate = new DateTime(allotmentDetails.AllotmentDate.Year, allotmentDetails.AllotmentDate.Month, 1);
-                TimeSpan allotmentPeriod = (TimeSpan)(allotmentDetails.VacancyDate - allotmentStartDate);
-                 int daysInMonth = DateTime.DaysInMonth(FromDate.Value.Year, FromDate.Value.Month);
-              
-
-
-                // Perform the procedure execution
-                int EMP_ID = Convert.ToInt32(HttpContext.Session.GetInt32("EmpID"));
-                var result = ExecuteProcedure(FromDate.Value, ToDate.Value, allotmentNoInt, slNo, EMP_ID, electricityCount, elecRate);
-
-                // Return success with the result from the procedure
-                return Json(new { success = true, data = result });
-            
-            }
-            catch (Exception ex)
-            {
-                // Log the exception details
-                Console.WriteLine("An error occurred in Compute method: " + ex.Message);
-                Console.WriteLine("Stack trace: " + ex.StackTrace);
-
-              
-                return Json(new { sucess = false, error = "An error occurred while processing the request. Details: " + ex.Message });
-            }
+        try
+        {
+        // Validate if FromDate and ToDate are provided
+        if (!FromDate.HasValue || !ToDate.HasValue)
+        {
+            return Json(new { success = false, error = "From date and To date are required." });
         }
+
+        // Ensure that FromDate and ToDate are within the start and end of the month
+        DateTime startOfMonth = new DateTime(FromDate.Value.Year, FromDate.Value.Month, 1);
+        DateTime endOfMonth = new DateTime(FromDate.Value.Year, FromDate.Value.Month, DateTime.DaysInMonth(FromDate.Value.Year, FromDate.Value.Month));
+
+        if (FromDate.Value != startOfMonth || ToDate.Value != endOfMonth)
+        {
+            return Json(new { success = false, error = "From date and To date must be the start and end of the month." });
+        }
+
+        // Parse and validate AllotmentNo
+        if (!int.TryParse(AllotmentNo, out int allotmentNoInt))
+        {
+            return Json(new { success = false, error = "Invalid Allotment No." });
+        }
+
+        // Fetch allotment details from the database
+        var allotmentDetails = _context.FAllotmentRentDtls.FirstOrDefault(m => m.AllotmentNo == allotmentNoInt && m.SlNo == slNo);
+
+        if (allotmentDetails == null)
+        {
+            return Json(new { success = false, error = "Allotment details not found in database." });
+        }
+
+                // Ensure that FromDate and ToDate are between AllotmentDate and VacancyDate (inclusive)
+        if (FromDate.HasValue && ToDate.HasValue && allotmentDetails.MarketHrrFromDate.HasValue &&
+            FromDate.Value < allotmentDetails.MarketHrrFromDate.Value ||
+            FromDate.Value > allotmentDetails.VacancyDate.Value ||
+            FromDate.Value >= ToDate.Value)
+        {
+              return Json(new { success = false, error = "From date must be between the Allotment date and Vacancy date, inclusive, and less than To date." });
+        }
+
+                // Calculate the period selected by the user
+                TimeSpan selectedPeriod = ToDate.Value - FromDate.Value;
+
+        // Perform the procedure execution
+        int EMP_ID = Convert.ToInt32(HttpContext.Session.GetInt32("EmpID"));
+        var result = ExecuteProcedure(FromDate.Value, ToDate.Value, allotmentNoInt, slNo, EMP_ID, electricityCount, elecRate);
+
+        // Return success with the result from the procedure
+        return Json(new { success = true, data = result });
+    }
+    catch (Exception ex)
+    {
+        // Log the exception details
+        Console.WriteLine("An error occurred in Compute method: " + ex.Message);
+        Console.WriteLine("Stack trace: " + ex.StackTrace);
+
+        // Return error response
+        return Json(new { success = false, error = "An error occurred while processing the request. Details: " + ex.Message });
+    }
+}
 
         private double ExecuteProcedure(DateTime fromDate, DateTime toDate, int allotmentNo, int slNo, int empId, int elecRate, int electricityCount)
         {
@@ -209,7 +219,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                 object[] parameters = new object[] { oracleParameterCollection };
 
               
-                _context.ExecuteProcedure("PROCESS_ALLOTMENT", parameters);
+                _context.ExecuteProcedure("PROCESS_ALLOTMENTV1", parameters);
 
                 // Check if the output parameter is DBNull before casting
                 var totalAmountParameter = oracleParameterCollection.Find(p => p.ParameterName == "o_total_amount");

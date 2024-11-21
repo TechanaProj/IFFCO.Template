@@ -19,5 +19,9 @@ namespace IFFCO.NERRS.Web.ViewModels
         public List<FIntCompute> listFIntCompute { get; set; }
         public List<SelectListItem> UnitLOVBind { get; set; }
         public List<SelectListItem> OccupantLOVBind { get; set; }
+
+        public List<SelectListItem> AllotementNoLOVBind { get; set; }
+
+        public string AllotmentNo { get; set; }
     }
 }

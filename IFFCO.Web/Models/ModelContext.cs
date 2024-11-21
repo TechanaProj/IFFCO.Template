@@ -935,7 +935,7 @@ namespace IFFCO.NERRS.Web.Models
 
                 entity.ToTable("F_INT_COMPUTE", "NERRS");
 
-                entity.HasIndex(e => new { e.UnitCode, e.AllotmentNo, e.ComputationRun })
+                entity.HasIndex(e => new { e.UnitCode, e.AllotmentNo, e.ComputationRun,e.SlNo })
                     .HasName("FM_ALLOTMENT_RENT_DTLS_PK")
                     .IsUnique();
 

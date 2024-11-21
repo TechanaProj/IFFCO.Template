@@ -60,29 +60,17 @@
                                     <div class="m-form">
                                         <div class="m-form-bx">
                                             <div class="row form-sm">
-                                                <div class="col-sm-2 col-md-1">
+                                                <div class="col-sm-2 col-md-3">
                                                     <label class="m-lbl1 m-lbl2">Unit Code</label>
                                                 </div>
 
                                                 <div class="col-sm-2 col-md-2">
                                                     <select id="PlantCD" name="PlantCD" class="form-control" asp-items="@(new SelectList(Model.UnitLOVBind, "Value", "Text"))"></select>
                                                 </div>
-                                                <div class="col-sm-2 col-md-1">
-                                                    <label class="m-lbl1 m-lbl2">From Date</label>
-                                                </div>
-                                                <div class="col-sm-2 col-md-2">
-                                                    <input type="date" class="form-control" id="FromDate" name="FromDate" asp-for="FromDate" />
-                                                </div>
-                                                <div class="col-sm-2 col-md-1">
-                                                    <label class="m-lbl1 m-lbl2">End Date</label>
-                                                </div>
-                                                <div class="col-sm-2 col-md-2">
-                                                    <input type="date" class="form-control" id="ToDate" name="ToDate" asp-for="ToDate" />
-                                                </div>
-                                                <div class="col-sm-2 col-md-1">
+                                                <div class="col-sm-3 col-md-2">
                                                     <label class="m-lbl1 m-lbl2">Allotment No</label>
                                                 </div>
-                                                <div class="col-sm-2 col-md-2">
+                                                <div class="col-sm-4 col-md-3">
                                                     <select id="AllotmentNo" name="AllotmentNo" class="form-control" onchange="fetchRentCode()" asp-items="@(new SelectList(Model.AllotementNoLOVBind, "Value", "Text"))">
                                                         <option value="">--SELECT--</option>
                                                     </select>
@@ -92,16 +80,16 @@
 
                                                 <br />
                                                 @*
-                                                <div class="col-sm-2 col-md-1">
-                                                <label class="m-lbl1 m-lbl2">Monthly/Daily</label>
-                                                </div>
-                                                <div class="col-sm-2 col-md-2">
-                                                <select class="form-control" id="timePeriod">
-                                                <option value="">Select For Compute</option>
-                                                <option value="M">Monthly</option>
-                                                <option value="D">Daily</option>
-                                                </select>
-                                                </div>
+                                <div class="col-sm-2 col-md-1">
+                                <label class="m-lbl1 m-lbl2">Monthly/Daily</label>
+                                </div>
+                                <div class="col-sm-2 col-md-2">
+                                <select class="form-control" id="timePeriod">
+                                <option value="">Select For Compute</option>
+                                <option value="M">Monthly</option>
+                                <option value="D">Daily</option>
+                                </select>
+                                </div>
                                                 *@
 
                                             </div>
@@ -117,9 +105,66 @@
                                 </form>
                                 <div style="text-align: center;">
                                     @*  <button id="sendMailButton">
-                                    <i class="fas fa-calculator" style="margin-right: 5px;"></i>
-                                    Compute
-                                    </button>*@
+                    <i class="fas fa-calculator" style="margin-right: 5px;"></i>
+                    Compute
+                    </button>*@
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="content-box">
+                            <h3 class="sub-heading1"><span>Compute Month</span></h3>
+                            <div class="m-form">
+                                <form id="queryForm" method="post" onsubmit="return Validate();">
+                                    <div class="m-form">
+                                        <div class="m-form-bx">
+                                            <div class="row form-sm">
+                                               <div class="col-sm-2 col-md-3">
+                                                    <label class="m-lbl1 m-lbl2">From Date</label>
+                                                </div>
+                                                <div class="col-sm-2 col-md-2">
+                                                    <input type="date" class="form-control" id="FromDate" name="FromDate" asp-for="FromDate" />
+                                                </div>
+                                                <div class="col-sm-2 col-md-2">
+                                                    <label class="m-lbl1 m-lbl2">End Date</label>
+                                                </div>
+                                                <div class="col-sm-2 col-md-2">
+                                                    <input type="date" class="form-control" id="ToDate" name="ToDate" asp-for="ToDate" />
+                                                </div>
+                                                
+
+                                                <span id="rentCode1" style="display:none;"></span>
+
+                                                <br />
+                                                @*
+                                <div class="col-sm-2 col-md-1">
+                                <label class="m-lbl1 m-lbl2">Monthly/Daily</label>
+                                </div>
+                                <div class="col-sm-2 col-md-2">
+                                <select class="form-control" id="timePeriod">
+                                <option value="">Select For Compute</option>
+                                <option value="M">Monthly</option>
+                                <option value="D">Daily</option>
+                                </select>
+                                </div>
+                                                *@
+
+                                            </div>
+                                        </div>
+                                        @*<div class="btn-area1">
+                                            <input type="submit" id="save" class="m-btn-1 save" value="Query" />
+
+
+                                        </div>*@
+
+
+                                    </div>
+                                </form>
+                                <div style="text-align: center;">
+                                    @*  <button id="sendMailButton">
+                    <i class="fas fa-calculator" style="margin-right: 5px;"></i>
+                    Compute
+                    </button>*@
 
                                 </div>
                             </div>
@@ -140,7 +185,7 @@
                                        
                                         <th>ALLOTMENT DATE</th>
                                         <th>OCCUPANCY DATE</th>
-                                        <th>EXPECTED VACANCY DATE</th>
+                                        @*<th>EXPECTED VACANCY DATE</th>*@
                                         <th>VACANCY DATE</th>
                                         <th>ELECTRICITY RATE</th>
                                         <th>ELECTRICITY COUNT</th>
@@ -154,6 +199,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -195,8 +241,8 @@
                                 "<td>" + (item.quarterNo || '') + "</td>" +
                                 "<td>" + (item.allotmentNo || '') + "</td>" +
                                 "<td>" + formatDate(item.allotmentDate) + "</td>" +
-                                "<td>" + formatDate(item.occupancyDate) + "</td>" +
-                                "<td>" + formatDate(item.expectedVacancyDate) + "</td>" +
+                                "<td>" + formatDate(item.marketHrrFromDate) + "</td>" +
+                                //"<td>" + formatDate(item.expectedVacancyDate) + "</td>" +
                                 "<td>" + formatDate(item.vacancyDate) + "</td>" +
                                 "<td><input type='text' class='form-control elecRate' value='" + (item.elecRate || '') + "' /></td>" +
                                 "<td><input type='text' class='form-control electricityCount' value='" + (item.electricityCount || '') + "' /></td>" +

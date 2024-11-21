@@ -21,9 +21,9 @@ namespace IFFCO.NERRS.Web.ViewModels
         public string Occupant { get; set; }
 
         public DateTime AllotmentDate { get; set; }
-        public DateTime FromDate { get; set; }
+        public DateTime? FromDate { get; set; }
 
-        public DateTime ToDate { get; set; }
+        public DateTime? ToDate { get; set; }
         //Tables
 
         public FAllotmentRentDtls ObjFAllotmentRentDtls { get; set; }
@@ -48,5 +48,10 @@ namespace IFFCO.NERRS.Web.ViewModels
         public List<SelectListItem> AllotementNoLOVBind { get; set; }
         public List<SelectListItem> OccupantLOVBind { get; set; }
         public List<SelectListItem> RentTypeLOVBind { get; set; }
+
+        public FIntCompute MstsFIntCompute { get; set; }
+
+        public List<FIntCompute> listFIntCompute { get; set; }
     }
 }
+
