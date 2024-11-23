@@ -220,7 +220,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                             {
                                 DataRow[] filteredRows = dtDRP_VALUE.Select("RENT_CODE = '" + value.RentType + "'");
 
-                                var y = _context.FAllotmentRentDtls.Where(z => z.AllotmentNo == x.AllotmentNo).FirstOrDefault();
+                                var y = _context.FAllotmentRentDtls.Where(z => z.AllotmentNo == x.AllotmentNo  && value.SlNo == sno).FirstOrDefault();
                                 if (y != null)
                                 {
                                     y.UnitCode = Convert.ToInt32(x.UnitCode);
@@ -342,7 +342,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                             {
                                 DataRow[] filteredRows = dtDRP_VALUE.Select("RENT_CODE = '" + value.RentType + "'");
 
-                                var y = _context.FAllotmentRentDtls.Where(z => z.AllotmentNo == x.AllotmentNo).FirstOrDefault();
+                                var y = _context.FAllotmentRentDtls.Where(z => z.AllotmentNo == x.AllotmentNo &&  value.SlNo == sno).FirstOrDefault();
                                 if (y != null)
                                 {
                                     y.UnitCode = Convert.ToInt32(x.UnitCode);
@@ -570,7 +570,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                              //PersonalNo = Convert.ToString(dr["PERSONAL_NO"]),
                                              ApprovedDate = Convert.ToDateTime(dr["APPROVED_DATE"]),
                                              QuarterCategory = Convert.ToString(dr["QUARTER_CATEGORY"]),
-                                             OccupancyDate = Convert.ToDateTime(dr["OCCUPANCY_DATE"]),
+                                             OccupancyDate = string.IsNullOrEmpty(Convert.ToString(dr["OCCUPANCY_DATE"]))? Dtime : Convert.ToDateTime(Convert.ToString(dr["OCCUPANCY_DATE"])),
                                              VacancyDate = string.IsNullOrEmpty(Convert.ToString(dr["VACANCY_DATE"])) ? Dtime : Convert.ToDateTime(Convert.ToString(dr["VACANCY_DATE"])),
 
 
@@ -585,7 +585,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                             {
                                 DataRow[] filteredRows = dtDRP_VALUE.Select("RENT_CODE = '" + value.RentType + "'");
 
-                                var y = _context.FAllotmentRentDtls.Where(z => z.AllotmentNo == xy.AllotmentNo).FirstOrDefault();
+                                var y = _context.FAllotmentRentDtls.Where(z => z.AllotmentNo == xy.AllotmentNo && value.SlNo == sno).FirstOrDefault();
                                 if (y != null)
                                 {
                                     y.UnitCode = Convert.ToInt32(xy.UnitCode);

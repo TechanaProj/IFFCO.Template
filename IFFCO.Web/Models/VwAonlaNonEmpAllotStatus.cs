@@ -99,5 +99,8 @@ namespace IFFCO.NERRS.Web.Models
         [NotMapped] public string IsSelected { get; set; }
         public bool IsVendorDropdownDisabled { get; internal set; }
         public SelectList VendorSelectList { get; internal set; }
+
+        [NotMapped]
+        public int? NofBeds { get; set; }
     }
 }

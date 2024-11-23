@@ -45,7 +45,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
             int EMP_ID = Convert.ToInt32(HttpContext.Session.GetInt32("EmpID"));
             string moduleid = Convert.ToString(HttpContext.Session.GetString("ModuleID"));
 
-            var ApplicantLov = dropDownListBindWeb.AllotementNoLOVBind();
+            var ApplicantLov = dropDownListBindWeb.AllotementNoLOVBindnew();
             CommonViewModel.AllotementNoLOVBind = ApplicantLov ?? new List<SelectListItem>(); 
 
             if (!string.IsNullOrEmpty(Convert.ToString(TempData["Message"])))
@@ -115,68 +115,147 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
 
 
         [HttpPost]
+
         public ActionResult Compute(DateTime? FromDate, DateTime? ToDate, string AllotmentNo, int slNo, int elecRate, int electricityCount)
         {
-        try
-        {
-        // Validate if FromDate and ToDate are provided
-        if (!FromDate.HasValue || !ToDate.HasValue)
-        {
-            return Json(new { success = false, error = "From date and To date are required." });
-        }
+            try
+            {
+                // Validate if FromDate and ToDate are provided
+                if (!FromDate.HasValue || !ToDate.HasValue)
+                {
+                    return Json(new { success = false, error = "From date and To date are required." });
+                }
 
-        // Ensure that FromDate and ToDate are within the start and end of the month
-        DateTime startOfMonth = new DateTime(FromDate.Value.Year, FromDate.Value.Month, 1);
-        DateTime endOfMonth = new DateTime(FromDate.Value.Year, FromDate.Value.Month, DateTime.DaysInMonth(FromDate.Value.Year, FromDate.Value.Month));
+                // Ensure that FromDate and ToDate are within the start and end of the month
+                DateTime startOfMonth = new DateTime(FromDate.Value.Year, FromDate.Value.Month, 1);
+                DateTime endOfMonth = new DateTime(FromDate.Value.Year, FromDate.Value.Month, DateTime.DaysInMonth(FromDate.Value.Year, FromDate.Value.Month));
 
-        if (FromDate.Value != startOfMonth || ToDate.Value != endOfMonth)
-        {
-            return Json(new { success = false, error = "From date and To date must be the start and end of the month." });
-        }
+                if (FromDate.Value != startOfMonth || ToDate.Value != endOfMonth)
+                {
+                    return Json(new { success = false, error = "From date and To date must be the start and end of the month." });
+                }
 
-        // Parse and validate AllotmentNo
-        if (!int.TryParse(AllotmentNo, out int allotmentNoInt))
-        {
-            return Json(new { success = false, error = "Invalid Allotment No." });
-        }
+                // Parse and validate AllotmentNo
+                if (!int.TryParse(AllotmentNo, out int allotmentNoInt))
+                {
+                    return Json(new { success = false, error = "Invalid Allotment No." });
+                }
 
-        // Fetch allotment details from the database
-        var allotmentDetails = _context.FAllotmentRentDtls.FirstOrDefault(m => m.AllotmentNo == allotmentNoInt && m.SlNo == slNo);
+                // Check if computation for the same month is already done
+                var existingComputation = _context.FAllotmentRentDtls.FirstOrDefault(m =>
+                    m.AllotmentNo == allotmentNoInt &&
+                    m.SlNo == slNo &&
+                    ((FromDate.Value >= m.RentFromDate && FromDate.Value <= m.RentToDate) ||
+                     (ToDate.Value >= m.RentFromDate && ToDate.Value <= m.RentToDate) ||
+                     (m.RentFromDate >= FromDate.Value && m.RentFromDate <= ToDate.Value) ||
+                     (m.RentToDate >= FromDate.Value && m.RentToDate <= ToDate.Value))
+                );
 
-        if (allotmentDetails == null)
-        {
-            return Json(new { success = false, error = "Allotment details not found in database." });
-        }
+                if (existingComputation != null)
+                {
+                    return Json(new { success = false, error = "Data is already calculated for the selected period." });
+                }
+
+                // Fetch allotment details from the database
+                var allotmentDetails = _context.FAllotmentRentDtls.FirstOrDefault(m => m.AllotmentNo == allotmentNoInt && m.SlNo == slNo);
+
+                if (allotmentDetails == null)
+                {
+                    return Json(new { success = false, error = "Allotment details not found in database." });
+                }
 
                 // Ensure that FromDate and ToDate are between AllotmentDate and VacancyDate (inclusive)
-        if (FromDate.HasValue && ToDate.HasValue && allotmentDetails.MarketHrrFromDate.HasValue &&
-            FromDate.Value < allotmentDetails.MarketHrrFromDate.Value ||
-            FromDate.Value > allotmentDetails.VacancyDate.Value ||
-            FromDate.Value >= ToDate.Value)
-        {
-              return Json(new { success = false, error = "From date must be between the Allotment date and Vacancy date, inclusive, and less than To date." });
-        }
+                if (FromDate.HasValue && ToDate.HasValue && allotmentDetails.MarketHrrFromDate.HasValue &&
+                    (FromDate.Value < allotmentDetails.MarketHrrFromDate.Value ||
+                     FromDate.Value > allotmentDetails.VacancyDate.Value ||
+                     FromDate.Value >= ToDate.Value))
+                {
+                    return Json(new { success = false, error = "From date must be between the Allotment date and Vacancy date, inclusive, and less than To date." });
+                }
 
                 // Calculate the period selected by the user
                 TimeSpan selectedPeriod = ToDate.Value - FromDate.Value;
 
-        // Perform the procedure execution
-        int EMP_ID = Convert.ToInt32(HttpContext.Session.GetInt32("EmpID"));
-        var result = ExecuteProcedure(FromDate.Value, ToDate.Value, allotmentNoInt, slNo, EMP_ID, electricityCount, elecRate);
+                // Perform the procedure execution
+                int EMP_ID = Convert.ToInt32(HttpContext.Session.GetInt32("EmpID"));
+                var result = ExecuteProcedure(FromDate.Value, ToDate.Value, allotmentNoInt, slNo, EMP_ID, electricityCount, elecRate);
 
-        // Return success with the result from the procedure
-        return Json(new { success = true, data = result });
-    }
-    catch (Exception ex)
-    {
-        // Log the exception details
-        Console.WriteLine("An error occurred in Compute method: " + ex.Message);
-        Console.WriteLine("Stack trace: " + ex.StackTrace);
+                // Return success with the result from the procedure
+                return Json(new { success = true, data = result });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details
+                Console.WriteLine("An error occurred in Compute method: " + ex.Message);
+                Console.WriteLine("Stack trace: " + ex.StackTrace);
 
-        // Return error response
-        return Json(new { success = false, error = "An error occurred while processing the request. Details: " + ex.Message });
-    }
-}
+                // Return error response
+                return Json(new { success = false, error = "An error occurred while processing the request. Details: " + ex.Message });
+            }
+        }
+
+        //        public ActionResult Compute(DateTime? FromDate, DateTime? ToDate, string AllotmentNo, int slNo, int elecRate, int electricityCount)
+        //        {
+        //        try
+        //        {
+        //        // Validate if FromDate and ToDate are provided
+        //        if (!FromDate.HasValue || !ToDate.HasValue)
+        //        {
+        //            return Json(new { success = false, error = "From date and To date are required." });
+        //        }
+
+        //        // Ensure that FromDate and ToDate are within the start and end of the month
+        //        DateTime startOfMonth = new DateTime(FromDate.Value.Year, FromDate.Value.Month, 1);
+        //        DateTime endOfMonth = new DateTime(FromDate.Value.Year, FromDate.Value.Month, DateTime.DaysInMonth(FromDate.Value.Year, FromDate.Value.Month));
+
+        //        if (FromDate.Value != startOfMonth || ToDate.Value != endOfMonth)
+        //        {
+        //            return Json(new { success = false, error = "From date and To date must be the start and end of the month." });
+        //        }
+
+        //        // Parse and validate AllotmentNo
+        //        if (!int.TryParse(AllotmentNo, out int allotmentNoInt))
+        //        {
+        //            return Json(new { success = false, error = "Invalid Allotment No." });
+        //        }
+
+        //        // Fetch allotment details from the database
+        //        var allotmentDetails = _context.FAllotmentRentDtls.FirstOrDefault(m => m.AllotmentNo == allotmentNoInt && m.SlNo == slNo);
+
+        //        if (allotmentDetails == null)
+        //        {
+        //            return Json(new { success = false, error = "Allotment details not found in database." });
+        //        }
+
+        //                // Ensure that FromDate and ToDate are between AllotmentDate and VacancyDate (inclusive)
+        //        if (FromDate.HasValue && ToDate.HasValue && allotmentDetails.MarketHrrFromDate.HasValue &&
+        //            FromDate.Value < allotmentDetails.MarketHrrFromDate.Value ||
+        //            FromDate.Value > allotmentDetails.VacancyDate.Value ||
+        //            FromDate.Value >= ToDate.Value)
+        //        {
+        //              return Json(new { success = false, error = "From date must be between the Allotment date and Vacancy date, inclusive, and less than To date." });
+        //        }
+
+        //                // Calculate the period selected by the user
+        //                TimeSpan selectedPeriod = ToDate.Value - FromDate.Value;
+
+        //        // Perform the procedure execution
+        //        int EMP_ID = Convert.ToInt32(HttpContext.Session.GetInt32("EmpID"));
+        //        var result = ExecuteProcedure(FromDate.Value, ToDate.Value, allotmentNoInt, slNo, EMP_ID, electricityCount, elecRate);
+
+        //        // Return success with the result from the procedure
+        //        return Json(new { success = true, data = result });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Log the exception details
+        //        Console.WriteLine("An error occurred in Compute method: " + ex.Message);
+        //        Console.WriteLine("Stack trace: " + ex.StackTrace);
+
+        //        // Return error response
+        //        return Json(new { success = false, error = "An error occurred while processing the request. Details: " + ex.Message });
+        //    }
+        //}
 
         private double ExecuteProcedure(DateTime fromDate, DateTime toDate, int allotmentNo, int slNo, int empId, int elecRate, int electricityCount)
         {

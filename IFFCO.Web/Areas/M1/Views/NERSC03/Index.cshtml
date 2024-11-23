@@ -57,23 +57,23 @@
             $("#HrmsHrdGrid tbody tr").each(function () {
                 var row = $(this);
                 var isChecked = row.find("td:eq(12) input[type='checkbox']").is(":checked"); // Checkbox
-                //var slno = row.find("td:eq(1) input").val().trim(); // Hidden SNo
+                var slno = row.find("td:eq(1) input").val().trim(); // Hidden SNo
                 var allotmentNo = row.find("td:eq(2)").text().trim(); // Allotment No
                 var vendorCode = row.find("td:eq(3) select option:selected").val(); // Vendor Code
-                var vacancyDateText = row.find("td:eq(5) input").val(); // Vacancy Date
-                var occupancyDateText = row.find("td:eq(6) input").val(); // Rent From Date
-                var noOfDays = row.find("td:eq(7) input").val(); // No of Days (hidden)
+                var vacancyDateText = row.find("td:eq(6) input").val(); // Vacancy Date
+                var occupancyDateText = row.find("td:eq(5) input").val(); // Rent From Date
+                var noOfBeds = row.find("td:eq(7) input").val(); // No of Days (hidden)
                 var rate = row.find("td:eq(8) input").val(); // Rate (hidden)
                 var amount = row.find("td:eq(9) input").val(); // Amount (hidden)
                 var occupantType = row.find("td:eq(10) select option:selected").val(); // Occupant Type
                 var rentType = row.find("td:eq(11) select option:selected").val(); // Rent Type
 
-                var slno = row.find("td:eq(1)").text().trim();
-                if (slno === "") {
-                    slno = 1;
-                } else {
-                    slno = parseInt(slno);
-                }
+                //var slno = row.find("td:eq(1)").text().trim();
+                //if (slno === "") {
+                //    slno = 1;
+                //} else {
+                //    slno = parseInt(slno);
+                //}
 
                 // Check if occupancy date is provided (mandatory check)
                 if (isChecked && !occupancyDateText) {
@@ -111,7 +111,7 @@
                     formData.append(`nERSC03ViewModel.listVwAonlaNonEmpAllotStatusShutdown[${cnt}].VendorCode`, vendorCode);
                     formData.append(`nERSC03ViewModel.listVwAonlaNonEmpAllotStatusShutdown[${cnt}].VacancyDate_Text`, vacancyDateText);
                     formData.append(`nERSC03ViewModel.listVwAonlaNonEmpAllotStatusShutdown[${cnt}].OccupancyDate_Text`, occupancyDateText);
-                    formData.append(`nERSC03ViewModel.listVwAonlaNonEmpAllotStatusShutdown[${cnt}].NoOfDays`, noOfDays);
+                    formData.append(`nERSC03ViewModel.listVwAonlaNonEmpAllotStatusShutdown[${cnt}].NofBeds`, noOfBeds);
                     formData.append(`nERSC03ViewModel.listVwAonlaNonEmpAllotStatusShutdown[${cnt}].Rate`, rate);
                     formData.append(`nERSC03ViewModel.listVwAonlaNonEmpAllotStatusShutdown[${cnt}].Amt`, amount);
                     formData.append(`nERSC03ViewModel.listVwAonlaNonEmpAllotStatusShutdown[${cnt}].OccupantCode`, occupantType);
@@ -287,116 +287,121 @@
     //    }, 10);
     //}
 
-//    function addRow(button) {
+    //function addRow(button) {
+    //    debugger;
+    //    var currentRow = $(button).closest('tr');
+    //    var newRow = currentRow.clone();
 
-//    var currentRow = $(button).closest('tr');
-
-//    // Clone the current row
-//    var newRow = currentRow.clone();
-
-//     // Reset the values of input fields in the new row
-//    newRow.find('input[type="text"]').val('');      // Clear text inputs
-//    newRow.find('input[type="date"]').val('');      // Clear date inputs
-//    newRow.find('select').prop('selectedIndex', 0); // Reset select boxes to the first option
-//    newRow.find('input[type="checkbox"]').prop('checked', false); // Uncheck checkboxes
-
-//     // Specifically clear the Quarter Rent fields
-//    newRow.find("td:eq(10) select").prop('selectedIndex', 0); // Assuming Quarter Rent is in the 11th column (index 10)
-
-//     // Remove the disabled attribute from the Quarter Rent field in the new row
-//     newRow.find("td:eq(10) select").prop('disabled', false);
-
-//    // Find the current highest SlNo
-//    var highestSlNo = 1;
-//    $("#HrmsHrdGrid tbody tr").each(function () {
-//        var slNo = parseInt($(this).find("td:eq(1)").text().trim());
-//        if (!isNaN(slNo) && slNo > highestSlNo) {
-//            highestSlNo = slNo;
-//        }
-//    });
-
-//    // Increment the SlNo for the new row
-//    var newSlNo = highestSlNo + 1;
-//    newRow.find("td:eq(1)").text(newSlNo);
-
-
-//    // Insert the new row right after the current row
-//    newRow.insertAfter(currentRow);
-//}
-
-
-//    function removeRow(button) {
-//        $(button).closest('tr').remove();
-//    }
-    function addRow(button) {
-        debugger;
-        var currentRow = $(button).closest('tr');
-        var newRow = currentRow.clone();
-
-        // Clear text inputs, date inputs, and reset dropdowns
-        newRow.find('input[type="text"]').val('');
-        newRow.find('input[type="date"]').val('');
-        newRow.find('select').val('').prop('disabled', null); 
-        newRow.find('input[type="checkbox"]').prop('checked', false);
-        newRow.find('select').val('').prop('disabled', null);
+    //    // Clear text inputs, date inputs, and reset dropdowns
+    //    newRow.find('input[type="text"]').val('');
+    //    newRow.find('input[type="date"]').val('');
+    //    newRow.find('select').val('').prop('disabled', null); 
+    //    newRow.find('input[type="checkbox"]').prop('checked', false);
+    //    newRow.find('select').val('').prop('disabled', false);
+    //    newRow.find('span.select2').remove(); // Remove Select2 spans from cloned row`
 
         
-        // Update the SNo (or other relevant columns)
-        var allotmentNo = currentRow.find("td:eq(2)").text().trim(); 
-        var highestSlNo = 1; // Default SLNo if not found
+    //     Update the SNo (or other relevant columns)
+    //    var allotmentNo = currentRow.find("td:eq(2)").text().trim(); 
+    //    var highestSlNo = 0; // Default SLNo if not found
 
-        // Calculate the new SNo
+    //     Calculate the new SNo
+    //    $("#HrmsHrdGrid tbody tr").each(function () {
+    //        var rowAllotmentNo = $(this).find("td:eq(2)").text().trim();
+    //        if (rowAllotmentNo === allotmentNo) {
+    //            var slNoText = $(this).find("td:eq(1)").text().trim(); // Get SLNo
+    //            var slNo = parseInt(slNoText, 10);
+    //            if (!isNaN(slNo) && slNo > highestSlNo) {
+    //                highestSlNo = slNo;
+    //            }
+    //        }
+    //    });
+
+    //    newRow.find('select.vendorSelect').each(function () {
+    //        $(this).val(''); // Reset the value to default
+    //        $(this).prop('disabled', false); // Ensure dropdown is enabled
+    //    });
+
+    //    var newSlNo = highestSlNo + 1;
+    //    newRow.find("td:eq(1)").text(newSlNo);
+
+    //    // Update dropdown IDs to be unique (optional if you use ID-based targeting)
+    //    newRow.find('span.select2').remove();
+
+    //    // Reset the dropdowns and reinitialize Select2
+    //    newRow.find('select').each(function () {
+    //        $(this).val(''); // Clear the value
+    //        $(this).select2(); // Reinitialize Select2 on the cloned select
+    //    });
+
+    //    newRow.find('input[type="date"]').each(function () {
+    //        $(this).datepicker("destroy"); // Destroy existing datepicker instance if it exists
+    //        $(this).datepicker(); // Reinitialize datepicker
+    //    });
+
+    //    // Update IDs for the new row if needed
+    //    newRow.find('select, input').each(function () {
+    //        var oldId = $(this).attr('id');
+    //        if (oldId) {
+    //            var newId = oldId + '_row_' + new Date().getTime(); // Ensure unique ID
+    //            $(this).attr('id', newId);
+    //        }
+    //    });
+
+    //    // Insert the new row
+    //    newRow.insertAfter(currentRow);
+
+    //    newRow.find('select').each(function () {
+    //        $(this).select2({
+    //            placeholder: "Select an option", // Optional
+    //            allowClear: true // Optional
+    //        }).prop("disabled", false); // Enable the dropdown
+    //    });
+    //}
+
+    function addRow(button) {
+        debugger;
+        var currentRow = $(button).closest('tr'); // Get the current row
+        var newRow = currentRow.clone(); // Clone the current row
+
+        // Clear input fields and reset dropdowns in the cloned row
+        newRow.find('input[type="text"]').val('');
+        newRow.find('input[type="date"]').val('');
+        newRow.find('input[type="checkbox"]').prop('checked', false);
+        newRow.find('select').val('').prop('disabled', false);
+        newRow.find('span.select2').remove(); // Remove Select2 spans from cloned row
+
+        // Dynamically calculate the highest SlNo
+        var highestSlNo = 0;
         $("#HrmsHrdGrid tbody tr").each(function () {
-            var rowAllotmentNo = $(this).find("td:eq(2)").text().trim();
-            if (rowAllotmentNo === allotmentNo) {
-                var slNoText = $(this).find("td:eq(1)").text().trim(); // Get SLNo
-                var slNo = parseInt(slNoText, 10);
-                if (!isNaN(slNo) && slNo > highestSlNo) {
-                    highestSlNo = slNo;
-                }
+            var slNoText = $(this).find("td:eq(1) input").val(); // Fetch SlNo value from input
+            var slNo = parseInt(slNoText, 10); // Convert to integer
+            if (!isNaN(slNo) && slNo > highestSlNo) {
+                highestSlNo = slNo; // Update highest SlNo found
             }
         });
 
-        newRow.find('select.vendorSelect').each(function () {
-            $(this).val(''); // Reset the value to default
-            $(this).prop('disabled', false); // Ensure dropdown is enabled
-        });
+        // Increment the highest SlNo for the new row
+        var nextSlNo = highestSlNo + 1;
+        newRow.find("td:eq(1) input").val(nextSlNo); // Update SlNo in the new row
 
-        var newSlNo = highestSlNo + 1;
-        newRow.find("td:eq(1)").text(newSlNo);
-
-        // Update dropdown IDs to be unique (optional if you use ID-based targeting)
-        newRow.find('span.select2').remove();
-
-        // Reset the dropdowns and reinitialize Select2
+        // Reinitialize dropdowns (if using Select2)
         newRow.find('select').each(function () {
-            $(this).val(''); // Clear the value
-            $(this).select2(); // Reinitialize Select2 on the cloned select
-        });
-
-        newRow.find('input[type="date"]').each(function () {
-            $(this).datepicker("destroy"); // Destroy existing datepicker instance if it exists
-            $(this).datepicker(); // Reinitialize datepicker
-        });
-
-        // Update IDs for the new row if needed
-        newRow.find('select, input').each(function () {
-            var oldId = $(this).attr('id');
-            if (oldId) {
-                var newId = oldId + '_row_' + new Date().getTime(); // Ensure unique ID
-                $(this).attr('id', newId);
-            }
-        });
-
-        // Insert the new row
-        newRow.insertAfter(currentRow);
-
-        newRow.find('select').each(function () {
+            $(this).val('');
             $(this).select2({
-                placeholder: "Select an option", // Optional
-                allowClear: true // Optional
-            }).prop("disabled", false); // Enable the dropdown
+                placeholder: "Select an option",
+                allowClear: true
+            });
         });
+
+        // Initialize datepickers for the new row
+        newRow.find('input[type="date"]').each(function () {
+            $(this).removeClass('hasDatepicker').removeAttr('id'); // Ensure unique ID
+            $(this).datepicker(); // Initialize datepicker
+        });
+
+        // Insert the new row after the current one
+        newRow.insertAfter(currentRow);
     }
 
     function removeRow(button) {
@@ -472,13 +477,13 @@
 
                                         <th>Quarter No</th>
                                         @*<th style="display: none;">SNo</th>*@
-                                        <th >SNo</th>
+                                        <th>SNo</th>
                                         <th>Allotment No</th>
                                         <th>Vendor Name</th>
                                         <th>Occupany Date</th>
+                                        <th>Actual Occ Date</th>
                                         <th>Vacancy Date</th>
-                                        <th>Rent From date</th>
-                                        <th style="display: none;">No of days</th>
+                                        <th>No of beds</th>
                                         <th style="display: none;">Rate</th>
                                         <th style="display: none;">Amt</th>
                                         <th>Occupant</th>
@@ -494,7 +499,7 @@
                                     <tr id="tr_@(item.UnitCode)_@(item.AllotmentNo)_@(item.SlNo)" data-ischange="0" style="@(!string.IsNullOrEmpty(item.RentType) ? "background-color:#e1ad01;" : "")">
                                         <td>@Html.DisplayFor(modelItem => item.QuarterCategory)-@Html.DisplayFor(modelItem => item.QuarterNo)</td>
 
-                                        <td >
+                                        <td>
                                             <input type="text" class="form-control" value="@Html.DisplayFor(modelItem => item.SlNo)" readonly />
                                         </td>
 
@@ -505,9 +510,10 @@
 
 
                                         @if (!string.IsNullOrEmpty(item.VendorCode))
-                                            {<td>
+                                        {
+                                            <td>
                                                 <select id="VendorTypeLOV_@(item.UnitCode)_@(item.AllotmentNo)_@(item.SlNo)" class="form-control vendorSelect">
-                                                    
+
                                                     @foreach (var vendor in Model.VendorLOVBind)
                                                     {
                                                         <option value="@item.VendorCode">@vendor.Text</option>
@@ -526,22 +532,24 @@
                                                     }
                                                 </select>
                                             </td>
-}
+                                        }
                                         @*<td>
                                     <select id="VendorTypeLOV" class="form-control" asp-items="@(new SelectList(Model.VendorLOVBind, "Value", "Text", item.VendorCode))">
                                      <option value="">--SELECT--</option>
             </select>
         </td>*@
                                         <td id="td_Rent_@(item.UnitCode)_@(item.AllotmentNo)_@(item.PersonalNo)">@Html.DisplayFor(modelItem => item.OccupancyDate)</td>
+                                        
+                                        <td>
+                                            <input type="text" class="form-control datetime" value="@item.RentFromDate?.ToString("dd/MM/yyyy").Replace("-","/")">
+                                        </td>
 
                                         <td>
                                             <input type="text" class="form-control datetime" value="@item.VacancyDate?.ToString("dd/MM/yyyy").Replace("-","/")">
                                         </td>
+
                                         <td>
-                                            <input type="text" class="form-control datetime" value="@item.RentFromDate?.ToString("dd/MM/yyyy").Replace("-","/")">
-                                        </td>
-                                        <td style="display: none;">
-                                            <input type="text" class="form-control" value="@item.NoOfDays" />
+                                            <input type="number" class="form-control" value="@item.NofBeds" />
                                         </td>
                                         <td style="display: none;">
                                             <input type="number" class="form-control">
