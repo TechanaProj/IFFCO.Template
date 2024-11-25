@@ -142,22 +142,44 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                 }
 
                 // Check if computation for the same month is already done
-                var existingComputation = _context.FAllotmentRentDtls.FirstOrDefault(m =>
-                    m.AllotmentNo == allotmentNoInt &&
-                    m.SlNo == slNo &&
-                    ((FromDate.Value >= m.RentFromDate && FromDate.Value <= m.RentToDate) ||
-                     (ToDate.Value >= m.RentFromDate && ToDate.Value <= m.RentToDate) ||
-                     (m.RentFromDate >= FromDate.Value && m.RentFromDate <= ToDate.Value) ||
-                     (m.RentToDate >= FromDate.Value && m.RentToDate <= ToDate.Value))
-                );
+
+                var existingComputation = _context.FIntCompute.FirstOrDefault(m =>
+                   m.AllotmentNo == allotmentNoInt &&
+                   m.SlNo == slNo &&
+                   ((FromDate.Value >= m.FromDate && FromDate.Value <= m.ToDate) ||
+                    (ToDate.Value >= m.FromDate && ToDate.Value <= m.ToDate) ||
+                    (m.FromDate >= FromDate.Value && m.FromDate <= ToDate.Value) ||
+                    (m.ToDate >= FromDate.Value && m.ToDate <= ToDate.Value))
+               );
 
                 if (existingComputation != null)
                 {
                     return Json(new { success = false, error = "Data is already calculated for the selected period." });
                 }
 
-                // Fetch allotment details from the database
                 var allotmentDetails = _context.FAllotmentRentDtls.FirstOrDefault(m => m.AllotmentNo == allotmentNoInt && m.SlNo == slNo);
+                DateTime currentCheckDate = new DateTime(allotmentDetails.MarketHrrFromDate.Value.Year, allotmentDetails.MarketHrrFromDate.Value.Month, 1);
+
+                while (currentCheckDate < startOfMonth)
+                {
+                    DateTime monthEnd = new DateTime(currentCheckDate.Year, currentCheckDate.Month, DateTime.DaysInMonth(currentCheckDate.Year, currentCheckDate.Month));
+
+                    var computationForMonth = _context.FIntCompute.FirstOrDefault(m =>
+                        m.AllotmentNo == allotmentNoInt &&
+                        m.SlNo == slNo &&
+                        m.FromDate == currentCheckDate &&
+                        m.ToDate == monthEnd);
+
+                    if (computationForMonth == null)
+                    {
+                        return Json(new { success = false, error = $"Calculation for {currentCheckDate:MMMM yyyy} must be completed before proceeding." });
+                    }
+
+                    // Move to the next month
+                    currentCheckDate = currentCheckDate.AddMonths(1);
+                }
+
+                
 
                 if (allotmentDetails == null)
                 {

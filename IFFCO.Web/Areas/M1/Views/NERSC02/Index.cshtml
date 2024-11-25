@@ -221,6 +221,9 @@
             allowClear: true,
             width: '100%' // Adjust width as necessary
         });
+
+        $("#queryForm").off("submit");
+
         $("#queryForm").on("submit", function (event) {
             event.preventDefault();
            

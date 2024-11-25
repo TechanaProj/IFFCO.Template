@@ -448,7 +448,7 @@ namespace IFFCO.NERRS.Web.CommonFunctions
 
         public List<SelectListItem> AllotementNoLOVBindnew()
         {
-            string sqlquery = @"SELECT  A.QUARTER_CATEGORY, A.QUARTER_NO, A.ALLOTMENT_NO,CAST(A.PERSONAL_NO AS VARCHAR(20)) AS Identifier,B.EMP_NAME AS Name, 'Employee' AS Type FROM  F_ALLOTMENT_RENT_DTLS A JOIN V_EB_EMPLOYEE_COMPLETE_DTLS B ON A.PERSONAL_NO = B.PERSONAL_NO WHERE A.Status = 'A' UNION SELECT A.QUARTER_CATEGORY, A.QUARTER_NO, A.ALLOTMENT_NO, A.VENDOR_CODE AS Identifier,C.VENDOR_NAME AS Name, 'Vendor' AS Type  FROM F_ALLOTMENT_RENT_DTLS A JOIN M_VENDOR_MSTS C ON A.VENDOR_CODE = C.VENDOR_CODE WHERE A.Status = 'A' ORDER BY ALLOTMENT_NO ASC";
+            string sqlquery = @"SELECT  A.QUARTER_CATEGORY, A.QUARTER_NO, A.ALLOTMENT_NO,CAST(A.PERSONAL_NO AS VARCHAR(20)) AS Identifier,B.EMP_NAME AS Name, CASE   WHEN A.PERSONAL_NO = '999999' THEN 'Non-Emp'  WHEN B.EMP_NAME IS NOT NULL THEN 'Employee'   ELSE 'Non-Emp'  END AS Type  FROM  F_ALLOTMENT_RENT_DTLS A LEFT JOIN V_EB_EMPLOYEE_COMPLETE_DTLS B ON A.PERSONAL_NO = B.PERSONAL_NO WHERE A.Status = 'A' UNION SELECT A.QUARTER_CATEGORY, A.QUARTER_NO, A.ALLOTMENT_NO, A.VENDOR_CODE AS Identifier,C.VENDOR_NAME AS Name, 'Vendor' AS Type  FROM F_ALLOTMENT_RENT_DTLS A JOIN M_VENDOR_MSTS C ON A.VENDOR_CODE = C.VENDOR_CODE WHERE A.Status = 'A' ORDER BY ALLOTMENT_NO ASC";
 
             DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
 
@@ -462,6 +462,21 @@ namespace IFFCO.NERRS.Web.CommonFunctions
             return DRP_VALUE;
         }
 
+        public List<SelectListItem> AllotementNoLOVBindnewall()
+        {
+            string sqlquery = @"SELECT  A.QUARTER_CATEGORY, A.QUARTER_NO, A.ALLOTMENT_NO,CAST(A.PERSONAL_NO AS VARCHAR(20)) AS Identifier,B.EMP_NAME AS Name, 'Employee' AS Type FROM  F_ALLOTMENT_RENT_DTLS A JOIN V_EB_EMPLOYEE_COMPLETE_DTLS B ON A.PERSONAL_NO = B.PERSONAL_NO  UNION SELECT A.QUARTER_CATEGORY, A.QUARTER_NO, A.ALLOTMENT_NO, A.VENDOR_CODE AS Identifier,C.VENDOR_NAME AS Name, 'Vendor' AS Type  FROM F_ALLOTMENT_RENT_DTLS A JOIN M_VENDOR_MSTS C ON A.VENDOR_CODE = C.VENDOR_CODE  ORDER BY ALLOTMENT_NO ASC";
+
+            DataTable dtDRP_VALUE = _context.GetSQLQuery(sqlquery);
+
+            List<SelectListItem> DRP_VALUE = (from DataRow dr in dtDRP_VALUE.Rows
+                                              select new SelectListItem()
+                                              {
+                                                  Text = $"{Convert.ToString(dr["Type"])}: {Convert.ToString(dr["Name"])} | {Convert.ToString(dr["QUARTER_CATEGORY"])} - {Convert.ToString(dr["QUARTER_NO"])} | {Convert.ToString(dr["ALLOTMENT_NO"])}",
+                                                  Value = Convert.ToString(dr["ALLOTMENT_NO"])
+                                              }).ToList();
+
+            return DRP_VALUE;
+        }
 
 
         //public List<SelectListItem> AllotementNoLOVBind()

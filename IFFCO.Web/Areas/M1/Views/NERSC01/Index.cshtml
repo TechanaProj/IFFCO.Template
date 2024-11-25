@@ -255,7 +255,7 @@
 
                     if (isChecked && occupantType && rentType) {
                         hasValidData = true;
-                        formData.append('nERSC03ViewModel.listVwAonlaDeathCaseAllotStatus[' + cnt + '].SlNo', slno);
+                        formData.append('nERSC01ViewModel.listVwAonlaDeathCaseAllotStatus[' + cnt + '].SlNo', slno);
                         formData.append('nERSC01ViewModel.listVwAonlaDeathCaseAllotStatus[' + cnt + '].AllotmentNo', row.find("td:eq(4)").text().trim());
                         formData.append('nERSC01ViewModel.listVwAonlaDeathCaseAllotStatus[' + cnt + '].OccupancyDate_Text', occupancyDateText);
                         formData.append('nERSC01ViewModel.listVwAonlaDeathCaseAllotStatus[' + cnt + '].VacancyDate_Text', vacancyDateText);

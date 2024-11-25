@@ -68,7 +68,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                 { CommonViewModel.AllotmentNo = null; }
             else
             { CommonViewModel.AllotmentNo = AllotmentNo; }
-            var ApplicantLov = dropDownListBindWeb.AllotementNoLOVBindnew();
+            var ApplicantLov = dropDownListBindWeb.AllotementNoLOVBindnewall();
             CommonViewModel.AllotementNoLOVBind = ApplicantLov ?? new List<SelectListItem>();
             CommonViewModel.PlantCD = PlantCD;
            

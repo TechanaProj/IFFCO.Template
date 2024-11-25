@@ -228,10 +228,10 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                     y.PersonalNo = Convert.ToInt32(x.PersonalNo);
                                     y.QuarterCategory = x.QuarterCategory;
                                     y.QuarterNo = Convert.ToInt32(x.QuarterNo);
-                                    y.OccupantCode = value.OccupantType;
-                                    y.RentCode = value.RentType;
-                                    y.MarketHrrFromDate = (DateTime)value.MarketHrrFromDate;
-                                    y.RentFromDate =  (DateTime)value.MarketHrrFromDate;
+                                    //y.OccupantCode = value.OccupantType;
+                                    //y.RentCode = value.RentType;
+                                    //y.MarketHrrFromDate = (DateTime)value.MarketHrrFromDate;
+                                    //y.RentFromDate =  (DateTime)value.MarketHrrFromDate;
                                     y.VacancyDate = string.IsNullOrEmpty(value.VacancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.VacancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture);
                                     y.MonthDayType = (filteredRows != null && filteredRows.Length > 0 ? Convert.ToString(filteredRows[0]["MONTH_DAY_TYPE"]) : "");
                                     y.ModifiedBy = personnelNumber;
@@ -350,10 +350,10 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                     y.PersonalNo = Convert.ToInt32(x.PersonalNo);
                                     y.QuarterCategory = x.QuarterCategory;
                                     y.QuarterNo = Convert.ToInt32(x.QuarterNo);
-                                    y.OccupantCode = value.OccupantType;
-                                    y.RentCode = value.RentType;
-                                    y.MarketHrrFromDate = (DateTime)value.MarketHrrFromDate;
-                                    y.RentFromDate = (DateTime)value.MarketHrrFromDate;
+                                    //y.OccupantCode = value.OccupantType;
+                                    //y.RentCode = value.RentType;
+                                    //y.MarketHrrFromDate = (DateTime)value.MarketHrrFromDate;
+                                    //y.RentFromDate = (DateTime)value.MarketHrrFromDate;
                                     y.VacancyDate = string.IsNullOrEmpty(value.VacancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.VacancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture);
                                     y.MonthDayType = (filteredRows != null && filteredRows.Length > 0 ? Convert.ToString(filteredRows[0]["MONTH_DAY_TYPE"]) : "");
                                     y.ModifiedBy = personnelNumber;
@@ -468,10 +468,10 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                     y.PersonalNo = Convert.ToInt32(x.PersonalNo);
                                     y.QuarterCategory = x.QuarterCategory;
                                     y.QuarterNo = Convert.ToInt32(x.QuarterNo);
-                                    y.OccupantCode = value.OccupantType;
-                                    y.MarketHrrFromDate = (DateTime)value.MarketHrrFromDate;
-                                    y.RentFromDate = (DateTime)value.MarketHrrFromDate;
-                                    y.RentCode = value.RentType;
+                                    //y.OccupantCode = value.OccupantType;
+                                   // y.MarketHrrFromDate = (DateTime)value.MarketHrrFromDate;
+                                    //y.RentFromDate = (DateTime)value.MarketHrrFromDate;
+                                   // y.RentCode = value.RentType;
                                     y.VacancyDate = string.IsNullOrEmpty(value.VacancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.VacancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture);
                                     y.MonthDayType = (filteredRows != null && filteredRows.Length > 0 ? Convert.ToString(filteredRows[0]["MONTH_DAY_TYPE"]) : "");
                                     y.ModifiedBy = personnelNumber;
@@ -625,7 +625,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                         UnitCode = Convert.ToInt32(nERSC01ViewModel.PlantCD),
                                         //AllotmentNo = x.AllotmentNo,
                                         AllotmentNo = alt,
-                                        PersonalNo = Convert.ToInt32("123456"),
+                                        PersonalNo = Convert.ToInt32("999999"),
                                         QuarterCategory = xy.QuarterCategory,
                                         QuarterNo = Convert.ToInt32(xy.QuarterNo),
                                         AllotmentDate = (DateTime)xy.ApprovedDate,
