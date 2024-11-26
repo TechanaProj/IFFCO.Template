@@ -273,12 +273,14 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                 CommonViewModel.IsAlertBox = true;
                 CommonViewModel.AreaName = this.ControllerContext.RouteData.Values["area"].ToString();
                 CommonViewModel.SelectedMenu = this.ControllerContext.RouteData.Values["controller"].ToString();
+                CommonViewModel.SelectedAction = "Index";
             }
             catch (Exception ex)
             {
                 commonException.GetCommonExcepton(CommonViewModel, ex);
                 CommonViewModel.AreaName = this.ControllerContext.RouteData.Values["area"].ToString();
                 CommonViewModel.SelectedMenu = this.ControllerContext.RouteData.Values["controller"].ToString();
+                
                 return Json(CommonViewModel);
             }
 

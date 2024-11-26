@@ -142,9 +142,32 @@
                 contentType: false,
                 processData: false,
                 success: function (response) {
-                    $(".modalLoader").hide();
-                    CommonAlert("Success", response.message, SubmitPopup, '/M1/NERSC03/Index', "success");
+                    debugger;
+                    var plantCD = $('#PlantCD').val(); // Get selected value of PlantCD dropdown
+                    var occupantType = $('#OccupantList').val(); // Get selected value of OccupantType dropdown
+                    var occupantCode = $('#OccupantCode').val(); // Get selected value of OccupantCode dropdown
+
+                    // Construct the URL with query parameters
+                    var url = window.location.origin + "/" + response.areaName + "/" + response.selectedMenu + "/" + response.selectedAction + "?PlantCD=" + plantCD + "&OccupantList=" + occupantType + "&OccupantCode=" + occupantCode;
+                    GetIndex(url);
+                    //if (response.isAlertBox) {
+                    //    if (response.errorMessage != "") {
+                    //        CommonAlert(response.alert, response.message, SubmitPopup, '/M1/NERSC01/Index', "error");
+                    //    } else {
+                    //        CommonAlert(response.alert, response.message, SubmitPopup, '/M1/NERSC01/Index', "alert", "create");
+                    //    }
+                    //} else {
+                    //    $(".modalLoader").show();
+                    //    GetIndex(url);
+                    //}
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Saved Successfully',
+                        showConfirmationButton: true,
+                        width: '500px'
+                    })
                 },
+                
                 error: function () {
                     $(".modalLoader").css("display", "none");
                     CommonAlert("Error", "An error occurred while saving data. Please try again.", null, null, "error");

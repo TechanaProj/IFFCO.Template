@@ -81,6 +81,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
             CommonViewModel.PlantCD = PlantCD;
             CommonViewModel.OccupantCode = OccupantCode;
             CommonViewModel.OccupantType = OccupantType;
+            CommonViewModel.Occupant = OccupantType;
 
             return View(CommonViewModel);
         }
@@ -682,6 +683,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                 CommonViewModel.IsAlertBox = true;
                 CommonViewModel.AreaName = this.ControllerContext.RouteData.Values["area"].ToString();
                 CommonViewModel.SelectedMenu = this.ControllerContext.RouteData.Values["controller"].ToString();
+                CommonViewModel.SelectedAction = "Index";
             }
             catch (Exception ex)
             {
