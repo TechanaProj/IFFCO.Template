@@ -5,6 +5,11 @@
     //Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <script src="~/js/Common.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
+
 
 <script>
     function fnGet_Data() {
@@ -295,14 +300,14 @@
     //    // Clear text inputs, date inputs, and reset dropdowns
     //    newRow.find('input[type="text"]').val('');
     //    newRow.find('input[type="date"]').val('');
-    //    newRow.find('select').val('').prop('disabled', null); 
+    //    newRow.find('select').val('').prop('disabled', null);
     //    newRow.find('input[type="checkbox"]').prop('checked', false);
     //    newRow.find('select').val('').prop('disabled', false);
     //    newRow.find('span.select2').remove(); // Remove Select2 spans from cloned row`
 
-        
+
     //     Update the SNo (or other relevant columns)
-    //    var allotmentNo = currentRow.find("td:eq(2)").text().trim(); 
+    //    var allotmentNo = currentRow.find("td:eq(2)").text().trim();
     //    var highestSlNo = 0; // Default SLNo if not found
 
     //     Calculate the new SNo
@@ -441,7 +446,7 @@
                                                 <div class="col-sm-2 col-md-2">
                                                     <select id="PlantCD" name="PlantCD" class="form-control" asp-items="@(new SelectList(Model.UnitLOVBind, "Value", "Text", Model.PlantCD))"></select>
                                                 </div>
-                                               
+
                                                 <div class="col-sm-2 col-md-2">
                                                     <label class="m-lbl1 m-lbl2">Quarter List</label>
                                                 </div>
@@ -456,7 +461,7 @@
                                             <button type="button" id="save" onclick="fnGet_Data()" class="m-btn-1 btn-success">Fetch Rent details</button>
                                             <input type="reset" id="save" class="m-btn-1 btn-warning" value="Reset" />
                                         </div>
-                                        </div>
+                                    </div>
                                 </form>
                             </div>
                         </div>
@@ -466,9 +471,9 @@
                     <div class="tableUp">
                         <div class="pd-form-area">
                             <div class="btn-area-tbl">
-                               
-                               @* <button type="button" class="btn btn-primary" onclick="addRow()">Add Row</button>*@
-                               
+
+                                @* <button type="button" class="btn btn-primary" onclick="addRow()">Add Row</button>*@
+
 
                             </div>
                             <table class="table table-striped table-hover" id="HrmsHrdGrid">
@@ -511,35 +516,35 @@
 
                                         @if (!string.IsNullOrEmpty(item.VendorCode))
                                         {
-                                            <td>
-                                                <select id="VendorTypeLOV_@(item.UnitCode)_@(item.AllotmentNo)_@(item.SlNo)" class="form-control vendorSelect">
+                                        <td>
+                                            <select id="VendorTypeLOV_@(item.UnitCode)_@(item.AllotmentNo)_@(item.SlNo)" class="form-control vendorSelect">
 
-                                                    @foreach (var vendor in Model.VendorLOVBind)
+                                                @foreach (var vendor in Model.VendorLOVBind)
                                                     {
-                                                        <option value="@item.VendorCode">@vendor.Text</option>
+                                                <option value="@item.VendorCode">@vendor.Text</option>
                                                     }
-                                                </select>
-                                            </td>
+                                            </select>
+                                        </td>
                                         }
                                         else
                                         {
-                                            <td>
-                                                <select id="VendorTypeLOV_@(item.UnitCode)_@(item.AllotmentNo)_@(item.SlNo)" class="form-control vendorSelect">
-                                                    <option value="">--SELECT--</option>
-                                                    @foreach (var vendor in Model.VendorLOVBind)
+                                        <td>
+                                            <select id="VendorTypeLOV_@(item.UnitCode)_@(item.AllotmentNo)_@(item.SlNo)" class="form-control vendorSelect">
+                                                <option value="">--SELECT--</option>
+                                                @foreach (var vendor in Model.VendorLOVBind)
                                                     {
-                                                        <option value="@vendor.Value">@vendor.Text</option>
+                                                <option value="@vendor.Value">@vendor.Text</option>
                                                     }
-                                                </select>
-                                            </td>
+                                            </select>
+                                        </td>
                                         }
                                         @*<td>
-                                    <select id="VendorTypeLOV" class="form-control" asp-items="@(new SelectList(Model.VendorLOVBind, "Value", "Text", item.VendorCode))">
-                                     <option value="">--SELECT--</option>
-            </select>
-        </td>*@
+                                                                        <select id="VendorTypeLOV" class="form-control" asp-items="@(new SelectList(Model.VendorLOVBind, "Value", "Text", item.VendorCode))">
+                                                                         <option value="">--SELECT--</option>
+                                                </select>
+                                            </td>*@
                                         <td id="td_Rent_@(item.UnitCode)_@(item.AllotmentNo)_@(item.PersonalNo)">@Html.DisplayFor(modelItem => item.OccupancyDate)</td>
-                                        
+
                                         <td>
                                             <input type="text" class="form-control datetime" value="@item.RentFromDate?.ToString("dd/MM/yyyy").Replace("-","/")">
                                         </td>
@@ -562,21 +567,21 @@
                                             <select id="OccupantTypeLOV" class="form-control" asp-items="@(new SelectList(Model.ShutDownOccupantLOVBind, "Value", "Text", Model.OccupantCode))">
 
                                                 @*<select id="OccupantTypeLOV" class="form-control" disabled>
-                <option value="1010">ShutDown</option>*@
+                                                    <option value="1010">ShutDown</option>*@
                                             </select>
                                         </td>
                                         <td>
                                             @if (!string.IsNullOrEmpty(item.RentType))
                                             {
-                                                <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.ShutDownRentTypeLOVBind, "Value", "Text", item.RentType))" disabled>
-                                                    <option value="">--SELECT--</option>
-                                                </select>
+                                            <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.ShutDownRentTypeLOVBind, "Value", "Text", item.RentType))" disabled>
+                                                <option value="">--SELECT--</option>
+                                            </select>
                                             }
                                             else
                                             {
-                                                <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.ShutDownRentTypeLOVBind, "Value", "Text", item.RentType))">
-                                                    <option value="">--SELECT--</option>
-                                                </select>
+                                            <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.ShutDownRentTypeLOVBind, "Value", "Text", item.RentType))">
+                                                <option value="">--SELECT--</option>
+                                            </select>
                                             }
                                         </td>
 
