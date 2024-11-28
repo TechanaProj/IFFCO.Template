@@ -224,7 +224,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                     QuarterCategory = xy.QuarterCategory,
                                     QuarterNo = Convert.ToInt32(xy.QuarterNo),
                                     AllotmentDate = (DateTime)xy.ApprovedDate,
-                                    NoOfBeds = value.NofBeds,
+                                    NoOfBeds = value.NofBeds > 0 ? value.NofBeds : 1,
                                     VacancyDate = string.IsNullOrEmpty(value.VacancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.VacancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture),
                                     MarketHrrFromDate = string.IsNullOrEmpty(value.OccupancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.OccupancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture),
                                     RentFromDate = string.IsNullOrEmpty(value.OccupancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.OccupancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture),

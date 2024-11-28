@@ -389,19 +389,19 @@ namespace IFFCO.NERRS.Web.CommonFunctions
             sqlquery += "A.VENDOR_CODE, MAX(V.VENDOR_NAME) AS VENDOR_NAME, O.OCCUPANT_TYPE, A.DAYS_REMAINING, ";
             sqlquery += "A.COMPUTATION_RUN, A.FROM_DATE, A.TO_DATE, A.NXT_FROM_DATE, A.NXT_TO_DATE, ";
             sqlquery += "A.MONTH_DAY_TYPE, A.ELECT_RATE, A.ELECT_UNIT, A.ELECT_AMT, A.CURRENT_COMPUTE_AMOUNT, ";
-            sqlquery += "A.DAYS_COMPUTED, A.RENT_RATE ";
+            sqlquery += "A.DAYS_COMPUTED, A.RENT_RATE,A.ACTUAL_FROM_DATE ";
             sqlquery += "FROM F_INT_COMPUTE A ";
             sqlquery += "LEFT JOIN M_OCCUPANT_MSTS O ON A.OCCUPANT_CODE = O.OCCUPANT_CODE ";
             sqlquery += "LEFT JOIN M_RENT_MSTS R ON A.RENT_CODE = R.RENT_CODE ";
             sqlquery += "LEFT JOIN V_EB_EMPLOYEE_COMPLETE_DTLS EMP ON A.PERSONAL_NO = EMP.PERSONAL_NO ";
             sqlquery += "LEFT JOIN M_VENDOR_MSTS V ON A.VENDOR_CODE = V.VENDOR_CODE ";
-            sqlquery += "AND A.UNIT_CODE = '" + PlantCD + "' AND A.FROM_DATE =  '" + FromDate.ToString("dd/MMM/yyyy") + "' AND A.TO_DATE =  '" + ToDate.ToString("dd/MMM/yyyy") + "'  ";
+            sqlquery += "WHERE A.UNIT_CODE = '" + PlantCD + "' AND A.ACTUAL_FROM_DATE =  '" + FromDate.ToString("dd/MMM/yyyy") + "' AND A.TO_DATE =  '" + ToDate.ToString("dd/MMM/yyyy") + "'  ";
             sqlquery += "GROUP BY ";
             sqlquery += "A.UNIT_CODE, A.QUARTER_CATEGORY, A.QUARTER_NO, A.SL_NO, EMP.EMP_NAME, A.ALLOTMENT_NO, ";
             sqlquery += "A.ALLOTMENT_DATE, A.OCCUPANCY_DATE, A.VACANCY_DATE, A.TOTAL_AMT, R.TYPE_RESI_ACCOM,R.RATES, ";
             sqlquery += "A.VENDOR_CODE, O.OCCUPANT_TYPE, A.DAYS_REMAINING, A.COMPUTATION_RUN, A.FROM_DATE, ";
             sqlquery += "A.TO_DATE, A.NXT_FROM_DATE, A.NXT_TO_DATE, A.MONTH_DAY_TYPE, A.ELECT_RATE, ";
-            sqlquery += "A.ELECT_UNIT, A.ELECT_AMT, A.CURRENT_COMPUTE_AMOUNT, A.DAYS_COMPUTED, A.RENT_RATE ";
+            sqlquery += "A.ELECT_UNIT, A.ELECT_AMT, A.CURRENT_COMPUTE_AMOUNT, A.DAYS_COMPUTED, A.RENT_RATE,A.ACTUAL_FROM_DATE ";
             sqlquery += " ORDER BY A.COMPUTATION_RUN DESC ";
 
 
@@ -425,7 +425,7 @@ namespace IFFCO.NERRS.Web.CommonFunctions
                              AllotmentDate = Convert.ToDateTime(dr["ALLOTMENT_DATE"]),
                              ToDate = Convert.ToDateTime(dr["TO_DATE"]),
                              FromDate = Convert.ToDateTime(dr["FROM_DATE"]),
-                         
+                             ActualFromDate = string.IsNullOrEmpty(Convert.ToString(dr["ACTUAL_FROM_DATE"])) ? vacay : Convert.ToDateTime(Convert.ToString(dr["ACTUAL_FROM_DATE"])),
                              OccupancyDate = string.IsNullOrEmpty(Convert.ToString(dr["OCCUPANCY_DATE"])) ? vacay : Convert.ToDateTime(Convert.ToString(dr["OCCUPANCY_DATE"])),
                              VacancyDate = string.IsNullOrEmpty(Convert.ToString(dr["VACANCY_DATE"])) ? vacay : Convert.ToDateTime(Convert.ToString(dr["VACANCY_DATE"])),
                              RentCode = Convert.ToString(dr["RATES"]),
@@ -451,7 +451,7 @@ namespace IFFCO.NERRS.Web.CommonFunctions
             sqlquery += "A.VENDOR_CODE, MAX(V.VENDOR_NAME) AS VENDOR_NAME, O.OCCUPANT_TYPE, A.DAYS_REMAINING, ";
             sqlquery += "A.COMPUTATION_RUN, A.FROM_DATE, A.TO_DATE, A.NXT_FROM_DATE, A.NXT_TO_DATE, ";
             sqlquery += "A.MONTH_DAY_TYPE, A.ELECT_RATE, A.ELECT_UNIT, A.ELECT_AMT, A.CURRENT_COMPUTE_AMOUNT, ";
-            sqlquery += "A.DAYS_COMPUTED, A.RENT_RATE ";
+            sqlquery += "A.DAYS_COMPUTED, A.RENT_RATE,A.ACTUAL_FROM_DATE ";
             sqlquery += "FROM F_INT_COMPUTE A ";
             sqlquery += "LEFT JOIN M_OCCUPANT_MSTS O ON A.OCCUPANT_CODE = O.OCCUPANT_CODE ";
             sqlquery += "LEFT JOIN M_RENT_MSTS R ON A.RENT_CODE = R.RENT_CODE ";
@@ -463,7 +463,7 @@ namespace IFFCO.NERRS.Web.CommonFunctions
             sqlquery += "A.ALLOTMENT_DATE, A.OCCUPANCY_DATE, A.VACANCY_DATE, A.TOTAL_AMT, R.TYPE_RESI_ACCOM,R.RATES, ";
             sqlquery += "A.VENDOR_CODE, O.OCCUPANT_TYPE, A.DAYS_REMAINING, A.COMPUTATION_RUN, A.FROM_DATE, ";
             sqlquery += "A.TO_DATE, A.NXT_FROM_DATE, A.NXT_TO_DATE, A.MONTH_DAY_TYPE, A.ELECT_RATE, ";
-            sqlquery += "A.ELECT_UNIT, A.ELECT_AMT, A.CURRENT_COMPUTE_AMOUNT, A.DAYS_COMPUTED, A.RENT_RATE ";
+            sqlquery += "A.ELECT_UNIT, A.ELECT_AMT, A.CURRENT_COMPUTE_AMOUNT, A.DAYS_COMPUTED, A.RENT_RATE,A.ACTUAL_FROM_DATE ";
             sqlquery += " ORDER BY A.COMPUTATION_RUN DESC ";
 
 
@@ -487,7 +487,7 @@ namespace IFFCO.NERRS.Web.CommonFunctions
                              AllotmentDate = Convert.ToDateTime(dr["ALLOTMENT_DATE"]),
                              ToDate = Convert.ToDateTime(dr["TO_DATE"]),
                              FromDate = Convert.ToDateTime(dr["FROM_DATE"]),
-
+                             ActualFromDate = string.IsNullOrEmpty(Convert.ToString(dr["ACTUAL_FROM_DATE"])) ? vacay : Convert.ToDateTime(Convert.ToString(dr["ACTUAL_FROM_DATE"])),
                              OccupancyDate = string.IsNullOrEmpty(Convert.ToString(dr["OCCUPANCY_DATE"])) ? vacay : Convert.ToDateTime(Convert.ToString(dr["OCCUPANCY_DATE"])),
                              VacancyDate = string.IsNullOrEmpty(Convert.ToString(dr["VACANCY_DATE"])) ? vacay : Convert.ToDateTime(Convert.ToString(dr["VACANCY_DATE"])),
                              RentCode = Convert.ToString(dr["RATES"]),

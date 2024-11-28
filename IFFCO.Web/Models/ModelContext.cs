@@ -945,15 +945,20 @@ namespace IFFCO.NERRS.Web.Models
 
                 entity.Property(e => e.ComputationRun).HasColumnName("COMPUTATION_RUN");
 
-                entity.Property(e => e.AllotmentDate)
-                    .HasColumnName("ALLOTMENT_DATE")
+                entity.Property(e => e.ActualFromDate)
+                    .HasColumnName("ACTUAL_FROM_DATE")
                     .HasColumnType("date");
+
+                entity.Property(e => e.AllotmentDate)
+                   .HasColumnName("ALLOTMENT_DATE")
+                   .HasColumnType("date");
 
                 entity.Property(e => e.CreatedBy)
                     .IsRequired()
                     .HasColumnName("CREATED_BY")
                     .HasColumnType("varchar2")
                     .HasMaxLength(30);
+                
 
                 entity.Property(e => e.CurrentComputeAmount).HasColumnName("CURRENT_COMPUTE_AMOUNT");
 

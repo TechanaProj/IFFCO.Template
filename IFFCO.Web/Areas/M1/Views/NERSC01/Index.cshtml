@@ -295,7 +295,7 @@
                         var occupantCode = $('#OccupantCode').val(); // Get selected value of OccupantCode dropdown
 
                         // Construct the URL with query parameters
-                        var url = window.location.origin + "/" + response.areaName + "/" + response.selectedMenu + "/" + response.selectedAction + "?PlantCD=" + plantCD + "&OccupantList=" + occupantType + "&OccupantCode=" + occupantCode;
+                        var url = window.location.origin + '@Url.Content("~")'+ "/" + response.areaName + "/" + response.selectedMenu + "/" + response.selectedAction + "?PlantCD=" + plantCD + "&OccupantList=" + occupantType + "&OccupantCode=" + occupantCode;
                         GetIndex(url);
                         //if (response.isAlertBox) {
                         //    if (response.errorMessage != "") {
@@ -357,7 +357,7 @@
     var currentAllotmentNo = null;
     function addRow(button) {
         debugger;
-        
+
         var currentRow = $(button).closest('tr');
         var newRow = currentRow.clone();
 
@@ -405,13 +405,13 @@
         var nextSlNo = highestSlNo + 1;
         newRow.find("td:eq(0) input").val(nextSlNo); // Update SlNo in the new row
 
-       
+
 
         newRow.insertAfter(currentRow);
     }
 
     function removeRow(button) {
-       
+
         var row = $(button).closest('tr');
         if (row.index() === 0) {
             alert("The original row cannot be deleted.");

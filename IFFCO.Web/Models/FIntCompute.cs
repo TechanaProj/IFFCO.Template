@@ -42,5 +42,6 @@ namespace IFFCO.NERRS.Web.Models
         public decimal? ElectUnit { get; set; }
         public decimal? ElectAmt { get; set; }
         public decimal? CurrentComputeAmount { get; set; }
+        public DateTime? ActualFromDate { get; set; }
     }
 }

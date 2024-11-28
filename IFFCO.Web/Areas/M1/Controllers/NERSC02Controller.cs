@@ -143,14 +143,14 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
 
                 // Check if computation for the same month is already done
 
-                var existingComputation = _context.FIntCompute.FirstOrDefault(m =>
+                var existingComputation = _context.FIntCompute.Where(m =>
                    m.AllotmentNo == allotmentNoInt &&
                    m.SlNo == slNo &&
                    ((FromDate.Value >= m.FromDate && FromDate.Value <= m.ToDate) ||
                     (ToDate.Value >= m.FromDate && ToDate.Value <= m.ToDate) ||
                     (m.FromDate >= FromDate.Value && m.FromDate <= ToDate.Value) ||
                     (m.ToDate >= FromDate.Value && m.ToDate <= ToDate.Value))
-               );
+               ).OrderByDescending(m=>m.ComputationRun).FirstOrDefault();
 
                 if (existingComputation != null)
                 {
@@ -167,7 +167,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                     var computationForMonth = _context.FIntCompute.FirstOrDefault(m =>
                         m.AllotmentNo == allotmentNoInt &&
                         m.SlNo == slNo &&
-                        m.FromDate == currentCheckDate &&
+                        m.ActualFromDate == currentCheckDate &&
                         m.ToDate == monthEnd);
 
                     if (computationForMonth == null)

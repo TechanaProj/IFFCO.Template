@@ -148,7 +148,7 @@
                     var occupantCode = $('#OccupantCode').val(); // Get selected value of OccupantCode dropdown
 
                     // Construct the URL with query parameters
-                    var url = window.location.origin + "/" + response.areaName + "/" + response.selectedMenu + "/" + response.selectedAction + "?PlantCD=" + plantCD + "&OccupantList=" + occupantType + "&OccupantCode=" + occupantCode;
+                    var url = window.location.origin +'@Url.Content("~")' + "/" + response.areaName + "/" + response.selectedMenu + "/" + response.selectedAction + "?PlantCD=" + plantCD + "&OccupantList=" + occupantType + "&OccupantCode=" + occupantCode;
                     GetIndex(url);
                     //if (response.isAlertBox) {
                     //    if (response.errorMessage != "") {
@@ -167,7 +167,7 @@
                         width: '500px'
                     })
                 },
-                
+
                 error: function () {
                     $(".modalLoader").css("display", "none");
                     CommonAlert("Error", "An error occurred while saving data. Please try again.", null, null, "error");
