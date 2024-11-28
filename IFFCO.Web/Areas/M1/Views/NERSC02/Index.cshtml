@@ -8,6 +8,8 @@
 @*<script src="~/js/Common.js"></script>*@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
     #sendMailButton {
@@ -75,16 +77,16 @@
 
                                                 <br />
                                                 @*
-                                <div class="col-sm-2 col-md-1">
-                                <label class="m-lbl1 m-lbl2">Monthly/Daily</label>
-                                </div>
-                                <div class="col-sm-2 col-md-2">
-                                <select class="form-control" id="timePeriod">
-                                <option value="">Select For Compute</option>
-                                <option value="M">Monthly</option>
-                                <option value="D">Daily</option>
-                                </select>
-                                </div>
+                                                    <div class="col-sm-2 col-md-1">
+                                                    <label class="m-lbl1 m-lbl2">Monthly/Daily</label>
+                                                    </div>
+                                                    <div class="col-sm-2 col-md-2">
+                                                    <select class="form-control" id="timePeriod">
+                                                    <option value="">Select For Compute</option>
+                                                    <option value="M">Monthly</option>
+                                                    <option value="D">Daily</option>
+                                                    </select>
+                                                    </div>
                                                 *@
 
                                             </div>
@@ -100,9 +102,9 @@
                                 </form>
                                 <div style="text-align: center;">
                                     @*  <button id="sendMailButton">
-                    <i class="fas fa-calculator" style="margin-right: 5px;"></i>
-                    Compute
-                    </button>*@
+                                        <i class="fas fa-calculator" style="margin-right: 5px;"></i>
+                                        Compute
+                                        </button>*@
 
                                 </div>
                             </div>
@@ -114,7 +116,7 @@
                                     <div class="m-form">
                                         <div class="m-form-bx">
                                             <div class="row form-sm">
-                                               <div class="col-sm-2 col-md-3">
+                                                <div class="col-sm-2 col-md-3">
                                                     <label class="m-lbl1 m-lbl2">From Date</label>
                                                 </div>
                                                 <div class="col-sm-2 col-md-2">
@@ -126,40 +128,40 @@
                                                 <div class="col-sm-2 col-md-2">
                                                     <input type="date" class="form-control" id="ToDate" name="ToDate" asp-for="ToDate" />
                                                 </div>
-                                                
+
 
                                                 <span id="rentCode1" style="display:none;"></span>
 
                                                 <br />
                                                 @*
-                                <div class="col-sm-2 col-md-1">
-                                <label class="m-lbl1 m-lbl2">Monthly/Daily</label>
-                                </div>
-                                <div class="col-sm-2 col-md-2">
-                                <select class="form-control" id="timePeriod">
-                                <option value="">Select For Compute</option>
-                                <option value="M">Monthly</option>
-                                <option value="D">Daily</option>
-                                </select>
-                                </div>
+                                                    <div class="col-sm-2 col-md-1">
+                                                    <label class="m-lbl1 m-lbl2">Monthly/Daily</label>
+                                                    </div>
+                                                    <div class="col-sm-2 col-md-2">
+                                                    <select class="form-control" id="timePeriod">
+                                                    <option value="">Select For Compute</option>
+                                                    <option value="M">Monthly</option>
+                                                    <option value="D">Daily</option>
+                                                    </select>
+                                                    </div>
                                                 *@
 
                                             </div>
                                         </div>
                                         @*<div class="btn-area1">
-                                            <input type="submit" id="save" class="m-btn-1 save" value="Query" />
+                                                <input type="submit" id="save" class="m-btn-1 save" value="Query" />
 
 
-                                        </div>*@
+                                            </div>*@
 
 
                                     </div>
                                 </form>
                                 <div style="text-align: center;">
                                     @*  <button id="sendMailButton">
-                    <i class="fas fa-calculator" style="margin-right: 5px;"></i>
-                    Compute
-                    </button>*@
+                                        <i class="fas fa-calculator" style="margin-right: 5px;"></i>
+                                        Compute
+                                        </button>*@
 
                                 </div>
                             </div>
@@ -177,7 +179,7 @@
                                         <th>QUARTER CATEGORY</th>
                                         <th>QUARTER NUMBER</th>
                                         <th>ALLOTMENT NO</th>
-                                       
+
                                         <th>ALLOTMENT DATE</th>
                                         <th>OCCUPANCY DATE</th>
                                         @*<th>EXPECTED VACANCY DATE</th>*@
@@ -203,20 +205,13 @@
 <div id="commonModalbinder" class="modal" style="display:none!important;z-index:99999999 !important;"></div>
 
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 
 
 <script>
 
     $(document).ready(function () {
-        $('#AllotmentNo').select2({
-            placeholder: 'Select an Allotment No',
-            allowClear: true,
-            width: '100%' // Adjust width as necessary
-        });
-
         $("#queryForm").off("submit");
 
         @*$("#queryForm").on("submit", function (event) {
@@ -266,14 +261,24 @@
             });
         });*@
 
-            $("#queryForm").on("submit", function (event) {
-                event.preventDefault();
+        @*$("#queryForm").on("submit", function (event) {
+            debugger;
+            event.preventDefault();
+
+            const formData = {
+                FromDate: $("#FromDate").val(),  // Assuming you have an input with id="FromDate"
+                ToDate: $("#ToDate").val(),      // Assuming you have an input with id="ToDate"
+                PlantCD: $("#PlantCD").val(),    // The Plant Code
+                AllotmentNo: $("#AllotmentNo").val()  // The Allotment Number
+            };
+
+
                 const url = '@Url.Action("Query", "NERSC02", new { area = "M1" })';
 
                  $.ajax({
                          url: url,
                          type: 'POST',
-                    data: $(this).serialize(),
+                    data: formData,
                     success: function (response) {
                         handleResponse(response);
                     },
@@ -282,7 +287,7 @@
                     }
                 });
             });
-            
+
             // Function to handle successful response
             function handleResponse(response) {
                 if (response.success) {
@@ -290,8 +295,50 @@
                 } else {
                     alert("Error: " + response.error);
                 }
+            }*@
+        $("#queryForm").on("submit", function (event) {
+            debugger;
+            event.preventDefault();
+            // Manually build the data object
+            const formData = {
+                FromDate: $("#FromDate").val(),
+                ToDate: $("#ToDate").val(),
+                PlantCD: $("#PlantCD").val(),
+                AllotmentNo_text: $("#AllotmentNo").val()
+            };
+        
+            const url = '@Url.Action("Query", "NERSC02", new { area = "M1" })';
+        
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    handleResponse(response);
+                },
+                error: function (xhr, status, error) {
+                    handleAjaxError(xhr, status, error);
+                }
+            });
+        });
+
+        // Function to handle successful response
+        function handleResponse(response) {
+            if (response.success) {
+                populateTable(response.data);
+            } else {
+                alert("Error: " + response.error);
             }
-            
+        };
+
+        $(document).ready(function () {
+            $('#AllotmentNo').select2({
+                placeholder: 'Select an Allotment No',
+                allowClear: true,
+                width: '100%' // Adjust width as necessary
+            });
+        })
+
 // Function to populate table with response data
 function populateTable(data) {
     const tableBody = $("#tableBody");

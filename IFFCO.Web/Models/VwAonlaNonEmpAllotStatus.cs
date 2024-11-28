@@ -82,9 +82,10 @@ namespace IFFCO.NERRS.Web.Models
         [NotMapped]
 
         public int SlNo { get; set; }
-        [NotMapped]
 
+        [NotMapped]
         public string VendorCode { get; set; }
+
         [NotMapped]
         public DateTime? RentFromDate { get; set; }
         [NotMapped]

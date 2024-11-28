@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
     //Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<script src="~/js/Common.js"></script>
+@*<script src="~/js/Common.js"></script>*@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
@@ -60,6 +60,7 @@
 
             let cnt = 0;
             $("#HrmsHrdGrid tbody tr").each(function () {
+                debugger;
                 var row = $(this);
                 var isChecked = row.find("td:eq(12) input[type='checkbox']").is(":checked"); // Checkbox
                 var slno = row.find("td:eq(1) input").val().trim(); // Hidden SNo
@@ -535,9 +536,23 @@
                                         <td id="td_Rent_@(item.UnitCode)_@(item.AllotmentNo)_@(item.SlNo)">@Html.DisplayFor(modelItem => item.AllotmentNo)</td>
 
 
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(item.VendorCode))
+                                            {
+                                            <select id="VendorTypeLOV" class="form-control" asp-items="@(new SelectList(Model.VendorLOVBind, "Value", "Text", item.VendorCode))" disabled>
+                                                <option value="">--SELECT--</option>
+                                            </select>
+                                            }
+                                            else
+                                            {
+                                            <select id="VendorTypeLOV" class="form-control" asp-items="@(new SelectList(Model.VendorLOVBind, "Value", "Text", item.VendorCode))">
+                                                <option value="">--SELECT--</option>
+                                            </select>
+                                            }
+                                        </td>
 
 
-                                        @if (!string.IsNullOrEmpty(item.VendorCode))
+                                        @*@if (!string.IsNullOrEmpty(item.VendorCode))
                                         {
                                         <td>
                                             <select id="VendorTypeLOV_@(item.UnitCode)_@(item.AllotmentNo)_@(item.SlNo)" class="form-control vendorSelect">
@@ -560,12 +575,12 @@
                                                     }
                                             </select>
                                         </td>
-                                        }
+                                        }*@
                                         @*<td>
-                                                                        <select id="VendorTypeLOV" class="form-control" asp-items="@(new SelectList(Model.VendorLOVBind, "Value", "Text", item.VendorCode))">
-                                                                         <option value="">--SELECT--</option>
-                                                </select>
-                                            </td>*@
+                                    <select id="VendorTypeLOV" class="form-control" asp-items="@(new SelectList(Model.VendorLOVBind, "Value", "Text", item.VendorCode))">
+                                     <option value="">--SELECT--</option>
+            </select>
+        </td>*@
                                         <td id="td_Rent_@(item.UnitCode)_@(item.AllotmentNo)_@(item.PersonalNo)">@Html.DisplayFor(modelItem => item.OccupancyDate)</td>
 
                                         <td>
@@ -590,7 +605,7 @@
                                             <select id="OccupantTypeLOV" class="form-control" asp-items="@(new SelectList(Model.ShutDownOccupantLOVBind, "Value", "Text", Model.OccupantCode))">
 
                                                 @*<select id="OccupantTypeLOV" class="form-control" disabled>
-                                                    <option value="1010">ShutDown</option>*@
+                <option value="1010">ShutDown</option>*@
                                             </select>
                                         </td>
                                         <td>

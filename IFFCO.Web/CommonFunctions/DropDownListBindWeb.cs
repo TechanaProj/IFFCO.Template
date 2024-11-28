@@ -456,7 +456,7 @@ namespace IFFCO.NERRS.Web.CommonFunctions
                                               select new SelectListItem()
                                               {
                                                   Text = $"{Convert.ToString(dr["Type"])}: {Convert.ToString(dr["Name"])} | {Convert.ToString(dr["QUARTER_CATEGORY"])} - {Convert.ToString(dr["QUARTER_NO"])} | {Convert.ToString(dr["ALLOTMENT_NO"])}",
-                                                  Value = Convert.ToString(dr["ALLOTMENT_NO"])
+                                                  Value = $"{Convert.ToString(dr["ALLOTMENT_NO"])}_{ Convert.ToString(dr["IDENTIFIER"])}_{Convert.ToString(dr["Type"])}"
                                               }).ToList();
 
             return DRP_VALUE;
@@ -498,10 +498,15 @@ namespace IFFCO.NERRS.Web.CommonFunctions
         //    return AllotmentNoLOV;
         //}
 
-        public List<FAllotmentRentDtls> GetFilteredAllotmentRentDetails(DateTime? fromDate, DateTime? toDate, int? allotmentNo = null)
+        public List<FAllotmentRentDtls> GetFilteredAllotmentRentDetails(string code, string type,DateTime? fromDate, DateTime? toDate, int? allotmentNo = null)
         {
             var query = _context.FAllotmentRentDtls.AsQueryable();
-            if (allotmentNo.HasValue)
+            if (type == "Vendor" && allotmentNo.HasValue)
+            {
+                query = query.Where(d => d.VendorCode == code && d.AllotmentNo == allotmentNo);
+            }
+
+            else if (allotmentNo.HasValue)
             {
                 query = query.Where(d => d.AllotmentNo == allotmentNo.Value);
             }

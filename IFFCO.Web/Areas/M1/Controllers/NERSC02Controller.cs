@@ -66,7 +66,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
         }
 
         [HttpPost]
-        public IActionResult Query(DateTime FromDate, DateTime ToDate, int? AllotmentNo = null)
+        public IActionResult Query(DateTime FromDate, DateTime ToDate, string AllotmentNo_text)
         {
             try
             {
@@ -74,8 +74,13 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                 {
                     return Json(new { success = false, error = "End date cannot be before start date." });
                 }
+                //string AllotmentNo = AllotmentNo?.ToString() ?? string.Empty;
 
-                var allotmentRentDetails = dropDownListBindWeb.GetFilteredAllotmentRentDetails(FromDate, ToDate, AllotmentNo);
+                int allotno = Convert.ToInt32(AllotmentNo_text.Split('_')[0]);
+                var code = AllotmentNo_text.Split('_')[1];
+                var type = AllotmentNo_text.Split('_')[2];
+
+                var allotmentRentDetails = dropDownListBindWeb.GetFilteredAllotmentRentDetails(code, type, FromDate, ToDate, allotno);
                 return Json(new { success = true, data = allotmentRentDetails });
             }
             catch (Exception ex)

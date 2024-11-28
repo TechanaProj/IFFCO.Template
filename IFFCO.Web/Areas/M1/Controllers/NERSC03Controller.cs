@@ -59,7 +59,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
             CommonViewModel.ShutDownRentTypeLOVBind = dropDownListBindWeb.ShutDownRentTypeLOVBind();
             CommonViewModel.VendorLOVBind = dropDownListBindWeb.VendorLOVBind();
             CommonViewModel.listFAllotmentRentDtls = new List<FAllotmentRentDtls>();
-            CommonViewModel.listVwAonlaNonEmpAllotStatus = new List<VwAonlaNonEmpAllotStatus>();
+            CommonViewModel.listVwAonlaNonEmpAllotStatusShutdown = new List<VwAonlaNonEmpAllotStatus>();
 
             // CommonViewModel = GetRentList(CommonViewModel, PlantCD, OccupantCode, QuarterCode);
             CommonViewModel = GetRentList(CommonViewModel, PlantCD, OccupantCode);
@@ -108,7 +108,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
         {
             CommonViewModel = nERSC03ViewModel;
             int PersonnelNumber = Convert.ToInt32(HttpContext.Session.GetInt32("EmpID"));
-            CommonViewModel.listVwAonlaNonEmpAllotStatus = new List<VwAonlaNonEmpAllotStatus>();
+            CommonViewModel.listVwAonlaNonEmpAllotStatusShutdown = new List<VwAonlaNonEmpAllotStatus>();
             // CommonViewModel.listVwAonlaNonEmpAllotStatus = nERRSCommonService.VwAonlaNonEmpAllotStatus(PlantCD, OccupantCode);
             CommonViewModel.listVwAonlaNonEmpAllotStatusShutdown = nERRSCommonService.VwAonlaNonEmpShutDown(PlantCD, OccupantCode);
             //  CommonViewModel.listVwAonlaNonEmpAllotStatusShutdown = nERRSCommonService.VwAonlaNonEmpShutDown(PlantCD, OccupantCode,QuarterCode);
