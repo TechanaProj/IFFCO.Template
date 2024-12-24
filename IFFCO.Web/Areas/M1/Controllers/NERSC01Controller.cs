@@ -224,11 +224,11 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                 var y = _context.FAllotmentRentDtls.Where(z => z.AllotmentNo == x.AllotmentNo  && value.SlNo == sno).FirstOrDefault();
                                 if (y != null)
                                 {
-                                    y.UnitCode = Convert.ToInt32(x.UnitCode);
-                                    y.AllotmentNo = x.AllotmentNo;
-                                    y.PersonalNo = Convert.ToInt32(x.PersonalNo);
-                                    y.QuarterCategory = x.QuarterCategory;
-                                    y.QuarterNo = Convert.ToInt32(x.QuarterNo);
+                                    //y.UnitCode = Convert.ToInt32(x.UnitCode);
+                                    //y.AllotmentNo = x.AllotmentNo;
+                                    //y.PersonalNo = Convert.ToInt32(x.PersonalNo);
+                                    //y.QuarterCategory = x.QuarterCategory;
+                                    //y.QuarterNo = Convert.ToInt32(x.QuarterNo);
                                     //y.OccupantCode = value.OccupantType;
                                     //y.RentCode = value.RentType;
                                     //y.MarketHrrFromDate = (DateTime)value.MarketHrrFromDate;
@@ -238,7 +238,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                     y.ModifiedBy = personnelNumber;
                                     y.DatetimeModified = DateTime.Now;
 
-                                    y.SlNo = value.SlNo;
+                                    //y.SlNo = value.SlNo;
                                     y.MarketHrrFromDate = string.IsNullOrEmpty(value.OccupancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.OccupancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
                                     _context.Update(y);
@@ -346,11 +346,11 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                 var y = _context.FAllotmentRentDtls.Where(z => z.AllotmentNo == x.AllotmentNo &&  value.SlNo == sno).FirstOrDefault();
                                 if (y != null)
                                 {
-                                    y.UnitCode = Convert.ToInt32(x.UnitCode);
-                                    y.AllotmentNo = x.AllotmentNo;
-                                    y.PersonalNo = Convert.ToInt32(x.PersonalNo);
-                                    y.QuarterCategory = x.QuarterCategory;
-                                    y.QuarterNo = Convert.ToInt32(x.QuarterNo);
+                                    //y.UnitCode = Convert.ToInt32(x.UnitCode);
+                                    //y.AllotmentNo = x.AllotmentNo;
+                                    //y.PersonalNo = Convert.ToInt32(x.PersonalNo);
+                                    //y.QuarterCategory = x.QuarterCategory;
+                                    //y.QuarterNo = Convert.ToInt32(x.QuarterNo);
                                     //y.OccupantCode = value.OccupantType;
                                     //y.RentCode = value.RentType;
                                     //y.MarketHrrFromDate = (DateTime)value.MarketHrrFromDate;
@@ -359,7 +359,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                     y.MonthDayType = (filteredRows != null && filteredRows.Length > 0 ? Convert.ToString(filteredRows[0]["MONTH_DAY_TYPE"]) : "");
                                     y.ModifiedBy = personnelNumber;
                                     y.DatetimeModified = DateTime.Now;
-                                    y.SlNo = value.SlNo;
+                                    //y.SlNo = value.SlNo;
                                     y.MarketHrrFromDate = string.IsNullOrEmpty(value.OccupancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.OccupancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
                                     _context.Update(y);
@@ -424,14 +424,15 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                 {
                     foreach (var value in nERSC01ViewModel.listVwAonlaExEmpAllotStatus)
                     {
-                        var s1no = value.SlNo; //New Change
+
+                        var s1no = nERSC01ViewModel.listVwAonlaExEmpAllotStatus[0].SlNo; //New Change
                         var allotmentRentDetail = _context.FAllotmentRentDtls.SingleOrDefault(x => x.UnitCode == Convert.ToInt32(nERSC01ViewModel.PlantCD) && x.AllotmentNo == value.AllotmentNo && x.SlNo == s1no);
                         int sno = allotmentRentDetail?.SlNo ?? 0;
                         DateTime? v_date = allotmentRentDetail?.VacancyDate;
                         DateTime? v_date_model = string.IsNullOrEmpty(value.VacancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.VacancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
                         // Check if the record already exists
-                        if (!_context.FAllotmentRentDtls.Any(x => x.UnitCode == Convert.ToInt32(nERSC01ViewModel.PlantCD) && x.AllotmentNo == value.AllotmentNo && x.SlNo==s1no && v_date== v_date_model)) //New Change
+                        if (!_context.FAllotmentRentDtls.Any(x => x.UnitCode.Equals(Convert.ToInt32(nERSC01ViewModel.PlantCD)) && x.AllotmentNo == value.AllotmentNo && x.SlNo==s1no && v_date== v_date_model)) //New Change
                         {
                             DateTime? Dtime = null;
                             DataTable dt = _context.GetSQLQuery("select UNIT_CODE,ALLOTMENT_NO,PERSONAL_NO,APPROVED_DATE,QUARTER_CATEGORY, QUARTER_NO,APPROVED_DATE, OCCUPANCY_DATE, VACANCY_DATE " +
@@ -464,11 +465,11 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                 var y = _context.FAllotmentRentDtls.Where(z => z.AllotmentNo == x.AllotmentNo && value.SlNo == sno).FirstOrDefault();
                                 if (y != null)
                                 {
-                                    y.UnitCode = Convert.ToInt32(x.UnitCode);
-                                    y.AllotmentNo = x.AllotmentNo;
-                                    y.PersonalNo = Convert.ToInt32(x.PersonalNo);
-                                    y.QuarterCategory = x.QuarterCategory;
-                                    y.QuarterNo = Convert.ToInt32(x.QuarterNo);
+                                    //y.UnitCode = Convert.ToInt32(x.UnitCode);
+                                    //y.AllotmentNo = x.AllotmentNo;
+                                    //y.PersonalNo = Convert.ToInt32(x.PersonalNo);
+                                    //y.QuarterCategory = x.QuarterCategory;
+                                    //y.QuarterNo = Convert.ToInt32(x.QuarterNo);
                                     //y.OccupantCode = value.OccupantType;
                                    // y.MarketHrrFromDate = (DateTime)value.MarketHrrFromDate;
                                     //y.RentFromDate = (DateTime)value.MarketHrrFromDate;
@@ -477,7 +478,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                     y.MonthDayType = (filteredRows != null && filteredRows.Length > 0 ? Convert.ToString(filteredRows[0]["MONTH_DAY_TYPE"]) : "");
                                     y.ModifiedBy = personnelNumber;
                                     y.DatetimeModified = DateTime.Now;
-                                    y.SlNo = value.SlNo;
+                                    //y.SlNo = value.SlNo;
                                     y.MarketHrrFromDate = string.IsNullOrEmpty(value.OccupancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.OccupancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
 
@@ -589,21 +590,21 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                                 var y = _context.FAllotmentRentDtls.Where(z => z.AllotmentNo == xy.AllotmentNo && value.SlNo == sno).FirstOrDefault();
                                 if (y != null)
                                 {
-                                    y.UnitCode = Convert.ToInt32(xy.UnitCode);
-                                    y.AllotmentNo = xy.AllotmentNo;
+                                    //y.UnitCode = Convert.ToInt32(xy.UnitCode);
+                                    //y.AllotmentNo = xy.AllotmentNo;
                                     //y.PersonalNo = Convert.ToInt32(x.PersonalNo);
-                                    y.QuarterCategory = xy.QuarterCategory;
-                                    y.QuarterNo = Convert.ToInt32(xy.QuarterNo);
-                                    y.OccupantCode = value.OccupantType;
-                                    y.RentCode = value.RentType;
-                                    y.MarketHrrFromDate = (DateTime)value.MarketHrrFromDate;
-                                    y.RentFromDate = (DateTime)value.MarketHrrFromDate;
+                                    //y.QuarterCategory = xy.QuarterCategory;
+                                    //y.QuarterNo = Convert.ToInt32(xy.QuarterNo);
+                                    //y.OccupantCode = value.OccupantType;
+                                    //y.RentCode = value.RentType;
+                                    //y.MarketHrrFromDate = (DateTime)value.MarketHrrFromDate;
+                                    //y.RentFromDate = (DateTime)value.MarketHrrFromDate;
                                     y.VacancyDate = string.IsNullOrEmpty(value.VacancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.VacancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture);
                                     // y.VacancyDate = (DateTime)value.VacancyDate;
                                     y.MonthDayType = (filteredRows != null && filteredRows.Length > 0 ? Convert.ToString(filteredRows[0]["MONTH_DAY_TYPE"]) : "");
                                     y.ModifiedBy = personnelNumber;
                                     y.DatetimeModified = DateTime.Now;
-                                    y.SlNo = value.SlNo;
+                                    //y.SlNo = value.SlNo;
                                     y.MarketHrrFromDate = string.IsNullOrEmpty(value.OccupancyDate_Text) ? null : (DateTime?)DateTime.ParseExact(value.OccupancyDate_Text.Replace("-", "/"), "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
 
