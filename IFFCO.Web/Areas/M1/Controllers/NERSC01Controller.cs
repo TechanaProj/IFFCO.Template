@@ -192,8 +192,11 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                         if (!_context.FAllotmentRentDtls.Any(x => x.UnitCode == Convert.ToInt32(nERSC01ViewModel.PlantCD) && x.AllotmentNo == value.AllotmentNo && x.SlNo == s1no && v_date == v_date_model))
                         {
                             DateTime? Dtime = null;
-                            DataTable dt = _context.GetSQLQuery("select UNIT_CODE,ALLOTMENT_NO,PERSONAL_NO,APPROVED_DATE,QUARTER_CATEGORY, QUARTER_NO,APPROVED_DATE, OCCUPANCY_DATE, VACANCY_DATE " +
-                                "from VW_AONLA_CONSULTANT_ALLOT_STATUS where ALLOTMENT_NO = " + value.AllotmentNo + " and UNIT_CODE= ' " + nERSC01ViewModel.PlantCD + " '  ");
+                            string query = $"SELECT UNIT_CODE, ALLOTMENT_NO, PERSONAL_NO, APPROVED_DATE, QUARTER_CATEGORY, QUARTER_NO, APPROVED_DATE, OCCUPANCY_DATE, VACANCY_DATE " +
+                                           $"FROM VW_AONLA_CONSULTANT_ALLOT_STATUS " +
+                                           $"WHERE ALLOTMENT_NO = {value.AllotmentNo} AND UNIT_CODE = '{nERSC01ViewModel.PlantCD}'";
+
+                            DataTable dt = _context.GetSQLQuery(query);
 
                             List<VwAonlaConsultantAllotStatus> DTL_VALUE = new List<VwAonlaConsultantAllotStatus>();
                             DTL_VALUE = (from DataRow dr in dt.Rows
@@ -221,7 +224,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                             {
                                 DataRow[] filteredRows = dtDRP_VALUE.Select("RENT_CODE = '" + value.RentType + "'");
 
-                                var y = _context.FAllotmentRentDtls.Where(z => z.AllotmentNo == x.AllotmentNo  && value.SlNo == sno).FirstOrDefault();
+                                var y = _context.FAllotmentRentDtls.Where(z => z.AllotmentNo == x.AllotmentNo  && z.SlNo == sno).FirstOrDefault();
                                 if (y != null)
                                 {
                                     //y.UnitCode = Convert.ToInt32(x.UnitCode);
@@ -315,8 +318,12 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                         if (!_context.FAllotmentRentDtls.Any(x => x.UnitCode == Convert.ToInt32(nERSC01ViewModel.PlantCD) && x.AllotmentNo == value.AllotmentNo && x.SlNo == s1no && v_date == v_date_model))
                         {
                             DateTime? Dtime = null;
-                            DataTable dt = _context.GetSQLQuery("select UNIT_CODE,ALLOTMENT_NO,PERSONAL_NO,APPROVED_DATE,QUARTER_CATEGORY, QUARTER_NO,APPROVED_DATE, OCCUPANCY_DATE, VACANCY_DATE " +
-                                "from VW_AONLA_DEATH_CASE_ALLOT_STATUS where ALLOTMENT_NO = " + value.AllotmentNo + " and UNIT_CODE= ' " + nERSC01ViewModel.PlantCD + " '  ");
+                            string query = $"SELECT UNIT_CODE, ALLOTMENT_NO, PERSONAL_NO, APPROVED_DATE, QUARTER_CATEGORY, QUARTER_NO, OCCUPANCY_DATE, VACANCY_DATE " +
+                                           $"FROM VW_AONLA_DEATH_CASE_ALLOT_STATUS " +
+                                           $"WHERE ALLOTMENT_NO = {value.AllotmentNo} AND UNIT_CODE = '{nERSC01ViewModel.PlantCD}'";
+
+                            DataTable dt = _context.GetSQLQuery(query);
+
 
                             List<VwAonlaDeathCaseAllotStatus> DTL_VALUE = new List<VwAonlaDeathCaseAllotStatus>();
                             DTL_VALUE = (from DataRow dr in dt.Rows
@@ -343,7 +350,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                             {
                                 DataRow[] filteredRows = dtDRP_VALUE.Select("RENT_CODE = '" + value.RentType + "'");
 
-                                var y = _context.FAllotmentRentDtls.Where(z => z.AllotmentNo == x.AllotmentNo &&  value.SlNo == sno).FirstOrDefault();
+                                var y = _context.FAllotmentRentDtls.Where(z => z.AllotmentNo == x.AllotmentNo &&  z.SlNo == sno).FirstOrDefault();
                                 if (y != null)
                                 {
                                     //y.UnitCode = Convert.ToInt32(x.UnitCode);
@@ -435,8 +442,11 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                         if (!_context.FAllotmentRentDtls.Any(x => x.UnitCode.Equals(Convert.ToInt32(nERSC01ViewModel.PlantCD)) && x.AllotmentNo == value.AllotmentNo && x.SlNo==s1no && v_date== v_date_model)) //New Change
                         {
                             DateTime? Dtime = null;
-                            DataTable dt = _context.GetSQLQuery("select UNIT_CODE,ALLOTMENT_NO,PERSONAL_NO,APPROVED_DATE,QUARTER_CATEGORY, QUARTER_NO,APPROVED_DATE, OCCUPANCY_DATE, VACANCY_DATE " +
-                                "from VW_AONLA_EX_EMP_ALLOT_STATUS where ALLOTMENT_NO = " + value.AllotmentNo + " and UNIT_CODE= ' " + nERSC01ViewModel.PlantCD + " '  ");
+                            string query = $"SELECT UNIT_CODE, ALLOTMENT_NO, PERSONAL_NO, APPROVED_DATE, QUARTER_CATEGORY, QUARTER_NO, APPROVED_DATE, OCCUPANCY_DATE, VACANCY_DATE " +
+                                           $"FROM VW_AONLA_EX_EMP_ALLOT_STATUS " +
+                                           $"WHERE ALLOTMENT_NO = {value.AllotmentNo} AND UNIT_CODE = '{nERSC01ViewModel.PlantCD}'";
+
+                            DataTable dt = _context.GetSQLQuery(query);
 
                             List<VwAonlaExEmpAllotStatus> DTL_VALUE = new List<VwAonlaExEmpAllotStatus>();
                             DTL_VALUE = (from DataRow dr in dt.Rows
@@ -462,7 +472,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                             {
                                 DataRow[] filteredRows = dtDRP_VALUE.Select("RENT_CODE = '" + value.RentType + "'");
 
-                                var y = _context.FAllotmentRentDtls.Where(z => z.AllotmentNo == x.AllotmentNo && value.SlNo == sno).FirstOrDefault();
+                                var y = _context.FAllotmentRentDtls.Where(z => z.AllotmentNo == x.AllotmentNo && z.SlNo == sno).FirstOrDefault();
                                 if (y != null)
                                 {
                                     //y.UnitCode = Convert.ToInt32(x.UnitCode);
@@ -557,8 +567,13 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                         {
 
                             DateTime? Dtime = null;
-                            DataTable dt = _context.GetSQLQuery(" select UNIT_CODE, ALLOTMENT_NO,QUARTER_FOR,ALLOTMENT_TYPE,QUARTER_ISSUED_TO,ISSUSE_TO,QUARTER_NAME_FOR,APPLICATION_DATE, APPROVED_DATE, QUARTER_CATEGORY, QUARTER_NO, OCCUPANCY_DATE, VACANCY_DATE " +
-                                                              "from VW_AONLA_NON_EMP_ALLOT_STATUS where ALLOTMENT_NO = " + alt + " and UNIT_CODE= ' " + nERSC01ViewModel.PlantCD + " '  ");
+                            string query = $"SELECT UNIT_CODE, ALLOTMENT_NO, QUARTER_FOR, ALLOTMENT_TYPE, QUARTER_ISSUED_TO, ISSUSE_TO, QUARTER_NAME_FOR, APPLICATION_DATE, " +
+                                           $"APPROVED_DATE, QUARTER_CATEGORY, QUARTER_NO, OCCUPANCY_DATE, VACANCY_DATE " +
+                                           $"FROM VW_AONLA_NON_EMP_ALLOT_STATUS " +
+                                           $"WHERE ALLOTMENT_NO = {alt} AND UNIT_CODE = '{nERSC01ViewModel.PlantCD.Trim()}'";
+
+                            DataTable dt = _context.GetSQLQuery(query);
+
 
                             List<VwAonlaNonEmpAllotStatus> DTL_VALUE = new List<VwAonlaNonEmpAllotStatus>();
                             DTL_VALUE = (from DataRow dr in dt.Rows
@@ -587,7 +602,7 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
                             {
                                 DataRow[] filteredRows = dtDRP_VALUE.Select("RENT_CODE = '" + value.RentType + "'");
 
-                                var y = _context.FAllotmentRentDtls.Where(z => z.AllotmentNo == xy.AllotmentNo && value.SlNo == sno).FirstOrDefault();
+                                var y = _context.FAllotmentRentDtls.Where(z => z.AllotmentNo == xy.AllotmentNo && z.SlNo == sno).FirstOrDefault();
                                 if (y != null)
                                 {
                                     //y.UnitCode = Convert.ToInt32(xy.UnitCode);
@@ -696,5 +711,58 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
 
             return Json(CommonViewModel);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteAllotment(int allotmentNo, int slNo)
+        {
+            int unit = Convert.ToInt32(HttpContext.Session.GetString("UnitCode"));
+            try
+            {
+                // Check if the allotment record exists
+                var allotment = _context.FAllotmentRentDtls
+                    .FirstOrDefault(x => x.AllotmentNo == allotmentNo && x.SlNo == slNo && x.UnitCode == unit);
+
+                if (allotment == null)
+                {
+                    return Json(new { status = "Warning", message = "Allotment not found or already deleted." });
+                }
+
+                // Check if the record exists in FIntCompute (calculation processed)
+                var existsInCompute = _context.FIntCompute
+                    .Any(x => x.AllotmentNo == allotmentNo && x.SlNo == slNo && x.UnitCode == unit);
+
+                if (existsInCompute)
+                {
+                    return Json(new { status = "Error", message = "Cannot delete. Calculation has been processed." });
+                }
+
+                // Check if any greater SlNo exists
+                var greaterSlNoExists = _context.FAllotmentRentDtls
+                    .Any(x => x.AllotmentNo == allotmentNo && x.SlNo > slNo && x.UnitCode == unit);
+
+                if (greaterSlNoExists)
+                {
+                    
+                    
+                    return Json(new { status = "Error", message = "Cannot delete. Please delete the higher Serial Numbers first." });
+                }
+
+                // Delete the allotment record
+                _context.FAllotmentRentDtls.Remove(allotment);
+                await _context.SaveChangesAsync();
+
+                // Log the deletion
+                string logMessage = $"Allotment No: {allotmentNo}, Serial No: {slNo} deleted successfully.";
+                
+                return Json(new { status = "Success", message = logMessage });
+            }
+            catch (Exception ex)
+            {
+                commonException.GetCommonExcepton(CommonViewModel, ex);
+                return Json(new { status = "Error", message = "An error occurred while deleting." });
+            }
+        }
+
+
     }
 }

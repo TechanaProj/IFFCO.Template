@@ -420,6 +420,145 @@
         row.remove();
     }
 
+    function AlertWithBootBox(title, message) {
+        bootbox.alert({
+            title: `<b class="text-danger">${title}</b>`,
+            message: `<i class="fa fa-exclamation-circle text-danger"></i> ${message}`,
+            buttons: {
+                ok: {
+                    label: "OK",
+                    className: "btn-danger"
+                }
+            },
+            callback: function () {
+                $(".bootbox.modal").removeAttr("aria-hidden").removeAttr("tabindex"); // Fix accessibility issue
+            }
+        });
+    }
+
+
+    function SuccessWithBootBox(message) {
+        bootbox.alert({
+            title: "<b>Success</b>",
+            message: `<i class="fa fa-check-circle text-success"></i> ${message}`,
+            buttons: {
+                ok: {
+                    label: "OK",
+                    className: "btn-success"
+                }
+            },
+            callback: function () {
+                // Optional: Perform any action after closing the success message
+                $(".bootbox.modal").removeAttr("aria-hidden").removeAttr("tabindex"); // Fix accessibility issue
+            }
+        });
+    }
+
+
+    function DeleteRow(button) {
+    debugger;
+    var currentRow = $(button).closest('tr'); // Get the row containing the button
+    var allotmentNo = currentRow.find("td:eq(4)").text().trim(); // Adjust index for Allotment No
+    var slNo = currentRow.find("td:eq(0) input").val().trim(); // Fetch Serial No from input field
+
+    if (!allotmentNo || !slNo) {
+        AlertWithBootBox("Warning", "Allotment number or serial number is missing.");
+        return;
+    }
+
+    bootbox.confirm({
+        title: "<b>Confirm Deletion</b>",
+        message: `Do you really want to delete Allotment No: <b>${allotmentNo}</b>, Serial No: <b>${slNo}</b>?`,
+        buttons: {
+            cancel: { label: '<i class="fa fa-times"></i> Cancel', className: 'btn-secondary' },
+            confirm: { label: '<i class="fa fa-check"></i> Confirm', className: 'btn-danger' }
+        },
+        callback: function (result) {
+            if (result) {
+                $(".modalLoader").show(); // Show loader
+
+                // Ensure modal is fully accessible before making AJAX call
+                $(".bootbox.modal").removeAttr("aria-hidden").removeAttr("tabindex");
+
+                $.ajax({
+                    url: `@Url.Content("~")/M1/NERSC01/DeleteAllotment?allotmentNo=${allotmentNo}&slNo=${slNo}`,
+                    type: "GET",
+                    contentType: "application/json",
+                    cache: false,
+                    success: function (response) {
+                        debugger;
+                        $(".modalLoader").hide(); // Hide loader
+
+                        if (response.status.toLowerCase() === "success") {
+                            SuccessWithBootBox(response.message); // Show success message
+                            currentRow.fadeOut(300, function () { $(this).remove(); }); // Smoothly remove row
+                        } else {
+                            AlertWithBootBox(response.status, response.message); // Show error/warning message
+                        }
+                    },
+                    error: function () {
+                        $(".modalLoader").hide(); // Hide loader
+                        AlertWithBootBox("Error", "An error occurred while processing your request.");
+                    }
+                });
+
+                // Restore focus properly after deletion
+                $(".bootbox.modal").on("hidden.bs.modal", function () {
+                    $(button).focus(); // Return focus to delete button after modal closes
+                });
+            }
+        }
+    });
+}
+
+
+
+    @*function DeleteRow(button) {
+        debugger;
+        var currentRow = $(button).closest('tr'); // Find the row containing the clicked button
+        var allotmentNo = currentRow.find("td:eq(4)").text().trim(); // Adjust index to find Allotment No
+        var slNo = currentRow.find("td:eq(0) input").val(); // Fetch Serial No from input field
+
+        if (allotmentNo && slNo) {
+            bootbox.confirm({
+                title: "<B>Delete Record</B>",
+                message: "Do you want to remove the row with Allotment No: " + allotmentNo + " and SlNo: " + slNo + "?",
+                backdrop: true,
+                buttons: {
+                    cancel: {
+                        label: '<i class="fa fa-times"></i> Cancel'
+                    },
+                    confirm: {
+                        label: '<i class="fa fa-check"></i> Confirm'
+                    }
+                },
+                callback: function (result) {
+                    if (result) {
+                        $(".modalLoader").css("display", "block");
+                        $.ajax({
+                            url: '@Url.Content("~")/M1/NERSC01/DeleteAllotment?allotmentNo=' + allotmentNo + "&slNo=" + slNo,
+                            type: "GET",
+                            async: false,
+                            contentType: "application/json",
+                            cache: false,
+                            error: function (xhr, response, error) {
+                                AlertWithBootBox("Error", response);
+                            },
+                            success: function (response) {
+                                debugger;
+                                SuccessWithBootBox(response);
+                                currentRow.remove(); // Remove the row from the table after successful deletion
+                            }
+                        });
+                    }
+                }
+            });
+        } else {
+            currentRow.remove(); // If values are missing, just remove the row from UI
+        }
+    }*@
+
+
 </script>
 
 <div class="plcholder-cn">
@@ -566,6 +705,9 @@
                                                 <input type="checkbox" class="save-checkbox" data-id="@item.AllotmentNo" />
                                                 <button type="button" class="btn btn-danger" onclick="removeRow(this)">Remove</button>
                                                 <button type="button" class="btn btn-primary" onclick="addRow(this)"><i class="fas fa-plus"></i></button>
+                                                <button id="deleteid" onclick="DeleteRow(this)" class="btn btn-danger" style="float:none; margin-right: 4px;">
+                                                    <i class="fas fa-trash"></i> Delete
+                                                </button>
                                             </td>
                                         </tr>
                                     }
@@ -625,6 +767,9 @@
                                                 <input type="checkbox" class="save-checkbox" data-id="@item.AllotmentNo" />
                                                 <button type="button" class="btn btn-danger" onclick="removeRow(this)">Remove</button>
                                                 <button type="button" class="btn btn-primary" onclick="addRow(this)"><i class="fas fa-plus"></i></button>
+                                                <button id="deleteid" onclick="DeleteRow(this)" class="btn btn-danger" style="float:none; margin-right: 4px;">
+                                                    <i class="fas fa-trash"></i> Delete
+                                                </button>
                                             </td>
                                         </tr>
                                     }
@@ -684,6 +829,9 @@
                                                 <input type="checkbox" class="save-checkbox" data-id="@item.AllotmentNo" />
                                                 <button type="button" class="btn btn-danger" onclick="removeRow(this)">Remove</button>
                                                 <button type="button" class="btn btn-primary" onclick="addRow(this)"><i class="fas fa-plus"></i> </button>
+                                                <button id="deleteid" onclick="DeleteRow(this)" class="btn btn-danger" style="float:none; margin-right: 4px;">
+                                                    <i class="fas fa-trash"></i> Delete
+                                                </button>
                                             </td>
                                         </tr>
                                     }
@@ -760,7 +908,11 @@
                                             <td>
                                                 <input type="checkbox" class="save-checkbox" data-id="@item.AllotmentNo" />
                                                 <button type="button" class="btn btn-danger" onclick="removeRow(this)">Remove</button>
-                                                <button type="button" class="btn btn-primary" onclick="addRow(this)"><i class="fas fa-plus"></i>             </button>
+                                                <button type="button" class="btn btn-primary" onclick="addRow(this)"><i class="fas fa-plus"></i> </button>
+                                                <button id="deleteid" onclick="DeleteRow(this)" class="btn btn-danger" style="float:none; margin-right: 4px;">
+                                                    <i class="fas fa-trash"></i> Delete
+                                                </button>
+
                                             </td>
                                         </tr>
                                     }
