@@ -445,6 +445,96 @@
 
 
     }
+        function AlertWithBootBox(title, message) {
+        bootbox.alert({
+            title: `<b class="text-danger">${title}</b>`,
+            message: `<i class="fa fa-exclamation-circle text-danger"></i> ${message}`,
+            buttons: {
+                ok: {
+                    label: "OK",
+                    className: "btn-danger"
+                }
+            },
+            callback: function () {
+                $(".bootbox.modal").removeAttr("aria-hidden").removeAttr("tabindex"); // Fix accessibility issue
+            }
+        });
+    }
+
+
+    function SuccessWithBootBox(message) {
+        bootbox.alert({
+            title: "<b>Success</b>",
+            message: `<i class="fa fa-check-circle text-success"></i> ${message}`,
+            buttons: {
+                ok: {
+                    label: "OK",
+                    className: "btn-success"
+                }
+            },
+            callback: function () {
+                // Optional: Perform any action after closing the success message
+                $(".bootbox.modal").removeAttr("aria-hidden").removeAttr("tabindex"); // Fix accessibility issue
+            }
+        });
+    }
+
+
+    function DeleteRow(button) {
+    debugger;
+    var currentRow = $(button).closest('tr'); // Get the row containing the button
+    var allotmentNo = currentRow.find("td:eq(2)").text().trim(); // Adjust index for Allotment No
+    var slNo = currentRow.find("td:eq(1) input").val().trim(); // Fetch Serial No from input field
+
+    if (!allotmentNo || !slNo) {
+        AlertWithBootBox("Warning", "Allotment number or serial number is missing.");
+        return;
+    }
+
+    bootbox.confirm({
+        title: "<b>Confirm Deletion</b>",
+        message: `Do you really want to delete Allotment No: <b>${allotmentNo}</b>, Serial No: <b>${slNo}</b>?`,
+        buttons: {
+            cancel: { label: '<i class="fa fa-times"></i> Cancel', className: 'btn-secondary' },
+            confirm: { label: '<i class="fa fa-check"></i> Confirm', className: 'btn-danger' }
+        },
+        callback: function (result) {
+            if (result) {
+                $(".modalLoader").show(); // Show loader
+
+                // Ensure modal is fully accessible before making AJAX call
+                $(".bootbox.modal").removeAttr("aria-hidden").removeAttr("tabindex");
+
+                $.ajax({
+                    url: `@Url.Content("~")/M1/NERSC03/DeleteAllotment?allotmentNo=${allotmentNo}&slNo=${slNo}`,
+                    type: "GET",
+                    contentType: "application/json",
+                    cache: false,
+                    success: function (response) {
+                        debugger;
+                        $(".modalLoader").hide(); // Hide loader
+
+                        if (response.status.toLowerCase() === "success") {
+                            SuccessWithBootBox(response.message); // Show success message
+                            currentRow.fadeOut(300, function () { $(this).remove(); }); // Smoothly remove row
+                        } else {
+                            AlertWithBootBox(response.status, response.message); // Show error/warning message
+                        }
+                    },
+                    error: function () {
+                        $(".modalLoader").hide(); // Hide loader
+                        AlertWithBootBox("Error", "An error occurred while processing your request.");
+                    }
+                });
+
+                // Restore focus properly after deletion
+                $(".bootbox.modal").on("hidden.bs.modal", function () {
+                    $(button).focus(); // Return focus to delete button after modal closes
+                });
+            }
+        }
+    });
+}
 
 </script>
 
@@ -539,43 +629,43 @@
                                         <td>
                                             @if (!string.IsNullOrEmpty(item.VendorCode))
                                             {
-                                            <select id="VendorTypeLOV" class="form-control" asp-items="@(new SelectList(Model.VendorLOVBind, "Value", "Text", item.VendorCode))" disabled>
-                                                <option value="">--SELECT--</option>
-                                            </select>
+                                                <select id="VendorTypeLOV" class="form-control" asp-items="@(new SelectList(Model.VendorLOVBind, "Value", "Text", item.VendorCode))" disabled>
+                                                    <option value="">--SELECT--</option>
+                                                </select>
                                             }
                                             else
                                             {
-                                            <select id="VendorTypeLOV" class="form-control" asp-items="@(new SelectList(Model.VendorLOVBind, "Value", "Text", item.VendorCode))">
-                                                <option value="">--SELECT--</option>
-                                            </select>
+                                                <select id="VendorTypeLOV" class="form-control" asp-items="@(new SelectList(Model.VendorLOVBind, "Value", "Text", item.VendorCode))">
+                                                    <option value="">--SELECT--</option>
+                                                </select>
                                             }
                                         </td>
 
 
                                         @*@if (!string.IsNullOrEmpty(item.VendorCode))
-                                        {
-                                        <td>
-                                            <select id="VendorTypeLOV_@(item.UnitCode)_@(item.AllotmentNo)_@(item.SlNo)" class="form-control vendorSelect">
+        {
+        <td>
+            <select id="VendorTypeLOV_@(item.UnitCode)_@(item.AllotmentNo)_@(item.SlNo)" class="form-control vendorSelect">
 
-                                                @foreach (var vendor in Model.VendorLOVBind)
-                                                    {
-                                                <option value="@item.VendorCode">@vendor.Text</option>
-                                                    }
-                                            </select>
-                                        </td>
-                                        }
-                                        else
-                                        {
-                                        <td>
-                                            <select id="VendorTypeLOV_@(item.UnitCode)_@(item.AllotmentNo)_@(item.SlNo)" class="form-control vendorSelect">
-                                                <option value="">--SELECT--</option>
-                                                @foreach (var vendor in Model.VendorLOVBind)
-                                                    {
-                                                <option value="@vendor.Value">@vendor.Text</option>
-                                                    }
-                                            </select>
-                                        </td>
-                                        }*@
+                @foreach (var vendor in Model.VendorLOVBind)
+                    {
+                <option value="@item.VendorCode">@vendor.Text</option>
+                    }
+            </select>
+        </td>
+        }
+        else
+        {
+        <td>
+            <select id="VendorTypeLOV_@(item.UnitCode)_@(item.AllotmentNo)_@(item.SlNo)" class="form-control vendorSelect">
+                <option value="">--SELECT--</option>
+                @foreach (var vendor in Model.VendorLOVBind)
+                    {
+                <option value="@vendor.Value">@vendor.Text</option>
+                    }
+            </select>
+        </td>
+        }*@
                                         @*<td>
                                     <select id="VendorTypeLOV" class="form-control" asp-items="@(new SelectList(Model.VendorLOVBind, "Value", "Text", item.VendorCode))">
                                      <option value="">--SELECT--</option>
@@ -611,15 +701,15 @@
                                         <td>
                                             @if (!string.IsNullOrEmpty(item.RentType))
                                             {
-                                            <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.ShutDownRentTypeLOVBind, "Value", "Text", item.RentType))" disabled>
-                                                <option value="">--SELECT--</option>
-                                            </select>
+                                                <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.ShutDownRentTypeLOVBind, "Value", "Text", item.RentType))" disabled>
+                                                    <option value="">--SELECT--</option>
+                                                </select>
                                             }
                                             else
                                             {
-                                            <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.ShutDownRentTypeLOVBind, "Value", "Text", item.RentType))">
-                                                <option value="">--SELECT--</option>
-                                            </select>
+                                                <select id="RentTypeLOV" class="form-control" asp-items="@(new SelectList(Model.ShutDownRentTypeLOVBind, "Value", "Text", item.RentType))">
+                                                    <option value="">--SELECT--</option>
+                                                </select>
                                             }
                                         </td>
 
@@ -630,6 +720,10 @@
                                         <td>
                                             <button type="button" class="btn btn-primary" onclick="addRow(this)">
                                                 <i class="fas fa-plus"></i>
+                                            </button>
+
+                                            <button id="deleteid" onclick="DeleteRow(this)" class="btn btn-danger" style="float:none; margin-right: 4px;">
+                                                <i class="fas fa-trash"></i> Delete
                                             </button>
                                         </td>
                                     </tr>

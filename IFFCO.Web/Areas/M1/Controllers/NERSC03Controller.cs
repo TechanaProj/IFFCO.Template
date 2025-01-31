@@ -287,6 +287,55 @@ namespace IFFCO.NERRS.Web.Areas.M1.Controllers
             return Json(CommonViewModel);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> DeleteAllotment(int allotmentNo, int slNo)
+        {
+            int unit = Convert.ToInt32(HttpContext.Session.GetString("UnitCode"));
+            try
+            {
+                // Check if the allotment record exists
+                var allotment = _context.FAllotmentRentDtls
+                    .FirstOrDefault(x => x.AllotmentNo == allotmentNo && x.SlNo == slNo && x.UnitCode == unit);
 
+                if (allotment == null)
+                {
+                    return Json(new { status = "Warning", message = "Allotment not found or already deleted." });
+                }
+
+                // Check if the record exists in FIntCompute (calculation processed)
+                var existsInCompute = _context.FIntCompute
+                    .Any(x => x.AllotmentNo == allotmentNo && x.SlNo == slNo && x.UnitCode == unit);
+
+                if (existsInCompute)
+                {
+                    return Json(new { status = "Error", message = "Cannot delete. Calculation has been processed." });
+                }
+
+                // Check if any greater SlNo exists
+                var greaterSlNoExists = _context.FAllotmentRentDtls
+                    .Any(x => x.AllotmentNo == allotmentNo && x.SlNo > slNo && x.UnitCode == unit);
+
+                if (greaterSlNoExists)
+                {
+
+
+                    return Json(new { status = "Error", message = "Cannot delete. Please delete the higher Serial Numbers first." });
+                }
+
+                // Delete the allotment record
+                _context.FAllotmentRentDtls.Remove(allotment);
+                await _context.SaveChangesAsync();
+
+                // Log the deletion
+                string logMessage = $"Allotment No: {allotmentNo}, Serial No: {slNo} deleted successfully.";
+
+                return Json(new { status = "Success", message = logMessage });
+            }
+            catch (Exception ex)
+            {
+                commonException.GetCommonExcepton(CommonViewModel, ex);
+                return Json(new { status = "Error", message = "An error occurred while deleting." });
+            }
+        }
     }
 }
